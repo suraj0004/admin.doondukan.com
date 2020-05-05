@@ -15,7 +15,11 @@ use Illuminate\Support\Facades\Route;
 */
 Route::post('login', 'Api\UserController@login');
 Route::post('register', 'Api\UserController@register');
-Route::group(['middleware' => 'auth:api'], function()
+Route::group(['middleware' => 'auth:api','prefix'=>'retail'], function()
 {
-   
+	//Purchased APIs (POST)
+	Route::post('addPurchase', 'Api\PurchaseController@addPurchase');
+
+	//Purchased APIs (GET)
+	Route::get('purchasedList', 'Api\PurchaseController@purchasedList');   
 });

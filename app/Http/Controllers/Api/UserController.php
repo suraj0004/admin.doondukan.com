@@ -13,38 +13,40 @@ class UserController extends Controller
 {
     public $successStatus = 200;
 
+    //API Login
     public function login(Request $request) 
     { 
-    	$request->validate([
-            'email' => 'required|string|email',
-            'password' => 'required|string',
-            'remember_me' => 'boolean'
+    	
+    	$validator = Validator::make($request->all(), [ 
+            'email' => 'required|string|email', 
+            'password' => 'required|string' 
         ]);
 
+        if ($validator->fails())
+		{ 
+			$message = $validator->errors()->first();
+		    return response()->json(['statusCode'=>401,'success'=>false,'message'=>$message], 401);            
+		}
 		if(Auth::attempt(['email' => $request->email, 'password' => $request->password]))
         { 
             $user = Auth::User(); 
             $tokenData =  $user->createToken('MyShopApp');
             $token = $tokenData->token;
-            $user->accessToken = $tokenData->accessToken;
-            if ($request->remember_me) 
-            {
-            	$token->expires_at = Carbon::now()->addWeeks(1);
-        		$token->save();
-        	} 
-            return response()->json(['statusCode'=>$this->successStatus,'status'=>true,'message'=>'User Login','data' => $user], $this->successStatus); 
+            $user->accessToken = $tokenData->accessToken; 
+            return response()->json(['statusCode'=>$this->successStatus,'success'=>true,'message'=>'User Login','data' => $user], $this->successStatus); 
         } 
         else
         { 
-            return response()->json(['statusCode'=>401,'status'=>false,'message'=>'Unauthorised User'], 401); 
+            return response()->json(['statusCode'=>422,'success'=>false,'message'=>'Unauthorised User'], 422); 
         } 
     }
 
+    //Function for user registeration
    	public function register(Request $request) 
 	{ 
         $validator = Validator::make($request->all(), [ 
             'name' => 'required', 
-            'email' => 'required|email',
+            'email' => 'required|email|unique:users',
             'phone'=>'required|numeric', 
             'password' => 'required', 
             'c_password' => 'required|same:password', 
@@ -52,10 +54,11 @@ class UserController extends Controller
 
 		if ($validator->fails())
 		{ 
-		    return response()->json(['statusCode'=>401,'status'=>false,'message'=>$validator->errors()], 401);            
+			$message = $validator->errors()->first();
+		    return response()->json(['statusCode'=>401,'success'=>false,'message'=>$message], 401);            
 		}
 
-        $user = new User;
+        $user = new User();
         $user->name = $request->name;
         $user->phone = $request->phone;
         $user->email= $request->email;
@@ -63,6 +66,6 @@ class UserController extends Controller
         $user->save(); 
         $tokenData =  $user->createToken('MyShopApp'); 
         $user->accessToken = $tokenData->accessToken;
-		return response()->json(['statusCode'=>$this->successStatus,'status'=>true,'message'=>'User Successfully Registered','data'=>$user], $this->successStatus); 
+		return response()->json(['statusCode'=>$this->successStatus,'success'=>true,'message'=>'User Successfully Registered','data'=>$user], $this->successStatus); 
 	}
 }
