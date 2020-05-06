@@ -3,12 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Purchase;
+use App\Models\Product;
 
 class Purchase extends Model
 {
-    public function products()
+	protected $table = "purchases";
+	
+    public function product()
     {
-    	return $this->belongsTo(Purchase::class,'product_id','id');
+    	return $this->belongsTo(Product::class,'product_id','id');
     }
 }

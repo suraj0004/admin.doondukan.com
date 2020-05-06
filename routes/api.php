@@ -17,9 +17,20 @@ Route::post('login', 'Api\UserController@login');
 Route::post('register', 'Api\UserController@register');
 Route::group(['middleware' => 'auth:api','prefix'=>'retail'], function()
 {
+	//User Check API(GET)
+	Route::get('isAuthenticated' , function (){
+		  return response()->json([
+	      "success" => true,
+	      "message" => "Authenticated"
+		  ],200);
+	});
+	
 	//Purchased APIs (POST)
 	Route::post('addPurchase', 'Api\PurchaseController@addPurchase');
 
 	//Purchased APIs (GET)
-	Route::get('purchasedList', 'Api\PurchaseController@purchasedList');   
+	Route::get('purchasedList', 'Api\PurchaseController@purchasedList');
+
+	//Product API(GET)
+	Route::get('globalProductList', 'Api\ProductController@getproductList');   
 });

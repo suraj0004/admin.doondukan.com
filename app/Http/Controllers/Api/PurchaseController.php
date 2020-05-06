@@ -47,7 +47,7 @@ class PurchaseController extends Controller
     public function purchasedList()
     {
     	$user = Auth::User();
-    	$getpurchaselist = Purchase::with('products')->where('user_id',$user->id)->get();
+    	$getpurchaselist = Purchase::with('product')->where('user_id',$user->id)->orderBy('created_at','desc')->get();
 
     	if( $getpurchaselist && count($getpurchaselist) > 0 ) 
     	{
