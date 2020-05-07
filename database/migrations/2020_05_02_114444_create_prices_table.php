@@ -18,6 +18,7 @@ class CreatePricesTable extends Migration
             $table->foreignId('user_id');
             $table->foreignId('stock_id');
             $table->double('price', 10, 2);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

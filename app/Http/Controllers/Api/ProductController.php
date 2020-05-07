@@ -3,16 +3,25 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Product;
+use App\Models\TempProduct;
 
 class ProductController extends Controller
 {
 	//Function to get the list of all the products
     public function getproductList()
     {
-    	
+    	$user = Auth::User();
     	$productlist = Product::all();
-		return response()->json(['statusCode'=>200,'success'=>true,'message'=>'Products List.','data'=>$productlist], 200);
+    	$tempProductlist = TempProduct::where('user_id',$user->id)->get();
+    	if( count($tempProductlist) <= 0 ) 
+    	{
+    		$tempProductlist = null;
+    	}
+    	$data['main'] = $productlist;
+    	$data['temp'] = $tempProductlist;
+		return response()->json(['statusCode'=>200,'success'=>true,'message'=>'Products List.','data'=>$data], 200);
     }
 }

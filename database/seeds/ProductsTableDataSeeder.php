@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Seeder;
 use App\Models\Product;
+use App\Models\TempProduct;
 
 class ProductsTableDataSeeder extends Seeder
 {

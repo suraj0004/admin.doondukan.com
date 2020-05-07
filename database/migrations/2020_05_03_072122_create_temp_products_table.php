@@ -20,6 +20,7 @@ class CreateTempProductsTable extends Migration
             $table->string('brand');
             $table->string('weight');
             $table->enum('weight_type', ['kg', 'gm','l','ml']);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

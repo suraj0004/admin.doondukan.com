@@ -20,6 +20,7 @@ class CreatePurchasesTable extends Migration
             $table->integer('quantity');
             $table->integer('price');
             $table->enum('product_source', ['main', 'temp']);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

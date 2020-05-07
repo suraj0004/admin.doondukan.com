@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Validator;
 use App\Models\Purchase;
+use App\Models\Stock;
 
 class PurchaseController extends Controller
 {
@@ -35,6 +36,19 @@ class PurchaseController extends Controller
 
 		if( $purchase->save() ) 
 		{
+			//Add Product in Stock
+			$product_stock = Stock::where('product_id',$request->product_id)->where('user_id',$user->id)->first();
+			if( !$product_stock ) 
+			{
+				$product_stock = new Stock();
+			}
+			
+			$product_stock->user_id = $user->id;
+			$product_stock->product_id = $request->product_id;
+			$product_stock->quantity = $product_stock->quantity + $request->quantity;
+			$product_stock->product_source = $request->product_source;
+			$product_stock->save();
+
 			return response()->json(['statusCode'=>200,'success'=>true,'message'=>'Purchased Added Succesfully.'], 200);
 		}
 		else 
@@ -47,7 +61,7 @@ class PurchaseController extends Controller
     public function purchasedList()
     {
     	$user = Auth::User();
-    	$getpurchaselist = Purchase::with('product')->where('user_id',$user->id)->orderBy('created_at','desc')->get();
+    	$getpurchaselist = Purchase::with('product')->where('user_id',$user->id)->orderBy('created_at','desc')->withCasts(['created_at'=>'datetime:d M, Y h:i a'])->get();
 
     	if( $getpurchaselist && count($getpurchaselist) > 0 ) 
     	{

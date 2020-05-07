@@ -7,4 +7,5 @@ use Illuminate\Database\Eloquent\Model;
 class TempProduct extends Model
 {
     protected $table = "temp_products";
+    protected $hidden = ['deleted_at'];
 }
