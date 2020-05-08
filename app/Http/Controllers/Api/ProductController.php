@@ -18,7 +18,7 @@ class ProductController extends Controller
     	$tempProductlist = TempProduct::where('user_id',$user->id)->get();
     	if( count($tempProductlist) <= 0 ) 
     	{
-    		$tempProductlist = null;
+    		$tempProductlist = [];
     	}
     	$data['main'] = $productlist;
     	$data['temp'] = $tempProductlist;

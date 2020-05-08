@@ -17,6 +17,9 @@ Route::post('login', 'Api\UserController@login');
 Route::post('register', 'Api\UserController@register');
 Route::group(['middleware' => 'auth:api','prefix'=>'retail'], function()
 {
+	//User Log out API(POST)
+	Route::post('logout', 'Api\UserController@logout');
+
 	//User Check API(GET)
 	Route::get('isAuthenticated' , function (){
 		  return response()->json([
@@ -25,11 +28,17 @@ Route::group(['middleware' => 'auth:api','prefix'=>'retail'], function()
 		  ],200);
 	});
 	
-	//Purchased APIs (POST)
+	/*
+	|--------------------------------------------------------------------------
+	| Purchased APIs
+	|--------------------------------------------------------------------------
+	*/
+	//Add Purchase API (POST)
 	Route::post('addPurchase', 'Api\PurchaseController@addPurchase');
 
-	//Purchased APIs (GET)
+	//Get Purchase list API (GET)
 	Route::get('purchasedList', 'Api\PurchaseController@purchasedList');
+    //End Of purchase API's.
 
 	//Product API(GET)
 	Route::get('globalProductList', 'Api\ProductController@getproductList');   

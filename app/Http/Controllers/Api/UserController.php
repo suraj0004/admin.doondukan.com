@@ -68,4 +68,13 @@ class UserController extends Controller
         $user->accessToken = $tokenData->accessToken;
 		return response()->json(['statusCode'=>$this->successStatus,'success'=>true,'message'=>'User Successfully Registered','data'=>$user], $this->successStatus); 
 	}
+
+    public function logout()
+    {
+        $user = Auth::user()->token();
+        if( $user->revoke() ) 
+        {
+            return response()->json(['statusCode'=>$this->successStatus,'success'=>true,'message'=>'User Successfully Logout'], $this->successStatus); 
+        }
+    }
 }
