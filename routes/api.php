@@ -41,5 +41,18 @@ Route::group(['middleware' => 'auth:api','prefix'=>'retail'], function()
     //End Of purchase API's.
 
 	//Product API(GET)
-	Route::get('globalProductList', 'Api\ProductController@getproductList');   
+	Route::get('globalProductList', 'Api\ProductController@getproductList');
+	/*
+	|--------------------------------------------------------------------------
+	| Stock APIs
+	|--------------------------------------------------------------------------
+	*/
+	//Add Slot Price API(POST)
+	Route::post('setStockprice', 'Api\StockController@setStockprice');
+
+	//Get GlobalStock list(GET)
+	Route::get('globalStockList', 'Api\StockController@getglobalStockList');
+
+	//Get Stock List(GET)
+	Route::get('getstocklist', 'Api\StockController@getstocklist');   
 });

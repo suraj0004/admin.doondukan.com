@@ -24,7 +24,7 @@ class PurchaseController extends Controller
         if ($validator->fails())
 		{ 
 			$message = $validator->errors()->first();
-		    return response()->json(['statusCode'=>401,'success'=>false,'message'=>$message], 401);            
+		    return response()->json(['statusCode'=>400,'success'=>false,'message'=>$message], 400);            
 		}
 		$user = Auth::User();
 		$purchase = new Purchase();
@@ -53,7 +53,7 @@ class PurchaseController extends Controller
 		}
 		else 
 		{
-			return response()->json(['statusCode'=>501,'success'=>true,'message'=>'Oops! Something Went Wrong!'], 501);
+			return response()->json(['statusCode'=>501,'success'=>false,'message'=>'Oops! Something Went Wrong!'], 501);
 		}
     }
 
@@ -69,7 +69,7 @@ class PurchaseController extends Controller
     	}
     	else 
     	{
-    		return response()->json(['statusCode'=>200,'success'=>true,'message'=>'No Purchased List Found.'], 200);
+    		return response()->json(['statusCode'=>203,'success'=>false,'message'=>'No Purchased List Found.'], 203);
     	}
     }
 }
