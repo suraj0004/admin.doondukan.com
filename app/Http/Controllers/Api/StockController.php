@@ -49,10 +49,10 @@ class StockController extends Controller
 	public function getglobalStockList()
 	{
 		$user = Auth::User();
-		$setStockprice = Stock::with('product')->where('user_id',$user->id)->get();
-		if( count($setStockprice) > 0 ) 
+		$getglobalStock = Stock::with('product')->where('user_id',$user->id)->get();
+		if( count($getglobalStock) > 0 ) 
 		{
-			return response()->json(['statusCode'=>200,'success'=>true,'message'=>'Global Stock List.','data'=>$setStockprice], 200);
+			return response()->json(['statusCode'=>200,'success'=>true,'message'=>'Global Stock List.','data'=>$getglobalStock], 200);
 		}
 		else 
 		{
@@ -63,6 +63,6 @@ class StockController extends Controller
 	//This function will return the list of user stock and price.
 	public function getstocklist()
 	{
-		dd("Stock List");
+		dd("Stock List");	
 	}	
 }
