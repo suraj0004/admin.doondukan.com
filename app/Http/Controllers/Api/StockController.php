@@ -63,6 +63,15 @@ class StockController extends Controller
 	//This function will return the list of user stock and price.
 	public function getstocklist()
 	{
-		dd("Stock List");	
+		$user = Auth::User();
+		$getStocklist = Stock::with(['product','price'])->where('user_id',$user->id)->get();
+		if( count($getStocklist) > 0 ) 
+		{
+			return response()->json(['statusCode'=>200,'success'=>true,'message'=>'Stock List.','data'=>$getStocklist], 200);
+		}
+		else 
+		{
+			return response()->json(['statusCode'=>203,'success'=>false,'message'=>'Stock Not Found'], 203);
+		}		
 	}	
 }

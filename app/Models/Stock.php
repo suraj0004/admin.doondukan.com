@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Product;
+use App\Models\Price;
 
 class Stock extends Model
 {
@@ -17,5 +18,10 @@ class Stock extends Model
     public function product()
     {
     	return $this->belongsTo(Product::class,'product_id','id');
+    }
+
+    public function price()
+    {
+    	return $this->hasOne(Price::class,'stock_id','id');
     }
 }

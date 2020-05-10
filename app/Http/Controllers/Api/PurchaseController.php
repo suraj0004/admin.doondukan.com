@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Validator;
+use Carbon\Carbon;
 use App\Models\Purchase;
 use App\Models\Stock;
+
 
 class PurchaseController extends Controller
 {
@@ -47,6 +49,7 @@ class PurchaseController extends Controller
 			$product_stock->product_id = $request->product_id;
 			$product_stock->quantity = $product_stock->quantity + $request->quantity;
 			$product_stock->product_source = $request->product_source;
+			$product_stock->last_purchased_at = Carbon::now();
 			$product_stock->save();
 
 			return response()->json(['statusCode'=>200,'success'=>true,'message'=>'Purchased Added Succesfully.'], 200);
