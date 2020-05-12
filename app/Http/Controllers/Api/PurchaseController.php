@@ -39,7 +39,14 @@ class PurchaseController extends Controller
 		if( $purchase->save() ) 
 		{
 			//Add Product in Stock
-			$product_stock = Stock::where('product_id',$request->product_id)->where('user_id',$user->id)->first();
+			if( $request->product_source =="main") 
+			{
+				$product_stock = Stock::where('product_id',$request->product_id)->where('product_source','main')->where('user_id',$user->id)->first();
+			}
+			else
+			{
+				$product_stock = Stock::where('product_id',$request->product_id)->where('product_source','temp')->where('user_id',$user->id)->first();
+			}
 			if( !$product_stock ) 
 			{
 				$product_stock = new Stock();
@@ -64,11 +71,14 @@ class PurchaseController extends Controller
     public function purchasedList()
     {
     	$user = Auth::User();
-    	$getpurchaselist = Purchase::with('product')->where('user_id',$user->id)->orderBy('created_at','desc')->withCasts(['created_at'=>'datetime:d M, Y h:i a'])->get();
+    	$getpurchaselistproduct = Purchase::with('product')->where('product_source','main')->where('user_id',$user->id)->orderBy('created_at','desc')->withCasts(['created_at'=>'datetime:d M, Y h:i a'])->get();
+    	$getpurchaselistproducttemp = Purchase::with('productTemp')->where('product_source','main')->where('user_id',$user->id)->orderBy('created_at','desc')->withCasts(['created_at'=>'datetime:d M, Y h:i a'])->get();
 
-    	if( $getpurchaselist && count($getpurchaselist) > 0 ) 
+    	if( count($getpurchaselistproducttemp) > 0 && count($getpurchaselistproduct) > 0 ) 
     	{
-    		return response()->json(['statusCode'=>200,'success'=>true,'message'=>'Purchased List.','data'=>$getpurchaselist], 200);
+    		$data['main'] = $getpurchaselistproduct;
+    		$data['temp'] = $getpurchaselistproducttemp;
+    		return response()->json(['statusCode'=>200,'success'=>true,'message'=>'Purchased List.','data'=>$data], 200);
     	}
     	else 
     	{

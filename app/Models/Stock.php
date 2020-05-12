@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Product;
-use App\Models\Price;
+use App\Models\TempProduct;
 
 class Stock extends Model
 {
@@ -20,8 +20,8 @@ class Stock extends Model
     	return $this->belongsTo(Product::class,'product_id','id');
     }
 
-    public function price()
+    public function tempProduct()
     {
-    	return $this->hasOne(Price::class,'stock_id','id');
+    	return $this->belongsTo(TempProduct::class,'product_id','id');
     }
 }

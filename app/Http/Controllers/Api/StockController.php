@@ -49,10 +49,13 @@ class StockController extends Controller
 	public function getglobalStockList()
 	{
 		$user = Auth::User();
-		$getglobalStock = Stock::with('product')->where('user_id',$user->id)->get();
-		if( count($getglobalStock) > 0 ) 
+		$getglobalStockproduct = Stock::with('product')->where('product_source','main')->where('user_id',$user->id)->orderBy('created_at','desc')->get();
+		$getglobalStockproducttemp = Stock::with('tempProduct')->where('product_source','temp')->where('user_id',$user->id)->orderBy('created_at','desc')->get();
+		if( count($getglobalStockproduct) > 0 || count($getglobalStockproducttemp) > 0 ) 
 		{
-			return response()->json(['statusCode'=>200,'success'=>true,'message'=>'Global Stock List.','data'=>$getglobalStock], 200);
+			$data['main'] = $getglobalStockproduct;
+			$data['temp'] = $getglobalStockproducttemp;
+			return response()->json(['statusCode'=>200,'success'=>true,'message'=>'Global Stock List.','data'=>$data], 200);
 		}
 		else 
 		{
@@ -64,10 +67,13 @@ class StockController extends Controller
 	public function getstocklist()
 	{
 		$user = Auth::User();
-		$getStocklist = Stock::with(['product','price'])->where('user_id',$user->id)->get();
-		if( count($getStocklist) > 0 ) 
+		$getStocklistproduct = Stock::with('product')->where('product_source','main')->where('user_id',$user->id)->orderBy('created_at','desc')->withCasts(['created_at'=>'datetime:d M, Y h:i a'])->get();
+		$getStocklistproducttemp = Stock::with('tempProduct')->where('product_source','temp')->where('user_id',$user->id)->orderBy('created_at','desc')->withCasts(['created_at'=>'datetime:d M, Y h:i a'])->get();
+		if( count($getStocklistproduct) > 0 || count($getStocklistproducttemp) > 0 ) 
 		{
-			return response()->json(['statusCode'=>200,'success'=>true,'message'=>'Stock List.','data'=>$getStocklist], 200);
+			$data['main'] = $getStocklistproduct;
+			$data['temp'] = $getStocklistproducttemp;
+			return response()->json(['statusCode'=>200,'success'=>true,'message'=>'Stock List.','data'=>$data], 200);
 		}
 		else 
 		{

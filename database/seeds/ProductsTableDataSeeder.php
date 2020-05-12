@@ -14,8 +14,9 @@ class ProductsTableDataSeeder extends Seeder
     public function run()
     {
         for ($i=0; $i < 10; $i++) { 
-	    	Product::create([
+	    	TempProduct::create([
 	            'name' => str_shuffle('ABCDE'),
+                'user_id' => 1,
 	            'brand' =>str_shuffle('ABCDE'),
 	            'weight' => rand(10,50),
 	            'weight_type'=>'kg'

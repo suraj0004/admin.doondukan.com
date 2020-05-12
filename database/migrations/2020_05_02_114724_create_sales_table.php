@@ -19,6 +19,7 @@ class CreateSalesTable extends Migration
             $table->foreignId('product_id');
             $table->foreignId('bill_id');
             $table->integer('quantity');
+            $table->double('price', 10, 2);
             $table->enum('product_source', ['main', 'temp']);
             $table->softDeletes();
             $table->timestamps();

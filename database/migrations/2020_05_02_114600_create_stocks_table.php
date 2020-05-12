@@ -18,6 +18,7 @@ class CreateStocksTable extends Migration
             $table->foreignId('user_id');
             $table->foreignId('product_id');
             $table->integer('quantity');
+            $table->double('price', 10, 2)->default(0.00);
             $table->enum('product_source', ['main', 'temp']);
             $table->timestamp('last_purchased_at', 0)->nullable();
             $table->softDeletes();
