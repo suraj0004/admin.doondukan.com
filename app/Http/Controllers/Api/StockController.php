@@ -83,7 +83,7 @@ class StockController extends Controller
 		if( count($getavailableStocklistproduct) > 0 || count($getavailableStocklistproducttemp) > 0 ) 
 		{
 			$data['main'] = $getavailableStocklistproduct;
-			$data['temp'] = $getavailableStocklistproduct;
+			$data['temp'] = $getavailableStocklistproducttemp;
 			return response()->json(['statusCode'=>200,'success'=>true,'message'=>'Available Stock List.','data'=>$data], 200);
 		}
 		else 

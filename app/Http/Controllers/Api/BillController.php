@@ -30,10 +30,11 @@ class BillController extends Controller
 
     	$setCustomerbill = new Bill();
     	$setCustomerbill->user_id = $user->id;
-    	$setCustomerbill->customer_name = $request->customer_name;
-    	$setCustomerbill->customer_mobile = $request->customer_mobile;
-    	$setCustomerbill->customer_email = $request->customer_email;
-    	$setCustomerbill->discount = $request->discount;
+    	$setCustomerbill->customer_name = (isset($request->buyer['customer_name'])) ? $request->buyer['customer_name'] : null;
+    	$setCustomerbill->customer_mobile = (isset($request->buyer['customer_mobile'])) ? $request->buyer['customer_mobile'] : null;
+    	$setCustomerbill->customer_email = (isset($request->buyer['customer_email'])) ? $request->buyer['customer_email'] : null;
+    	$setCustomerbill->discount = (isset($request->buyer['discount'])) ? $request->buyer['discount'] : null;
+    	
     	$bill_ID = $setCustomerbill->save();
     	if( $bill_ID ) 
     	{
@@ -59,7 +60,7 @@ class BillController extends Controller
     				return response()->json(['statusCode'=>501,'success'=>false,'message'=>'Oops! Something Went Wrong!'], 501);
     			}
     		}
-    		return response()->json(['statusCode'=>200,'success'=>false,'message'=>'Bill Generated Successfully.'], 200);
+    		return response()->json(['statusCode'=>200,'success'=>true,'message'=>'Bill Generated Successfully.'], 200);
     	}
     	else 
     	{
