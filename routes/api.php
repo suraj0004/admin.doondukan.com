@@ -54,5 +54,16 @@ Route::group(['middleware' => 'auth:api','prefix'=>'retail'], function()
 	Route::get('globalStockList', 'Api\StockController@getglobalStockList');
 
 	//Get Stock List(GET)
-	Route::get('getstocklist', 'Api\StockController@getstocklist');   
+	Route::get('getstocklist', 'Api\StockController@getstocklist');
+
+	//Get Global Available Stock List(GET)
+	Route::get('getAvailableGlobalStockList', 'Api\StockController@getAvailableGlobalStockList');
+
+	/*
+	|--------------------------------------------------------------------------
+	| Generate Bill APIs
+	|--------------------------------------------------------------------------
+	*/
+	//Generate Bill API(GET)
+	Route::post('generateBill', 'Api\BillController@generateBill');
 });

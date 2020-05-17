@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use App\Models\Price;
 use App\Models\Stock;
 use Validator;
 
@@ -59,7 +58,7 @@ class StockController extends Controller
 		}
 		else 
 		{
-			return response()->json(['statusCode'=>203,'success'=>false,'message'=>'Stock Not Found'], 203);
+			return response()->json(['statusCode'=>402,'success'=>false,'message'=>'Stock Not Found'], 402);
 		}
 	}
 
@@ -77,7 +76,25 @@ class StockController extends Controller
 		}
 		else 
 		{
-			return response()->json(['statusCode'=>203,'success'=>false,'message'=>'Stock Not Found'], 203);
+			return response()->json(['statusCode'=>402,'success'=>false,'message'=>'Stock Not Found'], 402);
 		}		
+	}
+
+	//This function will return the list of user available stock with product.
+	public function getAvailableGlobalStockList()
+	{
+		$user = Auth::User();
+		$getavailableStocklistproduct = Stock::with('product')->where('product_source','main')->where('user_id',$user->id)->where('quantity','!=',0)->where('price','!=',0)->orderBy('created_at','desc')->withCasts(['created_at'=>'datetime:d M, Y h:i a'])->get();
+		$getavailableStocklistproducttemp = Stock::with('tempProduct')->where('product_source','temp')->where('user_id',$user->id)->where('quantity','!=',0)->where('price','!=',0)->orderBy('created_at','desc')->withCasts(['created_at'=>'datetime:d M, Y h:i a'])->get();
+		if( count($getavailableStocklistproduct) > 0 || count($getavailableStocklistproducttemp) > 0 ) 
+		{
+			$data['main'] = $getavailableStocklistproduct;
+			$data['temp'] = $getavailableStocklistproduct;
+			return response()->json(['statusCode'=>200,'success'=>true,'message'=>'Available Stock List.','data'=>$data], 200);
+		}
+		else 
+		{
+			return response()->json(['statusCode'=>402,'success'=>false,'message'=>'Stock Not Found'], 402);
+		}
 	}	
 }

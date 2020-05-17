@@ -9,7 +9,6 @@ use Laravel\Passport\HasApiTokens;
 use App\Models\Store;
 use App\Models\Stock;
 use App\Models\Purchase;
-use App\Models\Price;
 use App\Models\Sale;
 
 class User extends Authenticatable
@@ -57,11 +56,6 @@ class User extends Authenticatable
     public function purchases() 
     {
         return $this->hasMany(Purchase::class, 'user_id', 'id');
-    }
-
-    public function prices() 
-    {
-        return $this->hasMany(Price::class, 'user_id', 'id');
     }
 
     public function sales() 

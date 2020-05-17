@@ -72,9 +72,9 @@ class PurchaseController extends Controller
     {
     	$user = Auth::User();
     	$getpurchaselistproduct = Purchase::with('product')->where('product_source','main')->where('user_id',$user->id)->orderBy('created_at','desc')->withCasts(['created_at'=>'datetime:d M, Y h:i a'])->get();
-    	$getpurchaselistproducttemp = Purchase::with('productTemp')->where('product_source','main')->where('user_id',$user->id)->orderBy('created_at','desc')->withCasts(['created_at'=>'datetime:d M, Y h:i a'])->get();
+    	$getpurchaselistproducttemp = Purchase::with('productTemp')->where('product_source','temp')->where('user_id',$user->id)->orderBy('created_at','desc')->withCasts(['created_at'=>'datetime:d M, Y h:i a'])->get();
 
-    	if( count($getpurchaselistproducttemp) > 0 && count($getpurchaselistproduct) > 0 ) 
+    	if( count($getpurchaselistproducttemp) > 0 || count($getpurchaselistproduct) > 0 ) 
     	{
     		$data['main'] = $getpurchaselistproduct;
     		$data['temp'] = $getpurchaselistproducttemp;
@@ -82,7 +82,7 @@ class PurchaseController extends Controller
     	}
     	else 
     	{
-    		return response()->json(['statusCode'=>203,'success'=>false,'message'=>'No Purchased List Found.'], 203);
+    		return response()->json(['statusCode'=>402,'success'=>false,'message'=>'No Purchased List Found.'], 402);
     	}
     }
 }
