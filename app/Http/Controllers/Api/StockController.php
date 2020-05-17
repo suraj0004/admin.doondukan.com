@@ -14,7 +14,7 @@ class StockController extends Controller
 	public function setStockprice(Request $request)
 	{
 		$validator = Validator::make($request->all(), [ 
-            'stock_id' => 'required|integer',
+            'stock_id' => 'required|integer|exists:stocks,id',
             'price' => 'required|numeric',
         ]);
 
@@ -25,14 +25,8 @@ class StockController extends Controller
 		}
 
 		$user = Auth::User();
-		$setStockprice = Price::where('stock_id',$request->stock_id)->where('user_id',$user->id)->first();
-		if( !$setStockprice )
-		{
-			$setStockprice = new Price();
-		}
-
+		$setStockprice = Stock::where('id',$request->stock_id)->where('user_id',$user->id)->first();
 		$setStockprice->user_id = $user->id;
-		$setStockprice->stock_id = $request->stock_id;
 		$setStockprice->price = $request->price;
 		if( $setStockprice->save() ) 
 		{
