@@ -30,11 +30,11 @@ class BillController extends Controller
 
     	$setCustomerbill = new Bill();
     	$setCustomerbill->user_id = $user->id;
-    	$setCustomerbill->customer_name = (isset($request->buyer['customer_name'])) ? $request->buyer['customer_name'] : null;
-    	$setCustomerbill->customer_mobile = (isset($request->buyer['customer_mobile'])) ? $request->buyer['customer_mobile'] : null;
-    	$setCustomerbill->customer_email = (isset($request->buyer['customer_email'])) ? $request->buyer['customer_email'] : null;
-    	$setCustomerbill->discount = (isset($request->buyer['discount'])) ? $request->buyer['discount'] : null;
-    	
+    	$setCustomerbill->customer_name = $request->buyer['name'] ?? null;
+    	$setCustomerbill->customer_mobile = $request->buyer['mobile'] ?? null;
+    	$setCustomerbill->customer_email = $request->buyer['email'] ?? null;
+    	$setCustomerbill->discount = $request->buyer['discount'] ?? null;
+    	$setCustomerbill->discount_type = $request->buyer['discount_type'] ?? null;
     	$bill_ID = $setCustomerbill->save();
     	if( $bill_ID ) 
     	{
