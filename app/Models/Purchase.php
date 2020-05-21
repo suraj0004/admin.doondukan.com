@@ -20,7 +20,7 @@ class Purchase extends Model
     	return $this->belongsTo(Product::class,'product_id','id')->withCasts(['created_at'=>'datetime:d M, Y h:i a']);
     }
 
-    public function productTemp()
+    public function tempProduct()
     {
     	return $this->belongsTo(TempProduct::class,'product_id','id')->withCasts(['created_at'=>'datetime:d M, Y h:i a']);
     }

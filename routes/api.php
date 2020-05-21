@@ -66,4 +66,7 @@ Route::group(['middleware' => 'auth:api','prefix'=>'retail'], function()
 	*/
 	//Generate Bill API(GET)
 	Route::post('generateBill', 'Api\BillController@generateBill');
+
+	//Get User Sale(GET)
+	Route::get('saleList', 'Api\SaleController@saleList');
 });

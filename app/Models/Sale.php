@@ -11,4 +11,14 @@ class Sale extends Model
 	protected $table = "sales";
 	protected $dates = ['deleted_at'];
 	protected $hidden = ['deleted_at'];
+
+	public function product()
+    {
+    	return $this->belongsTo(Product::class,'product_id','id')->withCasts(['created_at'=>'datetime:d M, Y h:i a']);
+    }
+
+    public function tempProduct()
+    {
+    	return $this->belongsTo(TempProduct::class,'product_id','id')->withCasts(['created_at'=>'datetime:d M, Y h:i a']);
+    }
 }
