@@ -21,7 +21,7 @@ class StockController extends Controller
         if ($validator->fails())
 		{ 
 			$message = $validator->errors()->first();
-		    return response()->json(['statusCode'=>400,'success'=>false,'message'=>$message], 400);            
+		    return response()->json(['statusCode'=>200,'success'=>false,'message'=>$message], 200);            
 		}
 
 		$user = Auth::User();
@@ -34,7 +34,7 @@ class StockController extends Controller
 		}
 		else 
 		{
-			return response()->json(['statusCode'=>501,'success'=>false,'message'=>'Oops! Something Went Wrong!'], 501);
+			return response()->json(['statusCode'=>200,'success'=>false,'message'=>'Oops! Something Went Wrong!'], 200);
 		}
 	}
 
@@ -52,7 +52,7 @@ class StockController extends Controller
 		}
 		else 
 		{
-			return response()->json(['statusCode'=>402,'success'=>false,'message'=>'Stock Not Found'], 402);
+			return response()->json(['statusCode'=>200,'success'=>false,'message'=>'Stock Not Found'], 200);
 		}
 	}
 
@@ -70,7 +70,7 @@ class StockController extends Controller
 		}
 		else 
 		{
-			return response()->json(['statusCode'=>402,'success'=>false,'message'=>'Stock Not Found'], 402);
+			return response()->json(['statusCode'=>200,'success'=>false,'message'=>'Stock Not Found'], 200);
 		}		
 	}
 
@@ -88,7 +88,7 @@ class StockController extends Controller
 		}
 		else 
 		{
-			return response()->json(['statusCode'=>402,'success'=>false,'message'=>'Stock Not Found'], 402);
+			return response()->json(['statusCode'=>200,'success'=>false,'message'=>'Stock Not Found'], 200);
 		}
 	}	
 }

@@ -14,8 +14,6 @@ use Image;
 
 class UserController extends Controller
 {
-    public $successStatus = 200;
-
     //API Login
     public function login(Request $request) 
     { 
@@ -28,7 +26,7 @@ class UserController extends Controller
         if ($validator->fails())
 		{ 
 			$message = $validator->errors()->first();
-		    return response()->json(['statusCode'=>401,'success'=>false,'message'=>$message], 401);            
+		    return response()->json(['statusCode'=>200,'success'=>false,'message'=>$message], 200);            
 		}
 		if(Auth::attempt(['email' => $request->email, 'password' => $request->password]))
         { 
@@ -36,11 +34,11 @@ class UserController extends Controller
             $tokenData =  $user->createToken('MyShopApp');
             $token = $tokenData->token;
             $user->accessToken = $tokenData->accessToken; 
-            return response()->json(['statusCode'=>$this->successStatus,'success'=>true,'message'=>'User Login','data' => $user], $this->successStatus); 
+            return response()->json(['statusCode'=>200,'success'=>true,'message'=>'User Login','data' => $user],200); 
         } 
         else
         { 
-            return response()->json(['statusCode'=>422,'success'=>false,'message'=>'Unauthorised User'], 422); 
+            return response()->json(['statusCode'=>200,'success'=>false,'message'=>'authentication failed.'], 200); 
         } 
     }
 
@@ -58,7 +56,7 @@ class UserController extends Controller
 		if ($validator->fails())
 		{ 
 			$message = $validator->errors()->first();
-		    return response()->json(['statusCode'=>401,'success'=>false,'message'=>$message], 401);            
+		    return response()->json(['statusCode'=>200,'success'=>false,'message'=>$message], 200);            
 		}
 
         $user = new User();
@@ -69,7 +67,7 @@ class UserController extends Controller
         $user->save(); 
         $tokenData =  $user->createToken('MyShopApp'); 
         $user->accessToken = $tokenData->accessToken;
-		return response()->json(['statusCode'=>$this->successStatus,'success'=>true,'message'=>'User Successfully Registered','data'=>$user], $this->successStatus); 
+		return response()->json(['statusCode'=>200,'success'=>true,'message'=>'User Successfully Registered','data'=>$user], 200); 
 	}
 
     //User Logout
@@ -78,7 +76,7 @@ class UserController extends Controller
         $user = Auth::user()->token();
         if( $user->revoke() ) 
         {
-            return response()->json(['statusCode'=>$this->successStatus,'success'=>true,'message'=>'User Successfully Logout'], $this->successStatus); 
+            return response()->json(['statusCode'=>200,'success'=>true,'message'=>'User Successfully Logout'], 200); 
         }
     }
 
@@ -96,7 +94,7 @@ class UserController extends Controller
         if ($validator->fails())
         { 
             $message = $validator->errors()->first();
-            return response()->json(['statusCode'=>401,'success'=>false,'message'=>$message], 401);            
+            return response()->json(['statusCode'=>200,'success'=>false,'message'=>$message], 200);            
         }
 
         if($request->hasFile('logo') ) 

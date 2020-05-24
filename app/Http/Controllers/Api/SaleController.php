@@ -25,7 +25,7 @@ class SaleController extends Controller
     	}
     	else 
     	{
-    		return response()->json(['statusCode'=>402,'success'=>false,'message'=>'Sales Not Found'], 402);
+    		return response()->json(['statusCode'=>200,'success'=>false,'message'=>'Sales Not Found'], 200);
     	}
     }
 }
