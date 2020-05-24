@@ -16,7 +16,7 @@ class SaleController extends Controller
     	$user = Auth::User(); 
     	$getsaleListProduct = Sale::with('product')->where('user_id',$user->id)->where('product_source','main')->get();
 
-    	$getsaleListProductTemp = Sale::with('tempProduct')->where('user_id',$user->id)->where('product_source','main')->get();
+    	$getsaleListProductTemp = Sale::with('tempProduct')->where('user_id',$user->id)->where('product_source','temp')->get();
     	if( count($getsaleListProduct) > 0 || count($getsaleListProductTemp) > 0 ) 
     	{
     		$data['main'] = $getsaleListProduct;

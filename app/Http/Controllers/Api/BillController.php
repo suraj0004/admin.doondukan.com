@@ -60,11 +60,23 @@ class BillController extends Controller
     				return response()->json(['statusCode'=>501,'success'=>false,'message'=>'Oops! Something Went Wrong!'], 501);
     			}
     		}
-    		return response()->json(['statusCode'=>200,'success'=>true,'message'=>'Bill Generated Successfully.'], 200);
+    		return response()->json(['statusCode'=>200,'success'=>true,'message'=>'Bill Generated Successfully.','data'=>$setCustomerbill->id], 200);
     	}
     	else 
     	{
     		return response()->json(['statusCode'=>501,'success'=>false,'message'=>'Oops! Something Went Wrong!'], 501);
     	}
+    }
+
+    //This function is used to get the customer bill list
+    public function getBill()
+    {
+        $user = Auth::User();
+        $billData = Bill::where('user_id',$user->id)->paginate(10);
+
+        if(count($billData) > 0 ) 
+        {
+            return response()->json(['statusCode'=>200,'success'=>true,'message'=>'Bill list.','data'=>$billData], 200);
+        }
     }
 }
