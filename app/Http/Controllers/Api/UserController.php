@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\User;
@@ -168,6 +169,7 @@ class UserController extends Controller
             // $image_resize->save(public_path('profileimages/'.$user->id.'/thumb_'.$name));
         }
         $user = User::where('id',$user->id)->first();
+        // $user = Auth::guard('api')->user();
         $user->name = $request->name;
         $user->phone = $request->phone;
         $user->email = $request->email;
@@ -175,6 +177,8 @@ class UserController extends Controller
         if( !empty($request->password) ) 
         {
             $user->password = bcrypt($request->password);
+            // $user->token()->revoke();
+            // $token = $user->createToken('MyShopApp')->accessToken;
         }
 
         if ( $user->save() ) 
@@ -190,8 +194,8 @@ class UserController extends Controller
     //Get user profile data.
     public function getUserProfile()
     {
-        $data = Auth::User();
-
+        $user = Auth::User();
+        $data = User::with('store')->where('id',$user->id)->first();
         if( $data ) 
         {
             return response()->json(['statusCode'=>200,'success'=>true,'message'=>'User Profile','data'=>$data],200);
@@ -202,19 +206,28 @@ class UserController extends Controller
         }
     }
 
-    //Get user store data
-    public function getUserStore()
-    {
-        $user = Auth::User();
-        $store = Store::where('user_id',$user->id)->first();
+    //This function is used to confirm use password for changing settings.
 
-        if( $store ) 
+    public function confirmPassword(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'password' => 'required', 
+        ]);
+
+        if ($validator->fails())
+        { 
+            $message = $validator->errors()->first();
+            return response()->json(['statusCode'=>200,'success'=>false,'message'=>$message], 200);            
+        }
+
+        $user = Auth::User();
+        if( Hash::check($request->password,$user->password) ) 
         {
-            return response()->json(['statusCode'=>200,'success'=>true,'message'=>'User Stire','data'=>$store],200);
+            return response()->json(['statusCode'=>200,'success'=>true,'message'=>'password match'],200);
         }
         else 
         {
-            return response()->json(['statusCode'=>200,'success'=>false,'message'=>'User store not found.'],200);
+            return response()->json(['statusCode'=>200,'success'=>false,'message'=>'password did not match'],200);
         }
     }
 }

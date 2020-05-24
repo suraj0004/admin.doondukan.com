@@ -23,7 +23,7 @@ class BillController extends Controller
 	    	if (!$checkStock)
 			{ 
 				$message = "Quantity or Stock is unavailable.";
-			    return response()->json(['statusCode'=>400,'success'=>false,'message'=>$message], 400);            
+			    return response()->json(['statusCode'=>200,'success'=>false,'message'=>$message], 200);            
 			}
 			$stock_details[] = $checkStock;
     	}
@@ -52,19 +52,19 @@ class BillController extends Controller
 	    			$setSale->product_source = $stockvalue->product_source;
 	    			if( !$setSale->save() ) 
 	    			{
-	    				return response()->json(['statusCode'=>501,'success'=>false,'message'=>'Oops! Something Went Wrong!'], 501);
+	    				return response()->json(['statusCode'=>200,'success'=>false,'message'=>'Oops! Something Went Wrong!'], 200);
 	    			}
     			}
     			else 
     			{
-    				return response()->json(['statusCode'=>501,'success'=>false,'message'=>'Oops! Something Went Wrong!'], 501);
+    				return response()->json(['statusCode'=>200,'success'=>false,'message'=>'Oops! Something Went Wrong!'], 200);
     			}
     		}
     		return response()->json(['statusCode'=>200,'success'=>true,'message'=>'Bill Generated Successfully.','data'=>$setCustomerbill->id], 200);
     	}
     	else 
     	{
-    		return response()->json(['statusCode'=>501,'success'=>false,'message'=>'Oops! Something Went Wrong!'], 501);
+    		return response()->json(['statusCode'=>200,'success'=>false,'message'=>'Oops! Something Went Wrong!'], 200);
     	}
     }
 
@@ -72,11 +72,32 @@ class BillController extends Controller
     public function getBill()
     {
         $user = Auth::User();
-        $billData = Bill::where('user_id',$user->id)->paginate(10);
+        $billData = Bill::where('user_id',$user->id)->paginate(8);
 
         if(count($billData) > 0 ) 
         {
             return response()->json(['statusCode'=>200,'success'=>true,'message'=>'Bill list.','data'=>$billData], 200);
+        }
+        else 
+        {
+          return response()->json(['statusCode'=>200,'success'=>false,'message'=>'Bill list not found.'], 200);  
+        }
+    }
+
+    //This function is used to create invoice for shop customer
+    // $id = contains bill id.
+    public function invoice($id)
+    {
+        $user = Auth::User();
+        $data = Bill::with(['sales'])->where('id',$id)->get();
+
+        if(count($data) > 0 ) 
+        {
+            return response()->json(['statusCode'=>200,'success'=>true,'message'=>'invoice data.','data'=>$data], 200);
+        }
+        else 
+        {
+          return response()->json(['statusCode'=>200,'success'=>false,'message'=>'invoice not found.'], 200);  
         }
     }
 }

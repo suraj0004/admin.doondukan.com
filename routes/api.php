@@ -73,6 +73,8 @@ Route::group(['middleware' => 'auth:api','prefix'=>'retail'], function()
 	//Get User Sale(GET)
 	Route::get('saleList', 'Api\SaleController@saleList');
 
+	//Get customer invoice API(GET) 
+	Route::get('invoice/{id}', 'Api\BillController@invoice');
 	/*
 	|--------------------------------------------------------------------------
 	| User APIs
@@ -87,6 +89,6 @@ Route::group(['middleware' => 'auth:api','prefix'=>'retail'], function()
 	//Get User Profile(GET)
 	Route::get('profile', 'Api\UserController@getUserProfile');
 
-	//Get user store(GET)
-	Route::get('userStore', 'Api\UserController@getUserStore');
+	//Confirm user password for certain actions(POST).
+	Route::post('confirmPassword', 'Api\UserController@confirmPassword');
 });
