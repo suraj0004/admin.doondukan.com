@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Bill;
 use App\Models\Stock;
 use App\Models\Sale;
+use App\Models\Store;
 use Validator;
 
 class BillController extends Controller
@@ -89,9 +90,11 @@ class BillController extends Controller
     public function invoice($id)
     {
         $user = Auth::User();
-        $data = Bill::with(['sales'])->where('id',$id)->get();
-
-        if(count($data) > 0 ) 
+        $invoice = Bill::with(['sales'])->where('id',$id)->get();
+        $store = Store::where('user_id',$user->id)->first();
+        $data['invoice'] = $invoice;
+        $data['store'] = $store;
+        if( count($data) > 0 ) 
         {
             return response()->json(['statusCode'=>200,'success'=>true,'message'=>'invoice data.','data'=>$data], 200);
         }

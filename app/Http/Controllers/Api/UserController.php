@@ -106,11 +106,11 @@ class UserController extends Controller
             $image->move($destinationPath, $name);
             
             //Thumbnail
-            // $image_resize = Image::make(public_path().'/shopimages/'.$user->id."/".$name);
-            // $image_resize->fit(300, 300);
-            // $image_resize->save(public_path('shopimages/' .$user->id.'/thumb_'.$name));
+            $image_resize = Image::make(public_path().'/shopimages/'.$user->id."/".$name);
+            $image_resize->fit(300, 300);
+            $image_resize->save(public_path('shopimages/' .$user->id.'/thumb_'.$name));
         }
-        $store = Store::where('id',$user->id)->first();
+        $store = Store::where('user_id',$user->id)->first();
         if(!$store) 
         {
             $store = new Store();
@@ -162,9 +162,9 @@ class UserController extends Controller
             $image->move($destinationPath, $name);
 
             //Thumbnail
-            // $image_resize = Image::make(public_path().'/profileimages/'.$user->id."/".$name);
-            // $image_resize->fit(300, 300);
-            // $image_resize->save(public_path('profileimages/'.$user->id.'/thumb_'.$name));
+            $image_resize = Image::make(public_path().'/profileimages/'.$user->id."/".$name);
+            $image_resize->fit(300, 300);
+            $image_resize->save(public_path('profileimages/'.$user->id.'/thumb_'.$name));
         }
         $user = User::where('id',$user->id)->first();
         // $user = Auth::guard('api')->user();
@@ -204,8 +204,7 @@ class UserController extends Controller
         }
     }
 
-    //This function is used to confirm use password for changing settings.
-
+    //This function is used to confirm user password for changing settings.
     public function confirmPassword(Request $request)
     {
         $validator = Validator::make($request->all(), [
