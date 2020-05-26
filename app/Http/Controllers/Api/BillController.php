@@ -90,12 +90,11 @@ class BillController extends Controller
     public function invoice($id)
     {
         $user = Auth::User();
-        $invoice = Bill::with(['sales'])->where('id',$id)->get();
-        $store = Store::where('user_id',$user->id)->first();
-        $data['invoice'] = $invoice;
-        $data['store'] = $store;
-        if( count($data) > 0 ) 
+        $data = Bill::with(['sales'])->where('id',$id)->first();
+        if( $data ) 
         {
+            $store = Store::where('user_id',$user->id)->first();
+            $data->store = $store;
             return response()->json(['statusCode'=>200,'success'=>true,'message'=>'invoice data.','data'=>$data], 200);
         }
         else 
