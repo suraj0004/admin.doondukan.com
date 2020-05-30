@@ -62,4 +62,9 @@ class User extends Authenticatable
     {
         return $this->hasMany(Sale::class, 'user_id', 'id');
     }
+
+    public function availableStocks() 
+    {
+        return $this->hasMany(Stock::class, 'user_id', 'id')->where('quantity','>',0);
+    }    
 }

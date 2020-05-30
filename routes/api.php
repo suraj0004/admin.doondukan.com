@@ -75,6 +75,9 @@ Route::group(['middleware' => 'auth:api','prefix'=>'retail'], function()
 
 	//Get customer invoice API(GET) 
 	Route::get('invoice/{id}', 'Api\BillController@invoice');
+
+	//Set the bill status to paid (POST)
+	Route::post('setStatusPaid', 'Api\BillController@setStatusPaid');
 	/*
 	|--------------------------------------------------------------------------
 	| User APIs

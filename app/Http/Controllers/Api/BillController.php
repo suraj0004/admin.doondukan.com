@@ -70,10 +70,22 @@ class BillController extends Controller
     }
 
     //This function is used to get the customer bill list
-    public function getBill()
+    public function getBill(Request $request)
     {
         $user = Auth::User();
-        $billData = Bill::where('user_id',$user->id)->paginate(8);
+        $billData = Bill::where('user_id',$user->id);
+
+        if(!empty( $request->status ) ) 
+        {
+            $billData = $billData->where('status',$request->status);
+        }
+
+        if( !empty($request->search) ) 
+        {
+            $billData = $billData->where('id','like','%'.$request->search.'%');
+        }
+
+        $billData = $billData->paginate(8);
 
         if(count($billData) > 0 ) 
         {
@@ -90,7 +102,7 @@ class BillController extends Controller
     public function invoice($id)
     {
         $user = Auth::User();
-        $data = Bill::with(['sales'])->where('id',$id)->first();
+        $data = Bill::with(['sales'])->where('id',$id)->where('user_id',$user->id)->first();
         if( $data ) 
         {
             $store = Store::where('user_id',$user->id)->first();
@@ -101,5 +113,37 @@ class BillController extends Controller
         {
           return response()->json(['statusCode'=>200,'success'=>false,'message'=>'invoice not found.'], 200);  
         }
+    }
+
+    //This function is used to set the status of bill.
+    public function setStatusPaid(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'billId'=>'required|numeric'
+        ]);
+
+        if ($validator->fails())
+        { 
+            $message = $validator->errors()->first();
+            return response()->json(['statusCode'=>200,'success'=>false,'message'=>$message], 200);            
+        }
+        $user = Auth::User();
+        $data = Bill::where('id',$request->billId)->where('user_id',$user->id)->first();
+        if( $data ) 
+        {
+            $data->status = "paid";
+            if( $data->save() ) 
+            {
+               return response()->json(['statusCode'=>200,'success'=>true,'message'=>'Bill status updated'], 200);   
+            }
+            else 
+            {
+                return response()->json(['statusCode'=>200,'success'=>false,'message'=>'Oops! Something went wrong.' ], 200); 
+            }
+        }
+        else 
+        {
+            return response()->json(['statusCode'=>200,'success'=>false,'message'=>'Bill not found.'], 200); 
+        }   
     }
 }

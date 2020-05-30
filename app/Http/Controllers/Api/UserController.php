@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Store;
+use App\Models\Purchase;
 use Validator;
 use Image;
 
@@ -193,7 +194,7 @@ class UserController extends Controller
     public function getUserProfile()
     {
         $user = Auth::User();
-        $data = User::with('store')->where('id',$user->id)->first();
+        $data = User::with('store')->withCount(['stocks','availableStocks'])->where('id',$user->id)->first();
         if( $data ) 
         {
             return response()->json(['statusCode'=>200,'success'=>true,'message'=>'User Profile','data'=>$data],200);
