@@ -4,8 +4,64 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0b6e78ff5a5cdebc79888af708119bb1",
+    "content-hash": "1b3f00c0235b98b9a196ace7dfc55b48",
     "packages": [
+        {
+            "name": "alexmg86/laravel-sub-query",
+            "version": "v1.7.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Alexmg86/laravel-sub-query.git",
+                "reference": "eb1065d270d25d7beeef12f4b8f71874b5b45f31"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Alexmg86/laravel-sub-query/zipball/eb1065d270d25d7beeef12f4b8f71874b5b45f31",
+                "reference": "eb1065d270d25d7beeef12f4b8f71874b5b45f31",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/support": "^6.0|^7.0",
+                "php": ">=7.2"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^4.0|^5.0",
+                "phpunit/phpunit": "^8.4|^9.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Alexmg86\\LaravelSubQuery\\ServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Alexmg86\\LaravelSubQuery\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Aleksei Morozov",
+                    "email": "alexmg86@mail.ru"
+                }
+            ],
+            "description": "Laravel subquery",
+            "homepage": "https://github.com/alexmg86/laravelsubquery",
+            "keywords": [
+                "laravel",
+                "php",
+                "query",
+                "sub",
+                "withSum"
+            ],
+            "time": "2020-05-06T19:40:11+00:00"
+        },
         {
             "name": "asm89/stack-cors",
             "version": "1.3.0",

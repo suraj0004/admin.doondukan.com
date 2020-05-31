@@ -14,8 +14,8 @@ class SaleController extends Controller
     public function saleList(Request $request)
     {
     	$user = Auth::User(); 
-    	$getsaleListProduct = Sale::with('product')->where('user_id',$user->id)->where('product_source','main');
-    	$getsaleListProductTemp = Sale::with('tempProduct')->where('user_id',$user->id)->where('product_source','temp');
+    	$getsaleListProduct = Sale::with(['product','bill:id,status'])->where('user_id',$user->id)->where('product_source','main');
+    	$getsaleListProductTemp = Sale::with(['tempProduct','bill:id,status'])->where('user_id',$user->id)->where('product_source','temp');
         if( !empty($request->status) ) 
         {
             $status = $request->status;
