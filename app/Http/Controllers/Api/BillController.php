@@ -73,7 +73,7 @@ class BillController extends Controller
     public function getBill(Request $request)
     {
         $user = Auth::User();
-        $billData = Bill::withCount('sales')->withSum('sales:price')->where('user_id',$user->id);
+        $billData = Bill::withCount('sales')->withSum('sales:price*quantity as sales_price')->where('user_id',$user->id);
 
         if(!empty( $request->status ) ) 
         {
