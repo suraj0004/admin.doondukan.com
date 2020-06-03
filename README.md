@@ -1,3 +1,4 @@
+0. delete existing folder with name "shopinventorymanagement", create new folder named "shopinventorymanagement", open this folder, hit right click, click on git bash here then follow the following commands.
 1. git init
 2. git remote add origin https://github.com/VipinFarswan/Shop.git
 3. git config user.name 'your-name'
