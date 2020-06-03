@@ -11,3 +11,4 @@
 11. php artisan migrate
 12. php artisan passport:install
 13. php artisan db:seed {this will register a user with email:shop@disc-in.com and password 123456 }
+14. At last push your branch created at step 5 to the server: git push origin 'your-branch-name'
