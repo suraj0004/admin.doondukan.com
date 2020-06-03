@@ -1,9 +1,7 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Models\Product;
-use App\Models\TempProduct;
-
+use Illuminate\Support\Facades\DB;
 class ProductsTableDataSeeder extends Seeder
 {
     /**
@@ -14,13 +12,14 @@ class ProductsTableDataSeeder extends Seeder
     public function run()
     {
         for ($i=0; $i < 10; $i++) { 
-	    	TempProduct::create([
-	            'name' => str_shuffle('ABCDE'),
-                'user_id' => 1,
-	            'brand' =>str_shuffle('ABCDE'),
-	            'weight' => rand(10,50),
-	            'weight_type'=>'kg'
-	        ]);
+	    
+
+              DB::table('products')->insert([
+               'name' => str_shuffle('qwertyuiopasdfghjklzxcvbnm')[0],
+                'brand' =>str_shuffle('qwertyuiopasdfghjklzxcvbnm')[0],
+                'weight' => rand(10,50),
+                'weight_type'=>'kg'
+        ]);
     	}
     }
 }
