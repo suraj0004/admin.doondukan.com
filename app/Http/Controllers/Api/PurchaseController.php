@@ -21,7 +21,7 @@ class PurchaseController extends Controller
             'product_id' => 'required|integer',
             'product_source' => 'required',
             'quantity'=>'required' 
-        ]);
+		]);
 
         if ($validator->fails())
 		{ 
@@ -71,8 +71,8 @@ class PurchaseController extends Controller
     public function purchasedList()
     {
     	$user = Auth::User();
-    	$getpurchaselistproduct = Purchase::with('product')->where('product_source','main')->where('user_id',$user->id)->orderBy('created_at','desc')->withCasts(['created_at'=>'datetime:d M, Y h:i a'])->get();
-    	$getpurchaselistproducttemp = Purchase::with('tempProduct')->where('product_source','temp')->where('user_id',$user->id)->orderBy('created_at','desc')->withCasts(['created_at'=>'datetime:d M, Y h:i a'])->get();
+    	$getpurchaselistproduct = Purchase::with('product')->where('product_source','main')->where('user_id',$user->id)->orderBy('created_at','desc')->get();
+    	$getpurchaselistproducttemp = Purchase::with('tempProduct')->where('product_source','temp')->where('user_id',$user->id)->orderBy('created_at','desc')->get();
 
     	if( count($getpurchaselistproducttemp) > 0 || count($getpurchaselistproduct) > 0 ) 
     	{

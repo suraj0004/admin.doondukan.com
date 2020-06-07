@@ -11,12 +11,12 @@ class ProductsTableDataSeeder extends Seeder
      */
     public function run()
     {
-        for ($i=0; $i < 10; $i++) { 
+        for ($i=1; $i <= 100; $i++) { 
 	    
 
               DB::table('products')->insert([
-               'name' => str_shuffle('qwertyuiopasdfghjklzxcvbnm')[0],
-                'brand' =>str_shuffle('qwertyuiopasdfghjklzxcvbnm')[0],
+               'name' => "Product-".$i,
+                'brand' =>"brand-".$i,
                 'weight' => rand(10,50),
                 'weight_type'=>'kg'
         ]);

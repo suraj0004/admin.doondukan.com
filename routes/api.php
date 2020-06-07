@@ -94,4 +94,12 @@ Route::group(['middleware' => 'auth:api','prefix'=>'retail'], function()
 
 	//Confirm user password for certain actions(POST).
 	Route::post('confirmPassword', 'Api\UserController@confirmPassword');
+
+	Route::get('report/percentage','Api\PercentageController@getPercentageAndMore');
+	
+	Route::group(['prefix'=>'report','namespace'=>'Reports'],function(){
+		
+         Route::get('top-highest-selling-products','ProductController@getTopHighestSellingProducts');
+	});
+
 });

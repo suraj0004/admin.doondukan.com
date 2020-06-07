@@ -18,7 +18,7 @@ class CreatePurchasesTable extends Migration
             $table->foreignId('user_id');
             $table->foreignId('product_id');
             $table->integer('quantity');
-            $table->double('price', 10, 2);
+            $table->double('price', 15, 8);
             $table->enum('product_source', ['main', 'temp']);
             $table->softDeletes();
             $table->timestamps();

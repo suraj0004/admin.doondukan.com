@@ -42,8 +42,8 @@ class StockController extends Controller
 	public function getglobalStockList()
 	{
 		$user = Auth::User();
-		$getglobalStockproduct = Stock::with('product')->where('product_source','main')->where('user_id',$user->id)->orderBy('created_at','desc')->get();
-		$getglobalStockproducttemp = Stock::with('tempProduct')->where('product_source','temp')->where('user_id',$user->id)->orderBy('created_at','desc')->get();
+		$getglobalStockproduct = Stock::with('product','purchasePrice')->where('product_source','main')->where('user_id',$user->id)->orderBy('created_at','desc')->get();
+		$getglobalStockproducttemp = Stock::with('tempProduct','purchasePrice')->where('product_source','temp')->where('user_id',$user->id)->orderBy('created_at','desc')->get();
 		if( count($getglobalStockproduct) > 0 || count($getglobalStockproducttemp) > 0 ) 
 		{
 			$data['main'] = $getglobalStockproduct;
