@@ -20,6 +20,7 @@ class CreateSalesTable extends Migration
             $table->foreignId('bill_id');
             $table->integer('quantity');
             $table->double('price', 15, 8);
+            $table->double('purchase_price', 15, 8);
             $table->enum('product_source', ['main', 'temp']);
             $table->softDeletes();
             $table->timestamps();
