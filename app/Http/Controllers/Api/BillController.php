@@ -9,6 +9,7 @@ use App\Models\Bill;
 use App\Models\Stock;
 use App\Models\Sale;
 use App\Models\Store;
+use App\Models\Purchase;
 use Validator;
 
 class BillController extends Controller
@@ -44,6 +45,9 @@ class BillController extends Controller
     			$stockvalue->quantity = $stockvalue->quantity - $request->sale[$key]['quantity'];
     			if( $stockvalue->save() ) 
     			{
+                    //Get the last purchase price.
+                    $purchase_price = Purchase::select('id','price')->where('product_id',$stockvalue->product_id)->limit(1)->orderBy('id','desc')->first();
+
     				$setSale = new Sale();
 	    			$setSale->user_id = $user->id;
 	    			$setSale->product_id = $stockvalue->product_id;
@@ -51,6 +55,7 @@ class BillController extends Controller
 	    			$setSale->quantity = $request->sale[$key]['quantity'];
 	    			$setSale->price = $stockvalue->price;
 	    			$setSale->product_source = $stockvalue->product_source;
+                    $setSale->purchase_price = $purchase_price->price;
 	    			if( !$setSale->save() ) 
 	    			{
 	    				return response()->json(['statusCode'=>200,'success'=>false,'message'=>'Oops! Something Went Wrong!'], 200);

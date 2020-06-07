@@ -9,9 +9,9 @@ use App\Models\User;
 use App\Models\Purchase;
 use App\Models\Sale;
 use App\Models\Stock;
-
 use Carbon\Carbon;
 use Exception;
+
 class PercentageController extends Controller
 {
     public function getPercentageAndMore()
