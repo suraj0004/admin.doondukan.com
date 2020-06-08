@@ -60,22 +60,14 @@ class PercentageController extends Controller
 
 
         /** Profit percentage deffirence in last 2 days */
-        $yesterday_profit =  Sale::where("sales.user_id",$user->id)
-        ->whereDate('sales.created_at', $yesterday)
-        ->selectRaw('sum(  (sales.price - purchases.price) * sales.quantity  ) as profit')
-        ->join('purchases',function($join) use($user){
-            $join->on('sales.product_id','=','purchases.product_id')
-            ->where('purchases.user_id',$user->id);
-        })
+        $yesterday_profit =  Sale::where("user_id",$user->id)
+        ->whereDate('created_at', $yesterday)
+        ->selectRaw('sum(  (price - purchase_price) * quantity  ) as profit')
         ->first();
 
-        $day_before_yesterday_profit = Sale::where("sales.user_id",$user->id)
-        ->whereDate('sales.created_at', $day_before_yesterday)
-        ->selectRaw('sum(  (sales.price - purchases.price) * sales.quantity  ) as profit')
-        ->join('purchases',function($join) use($user){
-            $join->on('sales.product_id','=','purchases.product_id')
-            ->where('purchases.user_id',$user->id);
-        })
+        $day_before_yesterday_profit = Sale::where("user_id",$user->id)
+        ->whereDate('created_at', $day_before_yesterday)
+        ->selectRaw('sum(  (price - purchase_price) * quantity  ) as profit')
         ->first();
     
         try {
