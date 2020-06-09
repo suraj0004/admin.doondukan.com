@@ -20,7 +20,7 @@ class BillController extends Controller
     	$stock_details = [];
     	foreach ($request->sale as $key => $value) 
     	{
-    		$checkStock = Stock::where('id',$value['stock_id'])->where('quantity','>',$value['quantity'])->where('user_id',$user->id)->first();
+    		$checkStock = Stock::where('id',$value['stock_id'])->where('quantity','>=',$value['quantity'])->where('user_id',$user->id)->first();
 	    	if (!$checkStock)
 			{ 
 				$message = "Quantity or Stock is unavailable.";

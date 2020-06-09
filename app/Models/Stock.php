@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Product;
 use App\Models\TempProduct;
-
+use App\Models\Purchase;
 class Stock extends Model
 {
 	use SoftDeletes;
@@ -18,6 +18,13 @@ class Stock extends Model
     public function product()
     {
     	return $this->belongsTo(Product::class,'product_id','id');
+    }
+
+    public function purchasePrice()
+    {
+        return $this->hasOne(Purchase::class,'product_id','product_id')
+        ->select('product_id','price','created_at')
+        ->orderByDesc('created_at');
     }
 
     public function tempProduct()
