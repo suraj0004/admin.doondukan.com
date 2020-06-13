@@ -58,7 +58,7 @@ class ProductController extends Controller
 
         return response()->json([
             "success" => true,
-            "message" => "Data Fetched Successfullt",
+            "message" => "Data Fetched Successfully.",
             "data" => $sales,
             "from" => $range,
             "to" => Carbon::now(),
