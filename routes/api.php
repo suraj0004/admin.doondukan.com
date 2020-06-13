@@ -99,7 +99,11 @@ Route::group(['middleware' => 'auth:api','prefix'=>'retail'], function()
 	
 	Route::group(['prefix'=>'report','namespace'=>'Reports'],function(){
 		
-         Route::get('top-highest-selling-products','ProductController@getTopHighestSellingProducts');
+		 Route::get('top-highest-selling-products','ProductController@getTopHighestSellingProducts');
+		 Route::get('top-lowest-selling-products','ProductController@getTopLowestSellingProducts');
+		 Route::get('top-profitable-products','ProductController@getTopProfitableProducts');
+		 Route::get('top-less-profitable-products','ProductController@getTopLessProfitableProducts');
+		 Route::get('top-loosely-products','ProductController@getLooselyProducts');
 	});
 
 });
