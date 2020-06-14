@@ -44,7 +44,7 @@ class ProductController extends Controller
         }
 
   
-        $sales = Sale::with('product')
+        $sales = Sale::with('product','stock:quantity,product_id')
         ->select('product_id','price')
         ->selectRaw('sum(quantity) as qty')
         ->where('user_id',$user->id)
@@ -156,7 +156,7 @@ class ProductController extends Controller
         }
 
   
-        $profit = Sale::with('product')
+        $profit = Sale::with('product','stock:quantity,product_id')
         ->select('product_id')
         ->selectRaw('sum(quantity) as qty, SUM( ( (price - purchase_price)*quantity ) ) as profit, (price - purchase_price) as margin ')
         ->where('user_id',$user->id)
@@ -213,7 +213,7 @@ class ProductController extends Controller
         }
 
   
-        $profit = Sale::with('product')
+        $profit = Sale::with('product','stock:quantity,product_id')
         ->select('product_id')
         ->selectRaw('sum(quantity) as qty, SUM( ( (price - purchase_price)*quantity ) ) as profit, (price - purchase_price) as margin ')
         ->where('user_id',$user->id)

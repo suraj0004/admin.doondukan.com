@@ -19,7 +19,7 @@ class SalesSeeder extends Seeder
                 $date = Carbon::create(2019,mt_rand(1,12),mt_rand(1,31));
             }
             else if($i<100){
-                $date = Carbon::create(2020,6,mt_rand(1,5));
+                $date = Carbon::create(2020,6,mt_rand(1,20));
             }
             else{
                 $date = Carbon::create(2020,mt_rand(1,5),mt_rand(1,31));
@@ -31,6 +31,7 @@ class SalesSeeder extends Seeder
               "bill_id" => $i,
               "quantity" => mt_rand(1,10),
               "price" => $product_id*10,
+              "purchase_price" => $product_id*9,
               "product_source" => "main",
               "created_at" =>  $date
             ]);

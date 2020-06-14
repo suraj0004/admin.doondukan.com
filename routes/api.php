@@ -104,6 +104,15 @@ Route::group(['middleware' => 'auth:api','prefix'=>'retail'], function()
 		 Route::get('top-profitable-products','ProductController@getTopProfitableProducts');
 		 Route::get('top-less-profitable-products','ProductController@getTopLessProfitableProducts');
 		 Route::get('top-loosely-products','ProductController@getLooselyProducts');
+
+		 Route::get('sale-vs-profit','ComparisionController@getSaleVsProfit');
+		 Route::get('quantity-vs-sale','ComparisionController@getQuantityVsSale');
+		 Route::get('quantity-vs-profit','ComparisionController@getQuantityVsProfit');
+		 Route::get('all-in-one','ComparisionController@getAll_inOne');
+
+		 Route::get('sale-growth','SalesGrowthController');
+		 Route::get('profit-growth','ProfitGrowthController');
+		 Route::get('purchase-growth','PurchaseGrowthController');
 	});
 
 });
