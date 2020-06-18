@@ -27,6 +27,8 @@ Route::group(['middleware' => 'auth:api','prefix'=>'retail'], function()
 	      "message" => "Authenticated"
 		  ],200);
 	});
+
+	Route::get('dashboard','Api\DashboardController@index');
 	
 	/*
 	|--------------------------------------------------------------------------
