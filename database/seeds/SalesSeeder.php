@@ -31,6 +31,7 @@ class SalesSeeder extends Seeder
               "bill_id" => $i,
               "quantity" => mt_rand(1,10),
               "price" => $product_id*10,
+              "purchase_price"=>mt_rand(100,1000),
               "product_source" => "main",
               "created_at" =>  $date
             ]);
