@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use App\Models\Product;
 use App\Models\TempProduct;
 use App\Models\Bill;
+use App\Models\Stock;
 
 class Sale extends Model
 {
@@ -28,5 +29,10 @@ class Sale extends Model
     public function bill()
     {
         return $this->belongsTo(Bill::class,'bill_id','id');
+    }
+
+    public function stock()
+    {
+        return $this->belongsTo(Stock::class,'product_id','product_id');
     }
 }
