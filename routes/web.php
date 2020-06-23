@@ -19,9 +19,9 @@ Route::get('/', function () {
 
 Auth::routes(['register' => false, 'reset' => false, 'verify' => false]);
 
-Route::get('/home', 'HomeController@index')->name('home');
-Route::group(['middleware' => 'auth:web','prefix'=>'admin'], function()
+Route::group(['middleware' => 'auth:admin','prefix'=>'admin'], function()
 {
+	Route::get('home', 'HomeController@index')->name('home');
 	//get routes
 	Route::get('/brands', 'Admin\AdminController@brand')->name('brands');
 	Route::get('/categories', 'Admin\AdminController@category')->name('categories');
@@ -35,7 +35,10 @@ Route::group(['middleware' => 'auth:web','prefix'=>'admin'], function()
 	Route::get('edit/brand/{id}','Admin\AdminController@editBrand')->name('EditBrand');
 	Route::get('edit/category/{id}','Admin\AdminController@editCategory')->name('EditCategory');
 	Route::get('edit/product/{id}','Admin\AdminController@editProduct')->name('EditProduct');
-
+	Route::get('/users','Admin\AdminController@user')->name('users');
+	Route::get('delete/user/{id}','Admin\AdminController@deleteUser')->name('DeleteUser');
+	Route::get('create/user', function() { return view('createUser'); } )->name('CreateUser');
+	Route::get('edit/users/{id}','Admin\AdminController@editUser')->name('EditUser');
 	//post routes
 	Route::post('/store/brand', 'Admin\AdminController@storeBrand')->name('StoreBrand');
 	Route::post('/store/category', 'Admin\AdminController@StoreCategory')->name('StoreCategory');
@@ -43,4 +46,6 @@ Route::group(['middleware' => 'auth:web','prefix'=>'admin'], function()
 	Route::post('update/brand/{id}','Admin\AdminController@updateBrand')->name('UpdateBrand');
 	Route::post('update/category/{id}','Admin\AdminController@updateCategory')->name('UpdateCategory');
 	Route::post('update/product/{id}','Admin\AdminController@updateProduct')->name('UpdateProduct');
+	Route::post('/store/user', 'Admin\AdminController@storeUser')->name('StoreUser');
+	Route::post('update/user/{id}','Admin\AdminController@updateUser')->name('UpdateUser');
 });

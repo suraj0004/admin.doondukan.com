@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\User;
+use App\Models\Store;
+use Validator;
+use Image;
 
 class AdminController extends Controller
 {
@@ -200,6 +204,143 @@ class AdminController extends Controller
         {
             return back()->with(['status'=>'danger','message'=>'Oops! Something went wrong.']); 
         }
+    }
+
+    public function user()
+    {
+        $data = User::with('store')->paginate(50);
+
+        return view('user',compact('data'));
+    }
+
+    public function deleteUser($id)
+    {
+        $deleteUser = User::where('id',$id)->firstOrFail();
+
+        if( $deleteUser->delete() ) 
+        {
+            return back()->with(['status'=>'success','message'=>'User deleted Succefully.']);
+        }
+        else 
+        {
+            return back()->with(['status'=>'danger','message'=>'Oops! Something went wrong.']);
+        }
+    }
+
+    public function storeUser(Request $request)
+    {
+        $this->validate($request, [ 
+            'email' => 'required|email|unique:users',
+            'store_email'=>'nullable|unique:stores,email'
+        ]);
+        $user = new User();
+        $user->name = $request->name;
+        $user->phone = $request->phone;
+        $user->email= $request->email;
+        $user->password = bcrypt($request->password);
+        if( $user->save() ) 
+        {
+            if( !empty($request->store_name) || !empty($request->store_email) || !empty($request->store_number) || !empty($request->registration_date) || !empty($request->store_about) || !empty($request->store_address) ) 
+            {
+                if($request->hasFile('logo') ) 
+                {
+                    //Save full size image 
+                    $image = $request->file('logo');
+                    $name = time().'.'.$image->getClientOriginalExtension();
+                    $destinationPath = public_path('/shopimages/'.$user->id."/");
+                    $image->move($destinationPath, $name);
+                    
+                    //Thumbnail
+                    $image_resize = Image::make(public_path().'/shopimages/'.$user->id."/".$name);
+                    $image_resize->fit(300, 300);
+                    $image_resize->save(public_path('shopimages/' .$user->id.'/thumb_'.$name));
+                }
+                $store = new Store();
+                $store->user_id = $user->id;
+                $store->name = $request->store_name;
+                $store->mobile = $request->store_number;
+                $store->email = $request->store_email;
+                $store->logo = $name ?? null;
+                $store->address = $request->store_address;
+                $store->about = $request->store_about;
+                $store->registration_date = $request->registration_date;
+                $store->valid_upto = $request->valid_upto_date;
+                $store->save();
+            }
+            return back()->with(['status'=>'success','message'=>'User Created Succefully.']);
+        }
+        else 
+        {
+            return back()->with(['status'=>'danger','message'=>'Oops! Something went wrong.']);
+        }
+    }
+
+    public function updateUser($id,Request $request)
+    {
+        $this->validate($request, [ 
+            'email' => 'required|email|unique:users,email,'.$id
+        ]);
+
+        $user =  User::where('id',$id)->first();
+        if(!$user) 
+        {
+            return back()->with(['status'=>'danger','message'=>'User not found.']);
+        }
+        $user->name = $request->name;
+        $user->phone = $request->phone;
+        $user->email= $request->email;
+        if(!empty($request->password) && $request->password != "**********" ) 
+        {
+            $user->password = bcrypt($request->password);
+        }
+     
+        if( $user->save() ) 
+        {
+            if( !empty($request->store_name) || !empty($request->store_email) || !empty($request->store_number) || !empty($request->registration_date) || !empty($request->store_about) || !empty($request->store_address) ) 
+            {   
+
+                if($request->hasFile('logo') ) 
+                {
+                    //Save full size image 
+                    $image = $request->file('logo');
+                    $name = time().'.'.$image->getClientOriginalExtension();
+                    $destinationPath = public_path('/shopimages/'.$user->id."/");
+                    $image->move($destinationPath, $name);
+                    
+                    //Thumbnail
+                    $image_resize = Image::make(public_path().'/shopimages/'.$user->id."/".$name);
+                    $image_resize->fit(300, 300);
+                    $image_resize->save(public_path('shopimages/' .$user->id.'/thumb_'.$name));
+                }
+                
+                $store = Store::where('user_id',$user->id)->first();
+                if(!$store) 
+                {
+                    $store = new Store();
+                }
+                $store->user_id = $user->id;
+                $store->name = $request->store_name;
+                $store->mobile = $request->store_number;
+                $store->email = $request->store_email;
+                $store->logo = $name ?? null;
+                $store->address = $request->store_address;
+                $store->about = $request->store_about;
+                $store->registration_date = $request->registration_date;
+                $store->valid_upto = $request->valid_upto_date;
+                $store->save();
+            }
+            return back()->with(['status'=>'success','message'=>'User updated Succefully.']);
+        }
+        else 
+        {
+            return back()->with(['status'=>'danger','message'=>'Oops! Something went wrong.']);
+        }
+    }
+
+    public function editUser($id)
+    {
+        $data = User::with('store')->where('id',$id)->firstOrFail();
+        return view('editUser',compact('data'));
     }
 }
 
