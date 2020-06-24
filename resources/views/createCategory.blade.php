@@ -7,7 +7,7 @@
             <div class="card">
                 <div class="card-header">Category</div>
                 <div class="pl-4 pt-4 mr-auto">
-                    <a href="Javascript:void(0)" class="btn btn-success">Add new category</a>
+                    <a href="Javascript:void(0)" class="btn btn-success">Add New Category</a>
                     @if (session('status'))
                         <div class="text-{{ session('status') }} mt-2">
                             <strong>{{ session('message') }}</strong>

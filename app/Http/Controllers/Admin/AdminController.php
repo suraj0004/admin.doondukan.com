@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Http\Request;
+use App\Imports\BrandImport;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Product;
@@ -341,6 +343,12 @@ class AdminController extends Controller
     {
         $data = User::with('store')->where('id',$id)->firstOrFail();
         return view('editUser',compact('data'));
+    }
+
+    public function importBrands(Request $request)
+    {
+        Excel::import(new BrandImport,request()->file('excelfile'));
+        return back()->with(['status'=>'success','message'=>'Brands Imported Succefully.']);
     }
 }
 

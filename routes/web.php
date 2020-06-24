@@ -48,4 +48,5 @@ Route::group(['middleware' => 'auth:admin','prefix'=>'admin'], function()
 	Route::post('update/product/{id}','Admin\AdminController@updateProduct')->name('UpdateProduct');
 	Route::post('/store/user', 'Admin\AdminController@storeUser')->name('StoreUser');
 	Route::post('update/user/{id}','Admin\AdminController@updateUser')->name('UpdateUser');
+	Route::post('brand/import-excel','Admin\AdminController@importBrands')->name('import-excel');
 });
