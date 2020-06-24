@@ -7,7 +7,7 @@
             <div class="card">
                 <div class="card-header">Products</div>
                 <div class="pl-4 pt-4 mr-auto">
-                    <a href="{{ route('CreateProduct') }}" class="btn btn-outline-primary">Add new product</a>
+                    <a href="{{ route('CreateProduct') }}" class="btn btn-outline-primary">Add New Product</a>
                     @if(session('status'))
                     <div class="text-{{ session('status') }} mt-2">
                         <strong> {{ session('message') }}</strong>

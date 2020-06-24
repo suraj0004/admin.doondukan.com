@@ -14,7 +14,7 @@
             <div class="card">
                 <div class="card-header">Users</div>
                 <div class="pl-4 pt-4 mr-auto">
-                    <a href="{{ route('CreateUser') }}" class="btn btn-outline-primary">Add new user</a>
+                    <a href="{{ route('CreateUser') }}" class="btn btn-outline-primary">Add New User</a>
                     @if(session('status'))
                     <div class="text-{{ session('status') }} mt-2">
                         <strong> {{ session('message') }}</strong>
