@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header">Categories</div>
+                <div class="card-header">Categories ( {{ $data->total() }} )</div>
                 <div class="pl-4 pt-4 mr-auto">
                     <a href="{{ route('CreateCategory') }}" class="btn btn-outline-primary">Add New Category</a>
                     @if(session('status'))

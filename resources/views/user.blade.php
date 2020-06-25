@@ -12,7 +12,7 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header">Users</div>
+                <div class="card-header">Users ( {{ $data->total() }} )</div>
                 <div class="pl-4 pt-4 mr-auto">
                     <a href="{{ route('CreateUser') }}" class="btn btn-outline-primary">Add New User</a>
                     @if(session('status'))

@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header">Products</div>
+                <div class="card-header">Products ( {{ $data->total() }} )</div>
                 <div class="pl-4 pt-4 mr-auto">
                     <a href="{{ route('CreateProduct') }}" class="btn btn-outline-primary">Add New Product</a>
                     @if(session('status'))

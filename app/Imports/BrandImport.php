@@ -17,6 +17,7 @@ class BrandImport implements ToModel,WithStartRow
     {
         return new Brand([
             'brand_name'=>$row[0],
+            'country'=>$row[1],
         ]);
     }
 

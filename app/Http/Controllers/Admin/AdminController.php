@@ -18,21 +18,21 @@ class AdminController extends Controller
 {
     public function brand()
     {
-    	$data = Brand::paginate(50);
+    	$data = Brand::latest()->paginate(50);
 
     	return view('brand',compact('data'));
     }
 
     public function category()
     {
-    	$data = Category::paginate(50);
+    	$data = Category::latest()->paginate(50);
 
     	return view('category',compact('data'));
     }
 
     public function product()
     {
-    	$data = Product::with(['brand','category'])->paginate(50);
+    	$data = Product::with(['brand','category'])->latest()->paginate(50);
 
     	return view('product',compact('data'));
     }
@@ -48,6 +48,7 @@ class AdminController extends Controller
     {
     	$brand = new Brand();
     	$brand->brand_name = $request->name;
+        $brand->country = $request->country;
 
     	if( $brand->save() ) 
     	{
@@ -160,8 +161,8 @@ class AdminController extends Controller
     public function updateBrand($id,Request $request)
     {
         $data = Brand::where('id',$id)->first();
-
         $data->brand_name = $request->name;
+        $data->country = $request->country;
 
         if( $data->save() ) 
         {
@@ -210,7 +211,7 @@ class AdminController extends Controller
 
     public function user()
     {
-        $data = User::with('store')->paginate(50);
+        $data = User::with('store')->latest()->paginate(50);
 
         return view('user',compact('data'));
     }
@@ -235,6 +236,7 @@ class AdminController extends Controller
             'email' => 'required|email|unique:users',
             'store_email'=>'nullable|unique:stores,email'
         ]);
+
         $user = new User();
         $user->name = $request->name;
         $user->phone = $request->phone;
@@ -242,6 +244,22 @@ class AdminController extends Controller
         $user->password = bcrypt($request->password);
         if( $user->save() ) 
         {
+            if($request->hasFile('image') ) 
+            {
+                $user = User::where('id',$user->id)->first();
+                //Save full size image 
+                $image = $request->file('image');
+                $profile_img = time().'.'.$image->getClientOriginalExtension();
+                $destinationPath = public_path('/profileimages/'.$user->id."/");
+                $image->move($destinationPath, $profile_img);
+
+                //Thumbnail
+                $image_resize = Image::make(public_path().'/profileimages/'.$user->id."/".$profile_img);
+                $image_resize->fit(300, 300);
+                $image_resize->save(public_path('profileimages/'.$user->id.'/thumb_'.$profile_img));
+                $user->image = $profile_img;
+                $user->save();
+            }
             if( !empty($request->store_name) || !empty($request->store_email) || !empty($request->store_number) || !empty($request->registration_date) || !empty($request->store_about) || !empty($request->store_address) ) 
             {
                 if($request->hasFile('logo') ) 
@@ -280,7 +298,8 @@ class AdminController extends Controller
     public function updateUser($id,Request $request)
     {
         $this->validate($request, [ 
-            'email' => 'required|email|unique:users,email,'.$id
+            'email' => 'required|email|unique:users,email,'.$id,
+            'store_email'=>'nullable|unique:stores,email,'.$id.',user_id'
         ]);
 
         $user =  User::where('id',$id)->first();
@@ -288,9 +307,24 @@ class AdminController extends Controller
         {
             return back()->with(['status'=>'danger','message'=>'User not found.']);
         }
+
+        if($request->hasFile('image') ) 
+        {
+            //Save full size image 
+            $image = $request->file('image');
+            $profile_img = time().'.'.$image->getClientOriginalExtension();
+            $destinationPath = public_path('/profileimages/'.$user->id."/");
+            $image->move($destinationPath, $profile_img);
+
+            //Thumbnail
+            $image_resize = Image::make(public_path().'/profileimages/'.$user->id."/".$profile_img);
+            $image_resize->fit(300, 300);
+            $image_resize->save(public_path('profileimages/'.$user->id.'/thumb_'.$profile_img));
+        }
         $user->name = $request->name;
         $user->phone = $request->phone;
         $user->email= $request->email;
+        $user->image = $profile_img;
         if(!empty($request->password) && $request->password != "**********" ) 
         {
             $user->password = bcrypt($request->password);
