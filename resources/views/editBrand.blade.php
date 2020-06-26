@@ -17,12 +17,20 @@
                 <div class="card-body">
                     <form action="{{ route('UpdateBrand',$data->id) }}" method="POST">
                         @csrf
-                        <div class="row">
+                        <div class="row form-group">
                             <div class="col-md-4">
                                 <label for="brandname">Brand Name</label>
                             </div>
                             <div class="col-md-4">
                                 <input type="text" name="name" id="brandname" class="form-control" value="{{ $data->brand_name }}" required>  
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label for="country">Country</label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" name="country" id="country" class="form-control" value="{{ $data->country ?? '' }}" required>  
                             </div>
                         </div>
                         <div class="text-center pt-3">

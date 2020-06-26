@@ -5,7 +5,7 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header">Brands</div>
+                <div class="card-header">Brands ( {{ $data->total() }} )</div>
                 <div class="pl-4 pt-4 mr-auto">
                     <a href="{{ route('CreateBrand') }}" class="btn btn-outline-primary">Add New Brand</a>
                     <a href="javascript:void(0)" data-toggle="modal" data-target="#import-brands" class="btn btn-outline-success">Import From Excel</a>
@@ -20,6 +20,7 @@
                         <thead>
                             <tr>
                                 <th>Name</th>
+                                <th>Country</th>
                                 <th>Created At</th>
                                 <th>Action</th>
                             </tr>
@@ -28,6 +29,7 @@
                             @forelse ( $data as $brand )
                             <tr>
                                 <td>{{ $brand->brand_name }}</td>
+                                <td>{{ $brand->country ?? 'N/A' }}</td>
                                 <td>{{ $brand->created_at }}</td>
                                 <td><a href="{{ route('DeleteBrand',$brand->id) }}" class="text-danger" onclick="return confirm('Are you sure? You want to delete this.')"><strong>Delete</strong></a> / <a href="{{ route('EditBrand',$brand->id) }}" class="text-primary"><strong>Edit</strong></a></td>
                             </tr>

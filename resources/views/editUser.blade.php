@@ -62,6 +62,19 @@
                             <span class="text-danger" id="error"></span>
                         </div>
                         <div class="row form-group">
+                            <div class="col-md-4">
+                                <label for="profile_picture">Profile Picture</label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="file" id="profile_picture" name="image" class="form-control" style="padding-bottom: 35px;"> 
+                            </div>
+                            @if(!empty( $data->image) )
+                            <div class="col-md-4">
+                                <img src="{{ URL('/') }}/profileimages/{{ $data->id }}/thumb_{{ $data->image }}" style="width: 18%; height: 80%;">
+                            </div>
+                            @endif
+                        </div>
+                        <div class="row form-group">
                             <div><strong class="text-primary">Add Store Details</strong></div>
                         </div>
                         <div class="row form-group">
