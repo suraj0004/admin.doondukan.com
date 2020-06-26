@@ -21,5 +21,14 @@ class UserSeeder extends Seeder
             'role' => 'user',
             'created_at' => Carbon::create(2019,1,1)
         ]);
+
+        DB::table('admins')->insert([
+            'name' => 'Admin',
+            'email' => 'admin@disc-in.com',
+            'password' => Hash::make('admin'),
+            'created_at' => Carbon::create(2019,1,1),
+            'updated_at' => Carbon::create(2019,1,1)
+
+        ]);
     }
 }

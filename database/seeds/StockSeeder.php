@@ -12,7 +12,7 @@ class StockSeeder extends Seeder
      */
     public function run()
     {
-        $date = Carbon::create(2020,mt_rand(1,5),mt_rand(1,31));
+        $date = Carbon::create(2020,mt_rand(1,7),mt_rand(1,31));
         for ($i= 1; $i <=100 ; $i++) { 
            DB::table('stocks')->insert([
                "user_id" => 1,
