@@ -5,9 +5,9 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header">Brand</div>
+                <div class="card-header">Product</div>
                 <div class="pl-4 pt-4 mr-auto">
-                    <a href="Javascript:void(0)" class="btn btn-success">Add new product</a>
+                    <a href="Javascript:void(0)" class="btn btn-success">Add New Product</a>
                     @if (session('status'))
                         <div class="text-{{ session('status') }} mt-2">
                             <strong>{{ session('message') }}</strong>

@@ -7,7 +7,8 @@
             <div class="card">
                 <div class="card-header">Brands</div>
                 <div class="pl-4 pt-4 mr-auto">
-                    <a href="{{ route('CreateBrand') }}" class="btn btn-outline-primary">Add new brand</a>
+                    <a href="{{ route('CreateBrand') }}" class="btn btn-outline-primary">Add New Brand</a>
+                    <a href="javascript:void(0)" data-toggle="modal" data-target="#import-brands" class="btn btn-outline-success">Import From Excel</a>
                     @if(session('status'))
                     <div class="text-{{ session('status') }} mt-2">
                         <strong> {{ session('message') }}</strong>
@@ -45,4 +46,33 @@
         </div>
     </div>
 </div>
+<!-- Import Excel Modal -->
+<div class="modal" id="import-brands">
+  <div class="modal-dialog">
+    <div class="modal-content">
+       <form action="{{ route('import-excel') }}" method="POST" enctype="multipart/form-data"> 
+          <!-- Modal Header -->
+          <div class="modal-header">
+            <h4 class="modal-title">Import Brands</h4>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+          </div>
+
+          <!-- Modal body -->
+          <div class="modal-body">
+            <div>
+                @csrf
+                <input type="file" id="excelfile" name="excelfile" accept=".xlsx, .xls, .csv" required>
+            </div>
+          </div>
+
+          <!-- Modal footer -->
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-success">Upload</button>
+            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancel</button>
+          </div>
+      </form>
+    </div>
+  </div>
+</div>
+<!-- End of import excel modal -->
 @endsection

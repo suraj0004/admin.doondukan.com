@@ -11,6 +11,7 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}" defer></script>
+    @stack('script')
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -18,6 +19,7 @@
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    @stack('style')
 </head>
 <body>
     <div id="app">
@@ -42,6 +44,9 @@
                         </li>
                         <li class="nav-item pl-4">
                             <a href="{{ route('products') }}"> Products </a>
+                        </li>
+                        <li class="nav-item pl-4"> 
+                            <a href="{{ route('users') }}"> Users </a>
                         </li>
                         @endauth
                     </ul>

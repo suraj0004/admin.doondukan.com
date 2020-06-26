@@ -14,6 +14,7 @@ class DatabaseSeeder extends Seeder
            [
                 UserSeeder::class,
                 ProductsTableDataSeeder::class,
+                StockSeeder::class,
                 SalesSeeder::class,
                 BillSeeder::class,
           ]

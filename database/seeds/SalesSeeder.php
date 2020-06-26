@@ -19,10 +19,10 @@ class SalesSeeder extends Seeder
                 $date = Carbon::create(2019,mt_rand(1,12),mt_rand(1,31));
             }
             else if($i<100){
-                $date = Carbon::create(2020,6,mt_rand(1,20));
+                $date = Carbon::create(2020,6,mt_rand(1,30));
             }
             else{
-                $date = Carbon::create(2020,mt_rand(1,5),mt_rand(1,31));
+                $date = Carbon::create(2020,mt_rand(1,8),mt_rand(1,31));
             }
             $product_id = mt_rand(1,100);
             DB::table('sales')->insert([
