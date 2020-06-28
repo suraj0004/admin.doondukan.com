@@ -17,9 +17,8 @@ class CreateTempProductsTable extends Migration
             $table->id();
             $table->foreignId('user_id');
             $table->string('name');
-            $table->string('brand');
             $table->string('weight');
-            $table->enum('weight_type', ['kg', 'gm','l','ml']);
+            $table->enum('weight_type', ['kg', 'gm','L','ml']);
             $table->softDeletes();
             $table->timestamps();
         });

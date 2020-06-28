@@ -17,7 +17,7 @@ class ProductsTableDataSeeder extends Seeder
               DB::table('products')->insert([
                 'name' => "Product-".$i,
                 'brand_id' =>  mt_rand(1,10),
-                "category_id" => mt_rand(1,20),
+                "category_id" => mt_rand(1,5),
                 'weight' => rand(10,50),
                 'weight_type'=>'kg'
         ]);
