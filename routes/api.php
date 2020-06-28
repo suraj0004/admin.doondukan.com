@@ -117,4 +117,11 @@ Route::group(['middleware' => 'auth:api','prefix'=>'retail'], function()
 		 Route::get('purchase-growth','PurchaseGrowthController');
 	});
 
+
+	Route::group(['namespace' => 'Api'],function(){
+		Route::post('add-user-custom-product','CustomProductController@store');
+		Route::get('get-user-custom-product-list','CustomProductController@index');
+	});
+	
+
 });

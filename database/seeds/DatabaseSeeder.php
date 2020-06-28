@@ -13,10 +13,12 @@ class DatabaseSeeder extends Seeder
         $this->call(
            [
                 UserSeeder::class,
+                BrandSeeder::class,
+                CategotySeeder::class,
                 ProductsTableDataSeeder::class,
-                StockSeeder::class,
-                SalesSeeder::class,
-                BillSeeder::class,
+                // StockSeeder::class,
+                // SalesSeeder::class,
+                // BillSeeder::class,
           ]
         );
     }
