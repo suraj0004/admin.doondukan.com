@@ -16,10 +16,19 @@ class UserSeeder extends Seeder
          DB::table('users')->insert([
             'name' => 'shop keeper',
             'email' => 'shop@disc-in.com',
-            'phone' => 1234567890,
+            'phone' => 9876543210,
             'password' => Hash::make('123456'),
             'role' => 'user',
             'created_at' => Carbon::create(2019,1,1)
+        ]);
+
+        DB::table('admins')->insert([
+            'name' => 'Admin',
+            'email' => 'admin@disc-in.com',
+            'password' => Hash::make('admin'),
+            'created_at' => Carbon::create(2019,1,1),
+            'updated_at' => Carbon::create(2019,1,1)
+
         ]);
     }
 }

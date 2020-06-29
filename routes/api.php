@@ -99,22 +99,27 @@ Route::group(['middleware' => 'auth:api','prefix'=>'retail'], function()
 
 	Route::get('report/percentage','Api\PercentageController@getPercentageAndMore');
 	
+	//Add custom product route(POST)
+	Route::post('add-user-custom-product','Api\CustomProductController@store');
+
+	//Get user temp products list(GET).
+	Route::get('get-user-custom-product-list','Api\CustomProductController@index');
+	
 	Route::group(['prefix'=>'report','namespace'=>'Reports'],function(){
 		
-		 Route::get('top-highest-selling-products','ProductController@getTopHighestSellingProducts');
-		 Route::get('top-lowest-selling-products','ProductController@getTopLowestSellingProducts');
-		 Route::get('top-profitable-products','ProductController@getTopProfitableProducts');
-		 Route::get('top-less-profitable-products','ProductController@getTopLessProfitableProducts');
-		 Route::get('top-loosely-products','ProductController@getLooselyProducts');
+		Route::get('top-highest-selling-products','ProductController@getTopHighestSellingProducts');
+		Route::get('top-lowest-selling-products','ProductController@getTopLowestSellingProducts');
+		Route::get('top-profitable-products','ProductController@getTopProfitableProducts');
+		Route::get('top-less-profitable-products','ProductController@getTopLessProfitableProducts');
+		Route::get('top-loosely-products','ProductController@getLooselyProducts');
 
-		 Route::get('sale-vs-profit','ComparisionController@getSaleVsProfit');
-		 Route::get('quantity-vs-sale','ComparisionController@getQuantityVsSale');
-		 Route::get('quantity-vs-profit','ComparisionController@getQuantityVsProfit');
-		 Route::get('all-in-one','ComparisionController@getAll_inOne');
+		Route::get('sale-vs-profit','ComparisionController@getSaleVsProfit');
+		Route::get('quantity-vs-sale','ComparisionController@getQuantityVsSale');
+	    Route::get('quantity-vs-profit','ComparisionController@getQuantityVsProfit');
+		Route::get('all-in-one','ComparisionController@getAll_inOne');
 
-		 Route::get('sale-growth','SalesGrowthController');
-		 Route::get('profit-growth','ProfitGrowthController');
-		 Route::get('purchase-growth','PurchaseGrowthController');
+		Route::get('sale-growth','SalesGrowthController');
+		Route::get('profit-growth','ProfitGrowthController');
+		Route::get('purchase-growth','PurchaseGrowthController');
 	});
-
 });

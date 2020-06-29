@@ -16,6 +16,6 @@ class Bill extends Model
 
     public function sales()
     {
-    	return $this->hasMany(Sale::class, 'bill_id', 'id')->with('product');
+    	return $this->hasMany(Sale::class, 'bill_id', 'id')->with(['product' => function($query){ $query->with('brand'); }]);
     }
 }

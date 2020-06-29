@@ -20,7 +20,7 @@ class UserController extends Controller
     { 
     	
     	$validator = Validator::make($request->all(), [ 
-            'email' => 'required|string|email', 
+            'phone' => 'required|numeric', 
             'password' => 'required|string' 
         ]);
 
@@ -29,7 +29,7 @@ class UserController extends Controller
 			$message = $validator->errors()->first();
 		    return response()->json(['statusCode'=>200,'success'=>false,'message'=>$message], 200);            
 		}
-		if(Auth::attempt(['email' => $request->email, 'password' => $request->password]))
+		if(Auth::attempt(['phone' => $request->phone, 'password' => $request->password]))
         { 
             $user = Auth::User(); 
             $tokenData =  $user->createToken('MyShopApp');
