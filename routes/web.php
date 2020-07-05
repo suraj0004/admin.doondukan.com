@@ -39,6 +39,11 @@ Route::group(['middleware' => 'auth:admin','prefix'=>'admin'], function()
 	Route::get('delete/user/{id}','Admin\AdminController@deleteUser')->name('DeleteUser');
 	Route::get('create/user', function() { return view('createUser'); } )->name('CreateUser');
 	Route::get('edit/users/{id}','Admin\AdminController@editUser')->name('EditUser');
+	Route::get('temp/product','Admin\AdminController@TempProduct')->name('TempProduct');
+	Route::get('delete/temp/product/{id}','Admin\AdminController@deleteTempProduct')->name('DeleteTempProduct');
+	
+	
+
 	//post routes
 	Route::post('/store/brand', 'Admin\AdminController@storeBrand')->name('StoreBrand');
 	Route::post('/store/category', 'Admin\AdminController@StoreCategory')->name('StoreCategory');

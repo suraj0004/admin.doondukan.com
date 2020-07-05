@@ -80,6 +80,9 @@ Route::group(['middleware' => 'auth:api','prefix'=>'retail'], function()
 
 	//Set the bill status to paid (POST)
 	Route::post('setStatusPaid', 'Api\BillController@setStatusPaid');
+
+	//Return Sale (POST)
+	Route::post('returnSale', 'Api\SaleController@saleReturn');
 	/*
 	|--------------------------------------------------------------------------
 	| User APIs
@@ -115,7 +118,7 @@ Route::group(['middleware' => 'auth:api','prefix'=>'retail'], function()
 
 		Route::get('sale-vs-profit','ComparisionController@getSaleVsProfit');
 		Route::get('quantity-vs-sale','ComparisionController@getQuantityVsSale');
-	  Route::get('quantity-vs-profit','ComparisionController@getQuantityVsProfit');
+	  	Route::get('quantity-vs-profit','ComparisionController@getQuantityVsProfit');
 		Route::get('all-in-one','ComparisionController@getAll_inOne');
 
 		Route::get('sale-growth','SalesGrowthController');

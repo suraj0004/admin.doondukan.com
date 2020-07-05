@@ -5,9 +5,8 @@
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
-                <div class="card-header">Products ( {{ $data->total() }} )</div>
+                <div class="card-header">Temp Products ( {{ $data->total() }} )</div>
                 <div class="pl-4 pt-4 mr-auto">
-                    <a href="{{ route('CreateProduct') }}" class="btn btn-outline-primary">Add New Product</a>
                     @if(session('status'))
                     <div class="text-{{ session('status') }} mt-2">
                         <strong> {{ session('message') }}</strong>
@@ -20,23 +19,25 @@
                             <tr>
                                 <th>Name</th>
                                 <th>Brand Name</th>
-                                <th>Category Name</th>
                                 <th>Weight</th>
                                 <th>Weight Type</th>
+                                <th>User Name</th>
+                                <th>User Number</th>
                                 <th>Created At</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @forelse ( $data as $product )
+                            @forelse ( $data as $tempProduct )
                             <tr>
-                                <td>{{ $product->name }}</td>
-                                <td>{{ $product->brand->brand_name ?? 'N/A' }}</td>
-                                <td>{{ $product->category->category_name ?? 'N/A' }}</td>
-                                <td>{{ $product->weight }}</td>
-                                <td>{{ $product->weight_type }}</td>
-                                <td>{{ $product->created_at }}</td>
-                                <td><a href="{{ route('DeleteProduct',$product->id) }}" class="text-danger" onclick="return confirm('Are you sure? You want to delete this.')"><strong>Delete</strong></a> / <a href="{{ route('EditProduct',$product->id) }}" class="text-primary"><strong>Edit</strong></a></td>
+                                <td>{{ $tempProduct->name }}</td>
+                                <td>{{ $tempProduct->brand_name ?? 'N/A' }}</td>
+                                <td>{{ $tempProduct->weight }}</td>
+                                <td>{{ $tempProduct->weight_type }}</td>
+                                <td>{{ $tempProduct->user->name }}</td>
+                                <td>{{ $tempProduct->user->phone }}</td>
+                                <td>{{ $tempProduct->created_at }}</td>
+                                <td><a href="{{ route('DeleteTempProduct',$tempProduct->id) }}" class="text-danger" onclick="return confirm('Are you sure? You want to delete this.')"><strong>Delete</strong></a></td>
                             </tr>
                             @empty
                             <tr>
