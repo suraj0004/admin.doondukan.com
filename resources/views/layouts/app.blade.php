@@ -45,6 +45,9 @@
                         <li class="nav-item pl-4">
                             <a href="{{ route('products') }}"> Products </a>
                         </li>
+                        <li class="nav-item pl-4">
+                            <a href="{{ route('TempProduct') }}"> Temp Products </a>
+                        </li>
                         <li class="nav-item pl-4"> 
                             <a href="{{ route('users') }}"> Users </a>
                         </li>
@@ -60,7 +63,7 @@
                             </li>
                         @else
                             <li class="nav-item dropdown">
-                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
+                                <a id="navbarDropdown" class="nav-link dropdown-toggle" href="javascript:void(0)" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }} <span class="caret"></span>
                                 </a>
 

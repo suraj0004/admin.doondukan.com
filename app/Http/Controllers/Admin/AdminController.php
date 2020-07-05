@@ -11,6 +11,7 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\Store;
+use App\Models\TempProduct;
 use Validator;
 use Image;
 
@@ -152,7 +153,7 @@ class AdminController extends Controller
 
     public function editProduct($id)
     {
-        $data = Product::where('id',$id)->with(['brand','category'])->first();
+        $data = Product::where('id',$id)->with(['brand','category'])->firstOrFail();
         $brands = Brand::all();
         $categories = Category::all();
         return view('editProduct',compact('data','brands','categories'));
@@ -324,7 +325,7 @@ class AdminController extends Controller
         $user->name = $request->name;
         $user->phone = $request->phone;
         $user->email= $request->email;
-        $user->image = $profile_img;
+        $user->image = $profile_img ?? $user->image;
         if(!empty($request->password) && $request->password != "**********" ) 
         {
             $user->password = bcrypt($request->password);
@@ -383,6 +384,27 @@ class AdminController extends Controller
     {
         Excel::import(new BrandImport,request()->file('excelfile'));
         return back()->with(['status'=>'success','message'=>'Brands Imported Succefully.']);
+    }
+
+    public function TempProduct()
+    {
+        $data = TempProduct::with('user')->latest()->paginate(50);
+
+        return view('tempProduct',compact('data'));
+    }
+
+    public function deleteTempProduct($id)
+    {
+        $TempProduct = TempProduct::where('id',$id)->firstOrFail();
+
+        if( $TempProduct->delete() ) 
+        {
+            return back()->with(['status'=>'success','message'=>'Temp Product deleted Succefully.']);
+        }
+        else 
+        {
+            return back()->with(['status'=>'danger','message'=>'Oops! Something went wrong.']);
+        }
     }
 }
 

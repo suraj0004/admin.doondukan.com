@@ -80,6 +80,9 @@ Route::group(['middleware' => 'auth:api','prefix'=>'retail'], function()
 
 	//Set the bill status to paid (POST)
 	Route::post('setStatusPaid', 'Api\BillController@setStatusPaid');
+
+	//Return Sale (POST)
+	Route::post('returnSale', 'Api\SaleController@saleReturn');
 	/*
 	|--------------------------------------------------------------------------
 	| User APIs
