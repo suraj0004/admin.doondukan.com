@@ -16,6 +16,8 @@ class CreateTempProductsTable extends Migration
         Schema::create('temp_products', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id');
+            $table->foreignId('brand_id')->nullable();
+            $table->foreignId('category_id')->nullable();
             $table->string('name');
             $table->string('weight');
             $table->enum('weight_type', ['kg', 'gm','L','ml']);
