@@ -18,4 +18,14 @@ class Bill extends Model
     {
     	return $this->hasMany(Sale::class, 'bill_id', 'id')->with(['product' => function($query){ $query->with('brand'); }]);
     }
+
+    public function mainSaleProduct() 
+    {
+    	return $this->hasMany(Sale::class, 'bill_id', 'id')->where('product_source','main')->with('product');
+    }
+
+    public function tempSaleProduct() 
+    {
+    	return $this->hasMany(Sale::class, 'bill_id', 'id')->where('product_source','temp')->with('tempProduct');
+    }
 }

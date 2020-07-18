@@ -107,7 +107,7 @@ class BillController extends Controller
     public function invoice($id)
     {
         $user = Auth::User();
-        $data = Bill::with(['sales'])->where('id',$id)->where('user_id',$user->id)->first();
+        $data = Bill::with(['mainSaleProduct','tempSaleProduct'])->where('id',$id)->where('user_id',$user->id)->first();
         if( $data ) 
         {
             $store = Store::where('user_id',$user->id)->first();
