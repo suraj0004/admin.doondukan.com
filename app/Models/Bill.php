@@ -16,16 +16,16 @@ class Bill extends Model
 
     public function sales()
     {
-    	return $this->hasMany(Sale::class, 'bill_id', 'id')->with(['product' => function($query){ $query->with('brand'); }]);
+    	return $this->hasMany(Sale::class, 'bill_id', 'id')->with('product.brand');
     }
 
     public function mainSaleProduct() 
     {
-    	return $this->hasMany(Sale::class, 'bill_id', 'id')->where('product_source','main')->with('product');
+    	return $this->hasMany(Sale::class, 'bill_id', 'id')->where('product_source','main')->with('product.brand');
     }
 
     public function tempSaleProduct() 
     {
-    	return $this->hasMany(Sale::class, 'bill_id', 'id')->where('product_source','temp')->with('tempProduct');
+    	return $this->hasMany(Sale::class, 'bill_id', 'id')->where('product_source','temp')->with('tempProduct.brand');
     }
 }
