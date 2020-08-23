@@ -29,7 +29,7 @@ Route::group(['middleware' => 'auth:api','prefix'=>'retail'], function()
 	});
 
 	Route::get('dashboard','Api\DashboardController@index');
-	
+
 	/*
 	|--------------------------------------------------------------------------
 	| Purchased APIs
@@ -75,7 +75,7 @@ Route::group(['middleware' => 'auth:api','prefix'=>'retail'], function()
 	//Get User Sale(GET)
 	Route::get('saleList', 'Api\SaleController@saleList');
 
-	//Get customer invoice API(GET) 
+	//Get customer invoice API(GET)
 	Route::get('invoice/{id}', 'Api\BillController@invoice');
 
 	//Set the bill status to paid (POST)
@@ -101,15 +101,26 @@ Route::group(['middleware' => 'auth:api','prefix'=>'retail'], function()
 	Route::post('confirmPassword', 'Api\UserController@confirmPassword');
 
 	Route::get('report/percentage','Api\PercentageController@getPercentageAndMore');
-	
+
 	//Add custom product route(POST)
 	Route::post('add-user-custom-product','Api\CustomProductController@store');
 
 	//Get user temp products list(GET).
 	Route::get('get-user-custom-product-list','Api\CustomProductController@index');
-	
+
+	/**Purchase Return API's */
+	Route::group(['namespace' => "Api"],function(){
+		Route::get('/get-stock-for-purchase-return','PurchaseReturnController@getStock');
+		Route::post('/add-purchase-return','PurchaseReturnController@store');
+		Route::get('/purchase-return-list','PurchaseReturnController@index');
+
+        Route::get('get-sale-for-return/{id}', 'SaleReturnController@show');
+        Route::post('/add-sale-return','SaleReturnController@store');
+        Route::get('/sale-return-list','SaleReturnController@index');
+	});
+
 	Route::group(['prefix'=>'report','namespace'=>'Reports'],function(){
-		
+
 		Route::get('top-highest-selling-products','ProductController@getTopHighestSellingProducts');
 		Route::get('top-lowest-selling-products','ProductController@getTopLowestSellingProducts');
 		Route::get('top-profitable-products','ProductController@getTopProfitableProducts');
