@@ -24,7 +24,7 @@ class Stock extends Model
     {
         return $this->hasOne(Purchase::class,'product_id','product_id')
         ->select('product_id','price','created_at')
-        ->orderByDesc('created_at');
+        ->latest();
     }
 
     public function tempProduct()
