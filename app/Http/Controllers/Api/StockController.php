@@ -60,8 +60,8 @@ class StockController extends Controller
 	public function getstocklist()
 	{
 		$user = Auth::User();
-		$getStocklistproduct = Stock::with('product')->where('product_source','main')->where('user_id',$user->id)->orderBy('created_at','desc')->withCasts(['created_at'=>'datetime:d M, Y h:i a'])->get();
-		$getStocklistproducttemp = Stock::with('tempProduct')->where('product_source','temp')->where('user_id',$user->id)->orderBy('created_at','desc')->withCasts(['created_at'=>'datetime:d M, Y h:i a'])->get();
+		$getStocklistproduct = Stock::with('product')->where('product_source','main')->where('user_id',$user->id)->orderBy('created_at','desc')->get();
+		$getStocklistproducttemp = Stock::with('tempProduct')->where('product_source','temp')->where('user_id',$user->id)->orderBy('created_at','desc')->get();
 		if( count($getStocklistproduct) > 0 || count($getStocklistproducttemp) > 0 ) 
 		{
 			$data['main'] = $getStocklistproduct;
@@ -78,8 +78,8 @@ class StockController extends Controller
 	public function getAvailableGlobalStockList()
 	{
 		$user = Auth::User();
-		$getavailableStocklistproduct = Stock::with('product')->where('product_source','main')->where('user_id',$user->id)->where('quantity','!=',0)->where('price','!=',0)->orderBy('created_at','desc')->withCasts(['created_at'=>'datetime:d M, Y h:i a'])->get();
-		$getavailableStocklistproducttemp = Stock::with('tempProduct')->where('product_source','temp')->where('user_id',$user->id)->where('quantity','!=',0)->where('price','!=',0)->orderBy('created_at','desc')->withCasts(['created_at'=>'datetime:d M, Y h:i a'])->get();
+		$getavailableStocklistproduct = Stock::with('product')->where('product_source','main')->where('user_id',$user->id)->where('quantity','!=',0)->where('price','!=',0)->orderBy('created_at','desc')->get();
+		$getavailableStocklistproducttemp = Stock::with('tempProduct')->where('product_source','temp')->where('user_id',$user->id)->where('quantity','!=',0)->where('price','!=',0)->orderBy('created_at','desc')->get();
 		if( count($getavailableStocklistproduct) > 0 || count($getavailableStocklistproducttemp) > 0 ) 
 		{
 			$data['main'] = $getavailableStocklistproduct;

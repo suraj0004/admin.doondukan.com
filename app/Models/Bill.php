@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Alexmg86\LaravelSubQuery\Traits\LaravelSubQueryTrait;
 use App\Models\Sale;
+use App\Models\SaleReturn;
+
 class Bill extends Model
 {
 	use SoftDeletes;
@@ -19,13 +21,23 @@ class Bill extends Model
     	return $this->hasMany(Sale::class, 'bill_id', 'id')->with('product.brand');
     }
 
-    public function mainSaleProduct() 
+    public function mainSaleProduct()
     {
     	return $this->hasMany(Sale::class, 'bill_id', 'id')->where('product_source','main')->with('product.brand');
     }
 
-    public function tempSaleProduct() 
+    public function tempSaleProduct()
     {
     	return $this->hasMany(Sale::class, 'bill_id', 'id')->where('product_source','temp')->with('tempProduct.brand');
+    }
+
+    public function mainSaleReturnProduct()
+    {
+    	return $this->hasMany(SaleReturn::class, 'bill_id', 'id')->where('product_source','main')->with('product.brand');
+    }
+
+    public function tempSaleReturnProduct()
+    {
+    	return $this->hasMany(SaleReturn::class, 'bill_id', 'id')->where('product_source','temp')->with('tempProduct.brand');
     }
 }
