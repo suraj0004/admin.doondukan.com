@@ -41,9 +41,9 @@ Route::group(['middleware' => 'auth:admin','prefix'=>'admin'], function()
 	Route::get('edit/users/{id}','Admin\AdminController@editUser')->name('EditUser');
 	Route::get('temp/product','Admin\AdminController@TempProduct')->name('TempProduct');
 	Route::get('delete/temp/product/{id}','Admin\AdminController@deleteTempProduct')->name('DeleteTempProduct');
+	Route::get('add-tempproduct-to-mainproduct/{id}','Admin\AdminController@addTempProductToProduct')->name('AddTempProductToProduct');
+	Route::get('search-product','Admin\AdminController@searchProduct')->name('SearchProduct');
 	
-	
-
 	//post routes
 	Route::post('/store/brand', 'Admin\AdminController@storeBrand')->name('StoreBrand');
 	Route::post('/store/category', 'Admin\AdminController@StoreCategory')->name('StoreCategory');
@@ -54,4 +54,5 @@ Route::group(['middleware' => 'auth:admin','prefix'=>'admin'], function()
 	Route::post('/store/user', 'Admin\AdminController@storeUser')->name('StoreUser');
 	Route::post('update/user/{id}','Admin\AdminController@updateUser')->name('UpdateUser');
 	Route::post('brand/import-excel','Admin\AdminController@importBrands')->name('import-excel');
+	Route::post('/store/product/{id}', 'Admin\AdminController@storeTempProductToMainProduct')->name('StoreTempProductToMainProduct');
 });

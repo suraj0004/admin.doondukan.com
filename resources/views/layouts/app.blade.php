@@ -46,7 +46,7 @@
                             <a href="{{ route('products') }}"> Products </a>
                         </li>
                         <li class="nav-item pl-4">
-                            <a href="{{ route('TempProduct') }}"> Temp Products </a>
+                            <a href="{{ route('TempProduct') }}"> Temp Products  @php if( $tempProductCount ) { echo '('.$tempProductCount.')'; } @endphp</a>
                         </li>
                         <li class="nav-item pl-4"> 
                             <a href="{{ route('users') }}"> Users </a>

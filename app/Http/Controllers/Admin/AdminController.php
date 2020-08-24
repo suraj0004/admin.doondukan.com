@@ -11,6 +11,9 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\Store;
+use App\Models\Purchase;
+use App\Models\Stock;
+use App\Models\Sale;
 use App\Models\TempProduct;
 use Validator;
 use Image;
@@ -37,7 +40,7 @@ class AdminController extends Controller
 
     	return view('product',compact('data'));
     }
-    
+
     public function createProduct()
     {
         $brands = Brand::all();
@@ -404,6 +407,73 @@ class AdminController extends Controller
         else 
         {
             return back()->with(['status'=>'danger','message'=>'Oops! Something went wrong.']);
+        }
+    }
+
+    public function addTempProductToProduct($id) {
+        $data = TempProduct::with(['brand','category'])->where('id',$id)->first();
+        $brands = Brand::all();
+        $categories = Category::all();
+        return view('addTempProductToProduct',compact('data','brands','categories'));
+    }
+
+    public function searchProduct(Request $request)
+    {
+        $data = Product::select('id','name')->where("name","LIKE",$request->name."%")->get();
+        if(count($data) >= 1 ) {
+            return response()->json(['statusCode'=>200,'success'=>true,'data'=>$data], 200);
+        } else {
+            return response()->json(['statusCode'=>200,'success'=>false,], 200);
+        }   
+    }
+
+    public function storeTempProductToMainProduct($id,Request $request)
+    {
+        $checkTemp = TempProduct::where('id',$id)->first();
+        if($checkTemp) {
+            if(!empty($request->tempMainProductId)) {
+                $product = Product::where('id',$request->tempMainProductId)->first();
+                if($product) {
+                    $setProductId = Purchase::where('product_id',$id)->update(
+                        ['product_id'=>$product->id,'product_source'=>'main']
+                    );
+                    $setProductId = Sale::where('product_id',$id)->update(
+                        ['product_id'=>$product->id,'product_source'=>'main']
+                    );
+                    $setProductId = Stock::where('product_id',$id)->update(
+                        ['product_id'=>$product->id,'product_source'=>'main']
+                    );
+                    $checkTemp->delete();
+                    return redirect()->route('TempProduct')->with(['status'=>'success','message'=>'Product Added Succefully.']);
+                } else {
+                    return back()->with(['status'=>'danger','message'=>'Product Not Found.']);
+                }
+            } else {
+                $product = new Product();
+                $product->name = $request->name;
+                $product->brand_id = $request->brand;
+                $product->category_id = $request->category;
+                $product->weight = $request->weight;
+                $product->weight_type = $request->weight_type;
+                
+                if( $product->save() ) {
+                    $setProductId = Purchase::where('product_id',$id)->update(
+                        ['product_id'=>$product->id,'product_source'=>'main']
+                    );
+                    $setProductId = Sale::where('product_id',$id)->update(
+                        ['product_id'=>$product->id,'product_source'=>'main']
+                    );
+                    $setProductId = Stock::where('product_id',$id)->update(
+                        ['product_id'=>$product->id,'product_source'=>'main']
+                    );
+                    $checkTemp->delete();
+                    return redirect()->route('TempProduct');
+                } else {
+                    return back()->with(['status'=>'danger','message'=>'Oops! Something went wrong.']); 
+                }
+            }
+        } else {
+            return back()->with(['status'=>'danger','message'=>'Temp Product Not Found.']);
         }
     }
 }
