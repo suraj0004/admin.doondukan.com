@@ -37,7 +37,8 @@
                                 <td>{{ $tempProduct->user->name }}</td>
                                 <td>{{ $tempProduct->user->phone }}</td>
                                 <td>{{ $tempProduct->created_at }}</td>
-                                <td><a href="{{ route('DeleteTempProduct',$tempProduct->id) }}" class="text-danger" onclick="return confirm('Are you sure? You want to delete this.')"><strong>Delete</strong></a></td>
+                                <td> <a href="{{ route('AddTempProductToProduct',$tempProduct->id) }}" class="text-success"><strong>Add To Product</strong></a> | <a href="{{ route('DeleteTempProduct',$tempProduct->id) }}" class="text-danger" onclick="return confirm('Are you sure? You want to delete this.')"><strong>Delete</strong></a>
+                                </td>
                             </tr>
                             @empty
                             <tr>
