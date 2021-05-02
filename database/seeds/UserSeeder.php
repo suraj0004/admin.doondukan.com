@@ -15,7 +15,7 @@ class UserSeeder extends Seeder
     {
          DB::table('users')->insert([
             'name' => 'shop keeper',
-            'email' => 'shop@disc-in.com',
+            'email' => 'shop@doondukan.com',
             'phone' => 9876543210,
             'password' => Hash::make('123456'),
             'role' => 'user',
@@ -24,7 +24,7 @@ class UserSeeder extends Seeder
 
         DB::table('admins')->insert([
             'name' => 'Admin',
-            'email' => 'admin@disc-in.com',
+            'email' => 'admin@doondukan.com',
             'password' => Hash::make('admin'),
             'created_at' => Carbon::create(2019,1,1),
             'updated_at' => Carbon::create(2019,1,1)
