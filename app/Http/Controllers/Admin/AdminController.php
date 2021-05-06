@@ -467,7 +467,7 @@ class AdminController extends Controller
                         ['product_id'=>$product->id,'product_source'=>'main']
                     );
                     $checkTemp->delete();
-                    return redirect()->route('TempProduct');
+                    return redirect()->route('TempProduct')->with(['status'=>'success','message'=>'Product Added Succefully.']);
                 } else {
                     return back()->with(['status'=>'danger','message'=>'Oops! Something went wrong.']); 
                 }
