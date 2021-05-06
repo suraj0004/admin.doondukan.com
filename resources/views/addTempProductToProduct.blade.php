@@ -121,7 +121,7 @@
             success: function (data) {
                if(data.success==false) {
                     $("#searchresult").html('<a href="javascript:void(0)" class="d-block p-1">Not Product Found.</a>');
-               } else {
+                } else {
                     var i;
                     $("#searchresult").html('');
                     for (i = 0; i < data.data.length; i++) {
