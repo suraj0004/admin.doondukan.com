@@ -13,3 +13,4 @@
 12. php artisan passport:install
 13. php artisan db:seed {this will register a user with Mobile: 9876543210 and password '123456', a Admin with email: admin@doondukan.com and password 'admin', fill Brands table with 10 entry, categories table with 5 entry and  products table with 100 entry }
 14. At last push your branch created at step 5 to the server: git push origin 'your-branch-name'
+----testing auto deploy
