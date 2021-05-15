@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Store;
 use App\Models\Stock;
 use DB;
+use App\Http\Resources\Ecommerce\CategoryCollection;
 
 class ShopController extends Controller
 {
@@ -28,7 +29,10 @@ class ShopController extends Controller
         if ($data->isEmpty()) {
             return response()->json(['statusCode' => 200, 'success' => false, 'message' => "No data found."], 200);
         }
-        return response()->json(['statusCode' => 200, 'success' => true, 'message' => "Categories Data", "data" => $data], 200);
+
+        return (new CategoryCollection($data))->additional([
+            "message" => "Categories Data",
+        ]);
     }
 
     public function getCategoryProducts(Request $request)
