@@ -52,7 +52,6 @@ class UserController extends Controller
             'email' => 'required|email|unique:users',
             'phone'=>'required|numeric',
             'password' => 'required',
-            'role' => 'required|in:SHOPKEEPER,USER',
             'c_password' => 'required|same:password',
         ]);
 
@@ -65,8 +64,8 @@ class UserController extends Controller
         $user = new User();
         $user->name = $request->name;
         $user->phone = $request->phone;
-        $user->email= $request->email;
-        $user->role= $request->role;
+        $user->email = $request->email;
+        $user->role = 'SHOPKEEPER';
         $user->password = bcrypt($request->password);
         $user->save();
         $tokenData =  $user->createToken('MyShopApp');
