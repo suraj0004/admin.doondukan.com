@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Models\User;
@@ -16,68 +17,69 @@ use Image;
 class UserController extends Controller
 {
     //API Login
-    public function login(Request $request) 
-    { 
-    	
-    	$validator = Validator::make($request->all(), [ 
-            'phone' => 'required|numeric', 
-            'password' => 'required|string' 
+    public function login(Request $request)
+    {
+
+    	$validator = Validator::make($request->all(), [
+            'phone' => 'required|numeric',
+            'password' => 'required|string'
         ]);
 
         if ($validator->fails())
-		{ 
+		{
 			$message = $validator->errors()->first();
-		    return response()->json(['statusCode'=>200,'success'=>false,'message'=>$message], 200);            
+		    return response()->json(['statusCode'=>200,'success'=>false,'message'=>$message], 200);
 		}
 		if(Auth::attempt(['phone' => $request->phone, 'password' => $request->password]))
-        { 
-            $user = Auth::User(); 
+        {
+            $user = Auth::User();
             $tokenData =  $user->createToken('MyShopApp');
             $token = $tokenData->token;
-            $user->accessToken = $tokenData->accessToken; 
-            return response()->json(['statusCode'=>200,'success'=>true,'message'=>'User Login','data' => $user],200); 
-        } 
+            $user->accessToken = $tokenData->accessToken;
+            return response()->json(['statusCode'=>200,'success'=>true,'message'=>'User Login','data' => $user],200);
+        }
         else
-        { 
-            return response()->json(['statusCode'=>200,'success'=>false,'message'=>'authentication failed.'], 200); 
-        } 
+        {
+            return response()->json(['statusCode'=>200,'success'=>false,'message'=>'authentication failed.'], 200);
+        }
     }
 
     //Function for user registeration
-   	public function register(Request $request) 
-	{ 
-        $validator = Validator::make($request->all(), [ 
-            'name' => 'required', 
+   	public function register(Request $request)
+	{
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
             'email' => 'required|email|unique:users',
-            'phone'=>'required|numeric', 
-            'password' => 'required', 
-            'c_password' => 'required|same:password', 
+            'phone'=>'required|numeric',
+            'password' => 'required',
+            'c_password' => 'required|same:password',
         ]);
 
 		if ($validator->fails())
-		{ 
+		{
 			$message = $validator->errors()->first();
-		    return response()->json(['statusCode'=>200,'success'=>false,'message'=>$message], 200);            
+		    return response()->json(['statusCode'=>200,'success'=>false,'message'=>$message], 200);
 		}
 
         $user = new User();
         $user->name = $request->name;
         $user->phone = $request->phone;
-        $user->email= $request->email;
+        $user->email = $request->email;
+        $user->role = 'SHOPKEEPER';
         $user->password = bcrypt($request->password);
-        $user->save(); 
-        $tokenData =  $user->createToken('MyShopApp'); 
+        $user->save();
+        $tokenData =  $user->createToken('MyShopApp');
         $user->accessToken = $tokenData->accessToken;
-		return response()->json(['statusCode'=>200,'success'=>true,'message'=>'User Successfully Registered','data'=>$user], 200); 
+		return response()->json(['statusCode'=>200,'success'=>true,'message'=>'User Successfully Registered','data'=>$user], 200);
 	}
 
     //User Logout
     public function logout()
     {
         $user = Auth::user()->token();
-        if( $user->revoke() ) 
+        if( $user->revoke() )
         {
-            return response()->json(['statusCode'=>200,'success'=>true,'message'=>'User Successfully Logout'], 200); 
+            return response()->json(['statusCode'=>200,'success'=>true,'message'=>'User Successfully Logout'], 200);
         }
     }
 
@@ -85,39 +87,40 @@ class UserController extends Controller
     public function updateShopProfile(Request $request)
     {
         $user = Auth::User();
-        $validator = Validator::make($request->all(), [ 
-            'name' => 'required', 
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
             'email' => 'nullable|email|unique:stores,email,'.$user->id,
-            'mobile'=> 'nullable|numeric', 
-            'logo'=> 'image|max:2048' 
+            'mobile'=> 'nullable|numeric',
+            'logo'=> 'image|max:2048'
         ]);
 
         if ($validator->fails())
-        { 
+        {
             $message = $validator->errors()->first();
-            return response()->json(['statusCode'=>200,'success'=>false,'message'=>$message], 200);            
+            return response()->json(['statusCode'=>200,'success'=>false,'message'=>$message], 200);
         }
 
-        if($request->hasFile('logo') ) 
+        if($request->hasFile('logo') )
         {
-            //Save full size image 
+            //Save full size image
             $image = $request->file('logo');
             $name = time().'.'.$image->getClientOriginalExtension();
             $destinationPath = public_path('/shopimages/'.$user->id."/");
             $image->move($destinationPath, $name);
-            
+
             //Thumbnail
             $image_resize = Image::make(public_path().'/shopimages/'.$user->id."/".$name);
             $image_resize->fit(300, 300);
             $image_resize->save(public_path('shopimages/' .$user->id.'/thumb_'.$name));
         }
         $store = Store::where('user_id',$user->id)->first();
-        if(!$store) 
+        if(!$store)
         {
             $store = new Store();
         }
         $store->user_id = $user->id;
         $store->name = $request->name;
+        $store->slug =  Str::slug($request->name);
         $store->mobile = $request->mobile;
         $store->email = $request->email;
         $store->logo = $name ?? null;
@@ -125,11 +128,11 @@ class UserController extends Controller
         $store->about = $request->about;
         $store->registration_date = $request->registration_date;
 
-        if ( $store->save() ) 
+        if ( $store->save() )
         {
-            return response()->json(['statusCode'=>200,'success'=>true,'message'=>'User Shop Profile updated'],200); 
+            return response()->json(['statusCode'=>200,'success'=>true,'message'=>'User Shop Profile updated'],200);
         }
-        else 
+        else
         {
             return response()->json(['statusCode'=>200,'success'=>false,'message'=>'Oops! Something went wrong.Please try again later.'],200);
         }
@@ -139,24 +142,24 @@ class UserController extends Controller
     public function updateProfile(Request $request)
     {
         $user = Auth::User();
-        $validator = Validator::make($request->all(), [ 
-            'name' => 'required', 
+        $validator = Validator::make($request->all(), [
+            'name' => 'required',
             'email' => 'required|email|unique:users,email,'.$user->id,
-            'phone'=> 'required|numeric', 
-            'password' => 'nullable', 
+            'phone'=> 'required|numeric',
+            'password' => 'nullable',
             'c_password' => 'nullable|same:password',
-            'image'=> 'image|max:2048' 
+            'image'=> 'image|max:2048'
         ]);
 
         if ($validator->fails())
-        { 
+        {
             $message = $validator->errors()->first();
-            return response()->json(['statusCode'=>401,'success'=>false,'message'=>$message], 401);            
+            return response()->json(['statusCode'=>401,'success'=>false,'message'=>$message], 401);
         }
 
-        if($request->hasFile('image') ) 
+        if($request->hasFile('image') )
         {
-            //Save full size image 
+            //Save full size image
             $image = $request->file('image');
             $name = time().'.'.$image->getClientOriginalExtension();
             $destinationPath = public_path('/profileimages/'.$user->id."/");
@@ -173,18 +176,18 @@ class UserController extends Controller
         $user->phone = $request->phone;
         $user->email = $request->email;
         $user->image = $name ?? null;
-        if( !empty($request->password) ) 
+        if( !empty($request->password) )
         {
             $user->password = bcrypt($request->password);
             // $user->token()->revoke();
             // $token = $user->createToken('MyShopApp')->accessToken;
         }
 
-        if ( $user->save() ) 
+        if ( $user->save() )
         {
-            return response()->json(['statusCode'=>200,'success'=>true,'message'=>'User Profile updated'],200); 
+            return response()->json(['statusCode'=>200,'success'=>true,'message'=>'User Profile updated'],200);
         }
-        else 
+        else
         {
             return response()->json(['statusCode'=>200,'success'=>false,'message'=>'Oops! Something went wrong.Please try again later.'],200);
         }
@@ -195,11 +198,11 @@ class UserController extends Controller
     {
         $user = Auth::User();
         $data = User::with('store')->withCount(['stocks','availableStocks'])->where('id',$user->id)->first();
-        if( $data ) 
+        if( $data )
         {
             return response()->json(['statusCode'=>200,'success'=>true,'message'=>'User Profile','data'=>$data],200);
         }
-        else 
+        else
         {
             return response()->json(['statusCode'=>200,'success'=>false,'message'=>'User not found.'],200);
         }
@@ -209,21 +212,21 @@ class UserController extends Controller
     public function confirmPassword(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'password' => 'required', 
+            'password' => 'required',
         ]);
 
         if ($validator->fails())
-        { 
+        {
             $message = $validator->errors()->first();
-            return response()->json(['statusCode'=>200,'success'=>false,'message'=>$message], 200);            
+            return response()->json(['statusCode'=>200,'success'=>false,'message'=>$message], 200);
         }
 
         $user = Auth::User();
-        if( Hash::check($request->password,$user->password) ) 
+        if( Hash::check($request->password,$user->password) )
         {
             return response()->json(['statusCode'=>200,'success'=>true,'message'=>'password match'],200);
         }
-        else 
+        else
         {
             return response()->json(['statusCode'=>200,'success'=>false,'message'=>'password did not match'],200);
         }

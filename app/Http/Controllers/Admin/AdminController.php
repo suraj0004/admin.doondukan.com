@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Imports\BrandImport;
 use App\Models\Brand;
@@ -68,9 +69,24 @@ class AdminController extends Controller
     {
     	$category = new Category();
     	$category->category_name = $request->name;
-
+        $category->slug = Str::slug($request->name);
     	if( $category->save() ) 
     	{
+            if($request->hasFile('image')) 
+            {
+                //Save full size image 
+                $image = $request->file('image');
+                $profile_img = time().'.'.$image->getClientOriginalExtension();
+                $destinationPath = public_path('/categoriesimages');
+                $image->move($destinationPath, $profile_img);
+    
+                //Thumbnail
+                $image_resize = Image::make(public_path().'/categoriesimages/'.$profile_img);
+                $image_resize->fit(300, 300);
+                $image_resize->save(public_path('categoriesimages/thumb_'.$profile_img));
+                $user->image = $profile_img;
+                $category->save();
+            }
     		return back()->with(['status'=>'success','message'=>'Category Added Succefully.']);
     	}
     	else 
@@ -83,6 +99,7 @@ class AdminController extends Controller
     {
         $product = new Product();
         $product->name = $request->name;
+        $product->slug = Str::slug($request->name);
         $product->brand_id = $request->brand;
         $product->category_id = $request->category;
         $product->weight = $request->weight;
@@ -183,7 +200,7 @@ class AdminController extends Controller
         $data = Category::where('id',$id)->first();
 
         $data->category_name = $request->name;
-
+        $data->slug = Str::slug($request->name);
         if( $data->save() ) 
         {
             return back()->with(['status'=>'success','message'=>'Category Updated Succefully.']);
@@ -198,6 +215,7 @@ class AdminController extends Controller
     {
         $product = Product::where('id',$id)->first();
         $product->name = $request->name;
+        $data->slug = Str::slug($request->name);
         $product->brand_id = $request->brand;
         $product->category_id = $request->category;
         $product->weight = $request->weight;
@@ -467,7 +485,7 @@ class AdminController extends Controller
                         ['product_id'=>$product->id,'product_source'=>'main']
                     );
                     $checkTemp->delete();
-                    return redirect()->route('TempProduct');
+                    return redirect()->route('TempProduct')->with(['status'=>'success','message'=>'Product Added Succefully.']);
                 } else {
                     return back()->with(['status'=>'danger','message'=>'Oops! Something went wrong.']); 
                 }
