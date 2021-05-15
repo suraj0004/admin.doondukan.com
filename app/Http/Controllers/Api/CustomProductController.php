@@ -26,12 +26,12 @@ class CustomProductController extends Controller
                 "success" => true,
                 "data" => $customProductList
             ],200);
-            
+
         return response()->json([
             "success" => false,
             "message" => "You have not added any custom product"
             ],200);
-        
+
     }
 
     /**
@@ -51,7 +51,7 @@ class CustomProductController extends Controller
                 "success" => true,
                 "message" =>"Your custom product have been added successfully ",
                 "data" => $product
-            ],200); 
+            ],200);
         }
         return response()->json([
             "success" => false,
@@ -77,9 +77,21 @@ class CustomProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(AddCustomProductFormRequest $request, $product_id)
     {
-        //
+        $service = new CustomProductService();
+        $product = $service->updateUserCustomProduct($product_id,$request->product,(int)$request->weight,$request->weight_type);
+        if($product){
+            return response()->json([
+                "success" => true,
+                "message" =>"Your custom product have been updated successfully ",
+                "data" => $product
+            ],200);
+        }
+        return response()->json([
+            "success" => false,
+            "message" => "Sorry! Please try again or contact to Adminstrator"
+        ],200);
     }
 
     /**

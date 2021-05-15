@@ -104,6 +104,7 @@ Route::group(['middleware' => 'auth:api','prefix'=>'retail'], function()
 
 	//Add custom product route(POST)
 	Route::post('add-user-custom-product','Api\CustomProductController@store');
+    Route::post('edit-user-custom-product/{product_id}','Api\CustomProductController@update');
 
 	//Get user temp products list(GET).
 	Route::get('get-user-custom-product-list','Api\CustomProductController@index');
