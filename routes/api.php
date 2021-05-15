@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 */
 Route::post('login', 'Api\UserController@login');
 Route::post('register', 'Api\UserController@register');
-Route::group(['middleware' => 'auth:api','prefix'=>'retail'], function()
+Route::group(['middleware' => ['auth:api','shoopkeeper'],'prefix'=>'retail'], function()
 {
 	//User Log out API(POST)
 	Route::post('logout', 'Api\UserController@logout');
@@ -136,4 +136,10 @@ Route::group(['middleware' => 'auth:api','prefix'=>'retail'], function()
 		Route::get('profit-growth','ProfitGrowthController');
 		Route::get('purchase-growth','PurchaseGrowthController');
 	});
+});
+
+//Shop api
+Route::group(['namespace'=>'Api'],function(){
+	Route::get('/{id}-{slug}','ShopController@index');
+	Route::get('/{id}-{slug}/{categorySlug}','ShopController@getCategoryProducts');
 });
