@@ -19,7 +19,8 @@ class CategoryResource extends JsonResource
             "slug" => $this->slug,
             "name" => $this->category_name,
             "product_count" => $this->product_count,
-            "image" => "http://localhost/shopinventorymanagement/public/shopimages/1/1621076747.jpg" // for testing purpose
+            "image" => getFileUrl(config("constants.disks.CATEGORY"), $this->image),
+            "thumbnail" => getFileUrl(config("constants.disks.CATEGORY"), "thumb_".$this->image)
         ];
     }
 

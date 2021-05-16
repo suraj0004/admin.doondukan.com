@@ -30,3 +30,12 @@ function createThumbnail($disk, $image_name, $delete_file = null)
         Storage::disk($disk)->delete("thumb_".$delete_file);
     }
 }
+
+function getFileUrl($disk, $file, $default_file_path = null)
+{
+    $fileUrl = asset($default_file_path ?? config("constants.DEFAULT_IMAGE_PATH"));
+    if (Storage::disk($disk)->exists($file)) {
+        $fileUrl = Storage::disk($disk)->url($file);
+    }
+    return ($fileUrl);
+}
