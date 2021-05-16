@@ -19,10 +19,11 @@ class ShopController extends Controller
         if (!$getUserId) {
             return response()->json(['statusCode' => 200, 'success' => false, 'message' => "Shop not found."], 200);
         }
-        $data = Category::select('categories.id as category_id', 'categories.category_name', 'categories.slug', 'image', DB::raw('COUNT(products.id) as product_count'))
+        $data = Category::select('categories.id as category_id', 'categories.category_name', 'categories.slug', 'image', DB::raw('COUNT(stocks.id) as product_count'))
             ->leftJoin('products', 'products.category_id', '=', 'categories.id')
             ->leftJoin('stocks', function ($join) use ($getUserId) {
                 $join->on('stocks.product_id', '=', 'products.id')
+                    ->on('stocks.price', '>', DB::raw("0"))
                     ->on('stocks.user_id', '=', DB::raw($getUserId->user_id));
             })
             ->groupBy('categories.id')
@@ -47,6 +48,7 @@ class ShopController extends Controller
                 ->join('products', 'products.category_id', '=', 'categories.id')
                 ->join('stocks', 'stocks.product_id', '=', 'products.id')
                 ->where('stocks.user_id',$getUserId->user_id)
+                ->where('stocks.price','>',0)
                 ->where('categories.slug',$request->categorySlug)
                 ->get();
 
