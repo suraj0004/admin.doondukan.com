@@ -140,7 +140,7 @@ Route::group(['middleware' => ['auth:api','shoopkeeper'],'prefix'=>'retail'], fu
 });
 
 //Shop api
-Route::group(['namespace'=>'Api'],function(){
+Route::group(['namespace'=>'Api\Ecommerce','prefix' => 'ecommerce'],function(){
 	Route::get('/{id}-{slug}','ShopController@index');
 	Route::get('/{id}-{slug}/{categorySlug}','ShopController@getCategoryProducts');
 });
