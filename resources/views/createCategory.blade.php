@@ -15,14 +15,23 @@
                     @endif
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('StoreCategory') }}" method="POST">
+                    <form action="{{ route('StoreCategory') }}" method="POST" enctype="multipart/form-data">
                         @csrf
-                        <div class="row">
+                        <div class="row form-group">
                             <div class="col-md-4">
                                 <label for="cat-name">Category Name</label>
                             </div>
                             <div class="col-md-4">
-                                <input type="text" name="name" id="cat-name" class="form-control" required>  
+                                <input type="text" name="name" id="cat-name" class="form-control" required>
+                            </div>
+                        </div>
+
+                        <div class="row form-group">
+                            <div class="col-md-4">
+                                <label for="category_image">Category Image</label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="file" id="category_image" name="image" class="form-control" style="padding-bottom: 35px;" required>
                             </div>
                         </div>
                         <div class="text-center pt-3">
