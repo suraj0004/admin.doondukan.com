@@ -72,7 +72,7 @@ class AdminController extends Controller
         $category->slug = Str::slug($request->name);
 
         if($request->hasFile('image')){
-            $category->image = saveImage(config("constants.disks.CATEGORY"), $category->slug, $request->file('image'), true);
+            $category->image = saveFile(config("constants.disks.CATEGORY"), $category->slug, $request->file('image'), true);
         }
 
     	if( $category->save() )
