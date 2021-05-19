@@ -43,6 +43,6 @@ class IsProductAvailable implements Rule
      */
     public function message()
     {
-        return 'Product invalid';
+        return 'Product invalid or Quantity is less';
     }
 }

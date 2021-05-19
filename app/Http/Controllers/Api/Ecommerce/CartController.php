@@ -16,10 +16,20 @@ class CartController extends Controller
 
     public function add(AddCartRequest $req)
     {
+
         try {
-            $buyer  = Auth::User();
-            $seller = User::where('id',$req->seller_id)->with('store')->first();
-            $stock  = Stock::where('product_id',$req->product_id)->first();
+            $buyer  = Auth::User(); //logged in user->customer(buyer)
+            $seller = User::where('id',$req->seller_id)->with('store')->first(); //seller with his store_id
+            $stock  = Stock::where('product_id',$req->product_id)->first(); //product present in stock
+
+            $productExists = Cart::where('product_id',$stock->product_id)->where('buyer_id',$buyer->id)->exists();
+            if($productExists){
+                return response()->json([
+                    'success'=>true,
+                    'message'=>'product already present in your cart.'
+                ]);
+            }
+
             $cart   = new Cart();
             $cart->buyer_id = $buyer->id;
             $cart->seller_id = $seller->id;
@@ -27,6 +37,7 @@ class CartController extends Controller
             $cart->product_id = $stock->product_id;
             $cart->quantity = $req->quantity;
             $cart->price = $stock->price;
+
             $data = $cart->save();
             return response()->json([
                     'statusCode'=>200,
