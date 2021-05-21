@@ -141,6 +141,13 @@ Route::group(['middleware' => ['auth:api','shoopkeeper'],'prefix'=>'retail'], fu
 
 //Shop api
 Route::group(['namespace'=>'Api\Ecommerce','prefix' => 'ecommerce'],function(){
+    Route::post('login', 'UserController@login');
+    Route::post('register', 'UserController@register');
 	Route::get('/{id}-{slug}','ShopController@index');
 	Route::get('/{id}-{slug}/{categorySlug}','ShopController@getCategoryProducts');
+
+    Route::group(['middleware' => ['auth:api','user']], function()
+    {
+        Route::post('logout', 'UserController@logout');
+    });
 });

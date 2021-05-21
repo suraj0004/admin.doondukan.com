@@ -15,14 +15,14 @@
                     @endif
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('UpdateProduct',$data->id ) }}" method="POST">
+                    <form action="{{ route('UpdateProduct',$data->id ) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="row form-group">
                             <div class="col-md-4">
                                 <label for="productname">Product Name</label>
                             </div>
                             <div class="col-md-4">
-                                <input type="text" name="name" id="productname" class="form-control" value="{{ $data->name}}" required>  
+                                <input type="text" name="name" id="productname" class="form-control" value="{{ $data->name}}" required>
                             </div>
                         </div>
                         <div class="row form-group">
@@ -35,7 +35,7 @@
                                     @foreach($brands as $brand)
                                     <option value="{{ $brand->id }}"  @if($data->brand->id==$brand->id ) selected @endif>{{ $brand->brand_name}}</option>
                                     @endforeach
-                                </select> 
+                                </select>
                             </div>
                         </div>
                         <div class="row form-group">
@@ -48,7 +48,7 @@
                                     @foreach($categories as $category)
                                     <option value="{{ $category->id }}" @if($data->category->id==$category->id ) selected @endif >{{ $category->category_name }}</option>
                                     @endforeach
-                                </select>  
+                                </select>
                             </div>
                         </div>
                         <div class="row form-group">
@@ -56,10 +56,10 @@
                                 <label for="weight">Weight</label>
                             </div>
                             <div class="col-md-4">
-                                <input type="text" name="weight" id="weight" class="form-control" value="{{ $data->weight }}" required>  
+                                <input type="text" name="weight" id="weight" class="form-control" value="{{ $data->weight }}" required>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row form-group">
                             <div class="col-md-4">
                                 <label for="weight_type">Weight Type</label>
                             </div>
@@ -69,9 +69,22 @@
                                     <option value="gm" @if($data->weight_type=="gm" ) selected @endif >Gm</option>
                                     <option value="l"  @if($data->weight_type=="l" ) selected @endif >L</option>
                                     <option value="ml" @if($data->weight_type=="ml" ) selected @endif>Ml</option>
-                                </select> 
+                                </select>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label for="weight_type">Product Image</label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="file" name="image" accept="image/png, image/gif, image/jpeg">
+                            </div>
+                        </div>
+                        @if(!empty( $data->image) )
+                        <div class="col-md-4">
+                            <img src="{{ asset('storage') }}/products/thumb_{{ $data->image }}" style="width: 18%; height: 80%;">
+                        </div>
+                        @endif
                         <div class="text-center pt-3">
                             <button type="submit" class="btn btn-info">Save</button>
                         </div>

@@ -11,7 +11,7 @@ function saveFile($disk, $file_prefix = "", $file, $thumbnail = false, $delete_f
 
     Storage::disk($disk)->putFileAs(null, $file, $file_name);
     if($thumbnail){
-        createThumbnail($disk,$file_name);
+        createThumbnail($disk,$file_name,$delete_file);
     }
 
     if (!empty($delete_file)) {

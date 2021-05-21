@@ -50,7 +50,7 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'email' => 'required|email|unique:users',
-            'phone'=>'required|numeric',
+            'phone'=>'required|numeric|unique:users',
             'password' => 'required',
             'c_password' => 'required|same:password',
         ]);
@@ -76,7 +76,7 @@ class UserController extends Controller
     //User Logout
     public function logout()
     {
-        $user = Auth::user()->token();
+        $user = Auth::User()->token();
         if( $user->revoke() )
         {
             return response()->json(['statusCode'=>200,'success'=>true,'message'=>'User Successfully Logout'], 200);
