@@ -149,5 +149,8 @@ Route::group(['namespace'=>'Api\Ecommerce','prefix' => 'ecommerce'],function(){
     Route::group(['middleware' => ['auth:api','user']], function()
     {
         Route::post('logout', 'UserController@logout');
+        Route::Post('/cart/add','CartController@add');
     });
 });
+
+
