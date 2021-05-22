@@ -15,14 +15,14 @@
                     @endif
                 </div>
                 <div class="card-body">
-                    <form action="{{ route('StoreProduct') }}" method="POST">
+                    <form action="{{ route('StoreProduct') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="row form-group">
                             <div class="col-md-4">
                                 <label for="productname">Product Name</label>
                             </div>
                             <div class="col-md-4">
-                                <input type="text" name="name" id="productname" class="form-control" required>  
+                                <input type="text" name="name" id="productname" class="form-control" required>
                             </div>
                         </div>
                         <div class="row form-group">
@@ -35,7 +35,7 @@
                                     @foreach($brands as $brand)
                                     <option value="{{ $brand->id }}">{{ $brand->brand_name}}</option>
                                     @endforeach
-                                </select> 
+                                </select>
                             </div>
                         </div>
                         <div class="row form-group">
@@ -48,7 +48,7 @@
                                     @foreach($categories as $category)
                                     <option value="{{ $category->id }}">{{ $category->category_name }}</option>
                                     @endforeach
-                                </select>  
+                                </select>
                             </div>
                         </div>
                         <div class="row form-group">
@@ -56,10 +56,10 @@
                                 <label for="weight">Weight</label>
                             </div>
                             <div class="col-md-4">
-                                <input type="text" name="weight" id="weight" class="form-control" required>  
+                                <input type="text" name="weight" id="weight" class="form-control" required>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row form-group">
                             <div class="col-md-4">
                                 <label for="weight_type">Weight Type</label>
                             </div>
@@ -69,7 +69,15 @@
                                     <option value="gm">Gm</option>
                                     <option value="l">L</option>
                                     <option value="ml">Ml</option>
-                                </select> 
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-4">
+                                <label for="weight_type">Product Image</label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="file" name="image" accept="image/png, image/gif, image/jpeg">
                             </div>
                         </div>
                         <div class="text-center pt-3">

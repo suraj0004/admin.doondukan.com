@@ -94,7 +94,9 @@ class AdminController extends Controller
         $product->category_id = $request->category;
         $product->weight = $request->weight;
         $product->weight_type = $request->weight_type;
-
+        if($request->hasFile('image')){
+            $product->image = saveFile(config("constants.disks.PRODUCT"), $product->slug, $request->file('image'), true);
+        }
         if( $product->save() )
         {
             return back()->with(['status'=>'success','message'=>'Product Added Succefully.']);
@@ -191,6 +193,10 @@ class AdminController extends Controller
 
         $data->category_name = $request->name;
         $data->slug = Str::slug($request->name);
+        if($request->hasFile('image')){
+            $image = $data->image;
+            $data->image = saveFile(config("constants.disks.CATEGORY"), $data->slug, $request->file('image'), true,$image);
+        }
         if( $data->save() )
         {
             return back()->with(['status'=>'success','message'=>'Category Updated Succefully.']);
@@ -205,12 +211,15 @@ class AdminController extends Controller
     {
         $product = Product::where('id',$id)->first();
         $product->name = $request->name;
-        $data->slug = Str::slug($request->name);
+        $product->slug = Str::slug($request->name);
         $product->brand_id = $request->brand;
         $product->category_id = $request->category;
         $product->weight = $request->weight;
         $product->weight_type = $request->weight_type;
-
+        if($request->hasFile('image')){
+            $image = $product->image;
+            $product->image = saveFile(config("constants.disks.PRODUCT"), $product->slug, $request->file('image'), true,$image);
+        }
         if( $product->save() )
         {
             return back()->with(['status'=>'success','message'=>'Product Updated Succefully.']);
