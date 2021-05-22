@@ -67,7 +67,7 @@ class OrderController extends Controller
         $orderNumber = rand(12125460894,9923564785);
         $checkOrderNumber = Orders::where('order_no',$orderNumber)->first();
         if($checkOrderNumber) {
-            getOrderNumber();
+            $this->getOrderNumber();
         }
         return $orderNumber;
     }   
