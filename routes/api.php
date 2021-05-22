@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Route;
 */
 Route::post('login', 'Api\UserController@login');
 Route::post('register', 'Api\UserController@register');
-Route::group(['middleware' => 'auth:api','prefix'=>'retail'], function()
+Route::group(['middleware' => ['auth:api','shoopkeeper'],'prefix'=>'retail'], function()
 {
 	//User Log out API(POST)
 	Route::post('logout', 'Api\UserController@logout');
@@ -104,6 +104,7 @@ Route::group(['middleware' => 'auth:api','prefix'=>'retail'], function()
 
 	//Add custom product route(POST)
 	Route::post('add-user-custom-product','Api\CustomProductController@store');
+    Route::post('edit-user-custom-product/{product_id}','Api\CustomProductController@update');
 
 	//Get user temp products list(GET).
 	Route::get('get-user-custom-product-list','Api\CustomProductController@index');
@@ -137,3 +138,27 @@ Route::group(['middleware' => 'auth:api','prefix'=>'retail'], function()
 		Route::get('purchase-growth','PurchaseGrowthController');
 	});
 });
+
+//Shop api
+Route::group(['namespace'=>'Api\Ecommerce','prefix' => 'ecommerce'],function(){
+    Route::post('login', 'UserController@login');
+    Route::post('register', 'UserController@register');
+	Route::get('/{id}-{slug}','ShopController@index');
+	Route::get('/{id}-{slug}/{categorySlug}','ShopController@getCategoryProducts');
+	Route::get('/shop/info/{id}-{slug}','ShopController@sellerInfo');
+    Route::group(['middleware' => ['auth:api','user']], function()
+    {
+        Route::post('logout', 'UserController@logout');
+        Route::Post('/cart/add','CartController@add');
+        Route::group(['prefix' => 'order' ], function()
+    	{
+        	Route::Post('confirm','OrderController@confirmOrder');
+
+        	Route::get('list','OrderController@orderList');
+        	Route::get('detail/{order_no}','OrderController@orderDetails');
+        	
+        });
+    });
+});
+
+

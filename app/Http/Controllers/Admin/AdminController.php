@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Imports\BrandImport;
 use App\Models\Brand;
@@ -54,13 +55,13 @@ class AdminController extends Controller
     	$brand->brand_name = $request->name;
         $brand->country = $request->country;
 
-    	if( $brand->save() ) 
+    	if( $brand->save() )
     	{
     		return back()->with(['status'=>'success','message'=>'Brand Added Succefully.']);
     	}
-    	else 
+    	else
     	{
-    		return back()->with(['status'=>'danger','message'=>'Oops! Something went wrong.']);	
+    		return back()->with(['status'=>'danger','message'=>'Oops! Something went wrong.']);
     	}
     }
 
@@ -68,14 +69,19 @@ class AdminController extends Controller
     {
     	$category = new Category();
     	$category->category_name = $request->name;
+        $category->slug = Str::slug($request->name);
 
-    	if( $category->save() ) 
+        if($request->hasFile('image')){
+            $category->image = saveFile(config("constants.disks.CATEGORY"), $category->slug, $request->file('image'), true);
+        }
+
+    	if( $category->save() )
     	{
     		return back()->with(['status'=>'success','message'=>'Category Added Succefully.']);
     	}
-    	else 
+    	else
     	{
-    		return back()->with(['status'=>'danger','message'=>'Oops! Something went wrong.']);	
+    		return back()->with(['status'=>'danger','message'=>'Oops! Something went wrong.']);
     	}
     }
 
@@ -83,18 +89,21 @@ class AdminController extends Controller
     {
         $product = new Product();
         $product->name = $request->name;
+        $product->slug = Str::slug($request->name);
         $product->brand_id = $request->brand;
         $product->category_id = $request->category;
         $product->weight = $request->weight;
         $product->weight_type = $request->weight_type;
-        
-        if( $product->save() ) 
+        if($request->hasFile('image')){
+            $product->image = saveFile(config("constants.disks.PRODUCT"), $product->slug, $request->file('image'), true);
+        }
+        if( $product->save() )
         {
             return back()->with(['status'=>'success','message'=>'Product Added Succefully.']);
         }
-        else 
+        else
         {
-            return back()->with(['status'=>'danger','message'=>'Oops! Something went wrong.']); 
+            return back()->with(['status'=>'danger','message'=>'Oops! Something went wrong.']);
         }
     }
 
@@ -102,11 +111,11 @@ class AdminController extends Controller
     {
     	$deleteBrand = Brand::where('id',$id)->firstOrFail();
 
-    	if( $deleteBrand->delete() ) 
+    	if( $deleteBrand->delete() )
     	{
     		return back()->with(['status'=>'success','message'=>'Brand deleted Succefully.']);
     	}
-    	else 
+    	else
     	{
     		return back()->with(['status'=>'danger','message'=>'Oops! Something went wrong.']);
     	}
@@ -116,11 +125,11 @@ class AdminController extends Controller
     {
     	$deleteCategory = Category::where('id',$id)->firstOrFail();
 
-    	if( $deleteCategory->delete() ) 
+    	if( $deleteCategory->delete() )
     	{
     		return back()->with(['status'=>'success','message'=>'Category deleted Succefully.']);
     	}
-    	else 
+    	else
     	{
     		return back()->with(['status'=>'danger','message'=>'Oops! Something went wrong.']);
     	}
@@ -130,11 +139,11 @@ class AdminController extends Controller
     {
     	$deleteProduct = Product::where('id',$id)->firstOrFail();
 
-    	if( $deleteProduct->delete() ) 
+    	if( $deleteProduct->delete() )
     	{
     		return back()->with(['status'=>'success','message'=>'Product deleted Succefully.']);
     	}
-    	else 
+    	else
     	{
     		return back()->with(['status'=>'danger','message'=>'Oops! Something went wrong.']);
     	}
@@ -168,13 +177,13 @@ class AdminController extends Controller
         $data->brand_name = $request->name;
         $data->country = $request->country;
 
-        if( $data->save() ) 
+        if( $data->save() )
         {
             return back()->with(['status'=>'success','message'=>'Brand Updated Succefully.']);
         }
-        else 
+        else
         {
-            return back()->with(['status'=>'danger','message'=>'Oops! Something went wrong.']); 
+            return back()->with(['status'=>'danger','message'=>'Oops! Something went wrong.']);
         }
     }
 
@@ -183,14 +192,18 @@ class AdminController extends Controller
         $data = Category::where('id',$id)->first();
 
         $data->category_name = $request->name;
-
-        if( $data->save() ) 
+        $data->slug = Str::slug($request->name);
+        if($request->hasFile('image')){
+            $image = $data->image;
+            $data->image = saveFile(config("constants.disks.CATEGORY"), $data->slug, $request->file('image'), true,$image);
+        }
+        if( $data->save() )
         {
             return back()->with(['status'=>'success','message'=>'Category Updated Succefully.']);
         }
-        else 
+        else
         {
-            return back()->with(['status'=>'danger','message'=>'Oops! Something went wrong.']); 
+            return back()->with(['status'=>'danger','message'=>'Oops! Something went wrong.']);
         }
     }
 
@@ -198,18 +211,22 @@ class AdminController extends Controller
     {
         $product = Product::where('id',$id)->first();
         $product->name = $request->name;
+        $product->slug = Str::slug($request->name);
         $product->brand_id = $request->brand;
         $product->category_id = $request->category;
         $product->weight = $request->weight;
         $product->weight_type = $request->weight_type;
-        
-        if( $product->save() ) 
+        if($request->hasFile('image')){
+            $image = $product->image;
+            $product->image = saveFile(config("constants.disks.PRODUCT"), $product->slug, $request->file('image'), true,$image);
+        }
+        if( $product->save() )
         {
             return back()->with(['status'=>'success','message'=>'Product Updated Succefully.']);
         }
-        else 
+        else
         {
-            return back()->with(['status'=>'danger','message'=>'Oops! Something went wrong.']); 
+            return back()->with(['status'=>'danger','message'=>'Oops! Something went wrong.']);
         }
     }
 
@@ -224,11 +241,11 @@ class AdminController extends Controller
     {
         $deleteUser = User::where('id',$id)->firstOrFail();
 
-        if( $deleteUser->delete() ) 
+        if( $deleteUser->delete() )
         {
             return back()->with(['status'=>'success','message'=>'User deleted Succefully.']);
         }
-        else 
+        else
         {
             return back()->with(['status'=>'danger','message'=>'Oops! Something went wrong.']);
         }
@@ -236,7 +253,7 @@ class AdminController extends Controller
 
     public function storeUser(Request $request)
     {
-        $this->validate($request, [ 
+        $this->validate($request, [
             'email' => 'required|email|unique:users',
             'store_email'=>'nullable|unique:stores,email'
         ]);
@@ -246,12 +263,12 @@ class AdminController extends Controller
         $user->phone = $request->phone;
         $user->email= $request->email;
         $user->password = bcrypt($request->password);
-        if( $user->save() ) 
+        if( $user->save() )
         {
-            if($request->hasFile('image') ) 
+            if($request->hasFile('image') )
             {
                 $user = User::where('id',$user->id)->first();
-                //Save full size image 
+                //Save full size image
                 $image = $request->file('image');
                 $profile_img = time().'.'.$image->getClientOriginalExtension();
                 $destinationPath = public_path('/profileimages/'.$user->id."/");
@@ -264,16 +281,16 @@ class AdminController extends Controller
                 $user->image = $profile_img;
                 $user->save();
             }
-            if( !empty($request->store_name) || !empty($request->store_email) || !empty($request->store_number) || !empty($request->registration_date) || !empty($request->store_about) || !empty($request->store_address) ) 
+            if( !empty($request->store_name) || !empty($request->store_email) || !empty($request->store_number) || !empty($request->registration_date) || !empty($request->store_about) || !empty($request->store_address) )
             {
-                if($request->hasFile('logo') ) 
+                if($request->hasFile('logo') )
                 {
-                    //Save full size image 
+                    //Save full size image
                     $image = $request->file('logo');
                     $name = time().'.'.$image->getClientOriginalExtension();
                     $destinationPath = public_path('/shopimages/'.$user->id."/");
                     $image->move($destinationPath, $name);
-                    
+
                     //Thumbnail
                     $image_resize = Image::make(public_path().'/shopimages/'.$user->id."/".$name);
                     $image_resize->fit(300, 300);
@@ -293,7 +310,7 @@ class AdminController extends Controller
             }
             return back()->with(['status'=>'success','message'=>'User Created Succefully.']);
         }
-        else 
+        else
         {
             return back()->with(['status'=>'danger','message'=>'Oops! Something went wrong.']);
         }
@@ -301,20 +318,20 @@ class AdminController extends Controller
 
     public function updateUser($id,Request $request)
     {
-        $this->validate($request, [ 
+        $this->validate($request, [
             'email' => 'required|email|unique:users,email,'.$id,
             'store_email'=>'nullable|unique:stores,email,'.$id.',user_id'
         ]);
 
         $user =  User::where('id',$id)->first();
-        if(!$user) 
+        if(!$user)
         {
             return back()->with(['status'=>'danger','message'=>'User not found.']);
         }
 
-        if($request->hasFile('image') ) 
+        if($request->hasFile('image') )
         {
-            //Save full size image 
+            //Save full size image
             $image = $request->file('image');
             $profile_img = time().'.'.$image->getClientOriginalExtension();
             $destinationPath = public_path('/profileimages/'.$user->id."/");
@@ -329,32 +346,32 @@ class AdminController extends Controller
         $user->phone = $request->phone;
         $user->email= $request->email;
         $user->image = $profile_img ?? $user->image;
-        if(!empty($request->password) && $request->password != "**********" ) 
+        if(!empty($request->password) && $request->password != "**********" )
         {
             $user->password = bcrypt($request->password);
         }
-     
-        if( $user->save() ) 
-        {
-            if( !empty($request->store_name) || !empty($request->store_email) || !empty($request->store_number) || !empty($request->registration_date) || !empty($request->store_about) || !empty($request->store_address) ) 
-            {   
 
-                if($request->hasFile('logo') ) 
+        if( $user->save() )
+        {
+            if( !empty($request->store_name) || !empty($request->store_email) || !empty($request->store_number) || !empty($request->registration_date) || !empty($request->store_about) || !empty($request->store_address) )
+            {
+
+                if($request->hasFile('logo') )
                 {
-                    //Save full size image 
+                    //Save full size image
                     $image = $request->file('logo');
                     $name = time().'.'.$image->getClientOriginalExtension();
                     $destinationPath = public_path('/shopimages/'.$user->id."/");
                     $image->move($destinationPath, $name);
-                    
+
                     //Thumbnail
                     $image_resize = Image::make(public_path().'/shopimages/'.$user->id."/".$name);
                     $image_resize->fit(300, 300);
                     $image_resize->save(public_path('shopimages/' .$user->id.'/thumb_'.$name));
                 }
-                
+
                 $store = Store::where('user_id',$user->id)->first();
-                if(!$store) 
+                if(!$store)
                 {
                     $store = new Store();
                 }
@@ -371,7 +388,7 @@ class AdminController extends Controller
             }
             return back()->with(['status'=>'success','message'=>'User updated Succefully.']);
         }
-        else 
+        else
         {
             return back()->with(['status'=>'danger','message'=>'Oops! Something went wrong.']);
         }
@@ -400,11 +417,11 @@ class AdminController extends Controller
     {
         $TempProduct = TempProduct::where('id',$id)->firstOrFail();
 
-        if( $TempProduct->delete() ) 
+        if( $TempProduct->delete() )
         {
             return back()->with(['status'=>'success','message'=>'Temp Product deleted Succefully.']);
         }
-        else 
+        else
         {
             return back()->with(['status'=>'danger','message'=>'Oops! Something went wrong.']);
         }
@@ -424,7 +441,7 @@ class AdminController extends Controller
             return response()->json(['statusCode'=>200,'success'=>true,'data'=>$data], 200);
         } else {
             return response()->json(['statusCode'=>200,'success'=>false,], 200);
-        }   
+        }
     }
 
     public function storeTempProductToMainProduct($id,Request $request)
@@ -455,7 +472,7 @@ class AdminController extends Controller
                 $product->category_id = $request->category;
                 $product->weight = $request->weight;
                 $product->weight_type = $request->weight_type;
-                
+
                 if( $product->save() ) {
                     $setProductId = Purchase::where('product_id',$id)->update(
                         ['product_id'=>$product->id,'product_source'=>'main']
@@ -469,7 +486,7 @@ class AdminController extends Controller
                     $checkTemp->delete();
                     return redirect()->route('TempProduct')->with(['status'=>'success','message'=>'Product Added Succefully.']);
                 } else {
-                    return back()->with(['status'=>'danger','message'=>'Oops! Something went wrong.']); 
+                    return back()->with(['status'=>'danger','message'=>'Oops! Something went wrong.']);
                 }
             }
         } else {

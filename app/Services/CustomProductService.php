@@ -15,7 +15,18 @@ class CustomProductService{
        $product->user_id = $user_id;
        $product->save();
        return $product;
-          
+
+    }
+
+    public function updateUserCustomProduct(int $product_id, string $product_name, int $product_weight, string $weight_type)
+    {
+       $product =  TempProduct::find($product_id);
+       $product->name = $product_name;
+       $product->weight = $product_weight;
+       $product->weight_type = $weight_type;
+       $product->save();
+       return $product;
+
     }
 
     // Return Collection of data or return NULL
@@ -23,5 +34,5 @@ class CustomProductService{
     {
         return TempProduct::withTrashed()->where('user_id',$user_id)->latest()->get();
     }
-    
+
 }
