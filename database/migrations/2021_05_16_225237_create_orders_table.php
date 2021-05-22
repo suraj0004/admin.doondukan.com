@@ -19,8 +19,8 @@ class CreateOrdersTable extends Migration
             $table->foreignId('seller_id');
             $table->unsignedBigInteger('order_no');
             $table->unsignedDecimal('order_amount', 15, 8)->default(0);
-            $table->timestamp('from_time')->comment('pick_up');
-            $table->timestamp('to_time')->comment('pick_up');
+            $table->timestamp('from_time')->nullable()->comment('pick_up');
+            $table->timestamp('to_time')->nullable()->comment('pick_up');
             $table->timestamps();
         });
     }

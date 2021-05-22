@@ -70,5 +70,28 @@ class OrderController extends Controller
             $this->getOrderNumber();
         }
         return $orderNumber;
-    }   
+    } 
+
+    public function orderList()
+    {
+        $user = Auth::User();
+        $data = Orders::select('order_no','order_amount','status','created_at')->where('buyer_id',$user->id)->get();
+
+        if($data->isEmpty()) {
+            return response()->json(['statusCode' => 200, 'success' => false, 'message' => "No order found."], 200);
+        }
+
+        return response()->json(['statusCode' => 200, 'success' => true, 'message' => "Order list.",'data'=>$data], 200);
+    } 
+
+    public function orderDetails($order_no)
+    {
+        $user = Auth::User();
+        $data = Orders::select('id','seller_id','order_no','order_amount','status','created_at')->with(['seller:id,name','orderitem:id,order_id,product_id,quantity,price'])->where('buyer_id',$user->id)->first();
+        if(!$data) {
+            return response()->json(['statusCode' => 200, 'success' => false, 'message' => "Order not found."], 200);
+        }
+
+        return response()->json(['statusCode' => 200, 'success' => true, 'message' => "Order details.","data"=>$data], 200);
+    } 
 }

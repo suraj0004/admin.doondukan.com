@@ -60,4 +60,14 @@ class ShopController extends Controller
             "message" => "Category Product Data",
         ]);
     }
+
+    public function sellerInfo($id)
+    {
+        $sellerData = Store::select('id','user_id','name','mobile','address','logo')->where('id',$id)->with('user:id,name')->first();
+        if(!$sellerData) {
+            return response()->json(['statusCode' => 200, 'success' => false, 'message' => "No data found."], 200);
+        }
+
+        return response()->json(['statusCode' => 200, 'success' => false, 'message' => "seller infp.","data"=>$sellerData], 200); 
+    } 
 }
