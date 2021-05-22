@@ -27,10 +27,17 @@ class UserController extends Controller
         if(Auth::attempt(['phone' => $request->phone, 'password' => $request->password]))
         {
             $user = Auth::User();
-            $tokenData =  $user->createToken('MyShopApp');
-            $token = $tokenData->token;
-            $user->accessToken = $tokenData->accessToken;
-            return response()->json(['statusCode'=>200,'success'=>true,'message'=>'User Login','data' => $user],200);
+            $token =  $user->createToken('MyShopApp')->accessToken;
+
+            return response()->json([
+                'statusCode'=>200,
+                'success'=>true,
+                'message'=>'User Login',
+                'data' => [
+                    "user" => $user,
+                    "token" => $token
+                ]
+            ],200);
         }
         else
         {
@@ -42,7 +49,7 @@ class UserController extends Controller
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'phone'=>'required|numeric|unique:users',
+            'phone'=>'required|numeric|unique:users,phone',
             'password' => 'required',
             'c_password' => 'required|same:password',
         ]);
@@ -58,9 +65,17 @@ class UserController extends Controller
         $user->role = 'USER';
         $user->password = bcrypt($request->password);
         $user->save();
-        $tokenData =  $user->createToken('MyShopApp');
-        $user->accessToken = $tokenData->accessToken;
-        return response()->json(['statusCode'=>200,'success'=>true,'message'=>'User Successfully Registered','data'=>$user], 200);
+        $token =  $user->createToken('MyShopApp')->accessToken;
+        return response()->json([
+            'statusCode'=>200,
+            'success'=>true,
+            'message'=>
+            'User Successfully Registered',
+            'data' => [
+                "user" => $user,
+                "token" => $token
+            ]
+        ], 200);
     }
 
     public function logout()
