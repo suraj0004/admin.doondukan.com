@@ -18,27 +18,36 @@ class CartController extends Controller
     {
 
         try {
-            $buyer  = Auth::User(); //logged in user->customer(buyer)
-            $seller = User::where('id',$req->seller_id)->with('store')->first(); //seller with his store_id
-            $stock  = Stock::where('product_id',$req->product_id)->first(); //product present in stock
 
-            $productExists = Cart::where('product_id',$stock->product_id)->where('buyer_id',$buyer->id)->exists();
+            $buyer  = Auth::User();
+
+            $productExists = Cart::where('product_id',$req->product_id)->where('buyer_id',$buyer->id)->exists();
             if($productExists){
                 return response()->json([
                     'success'=>true,
                     'message'=>'product already present in your cart.'
                 ]);
             }
+            
+            $checkIsOtherSellerProduct = Cart::where('buyer_id',$buyer->id)->first();
+            if(!empty($checkIsOtherSellerProduct) && $checkIsOtherSellerProduct->seller_id != $req->seller_id) {
+                return response()->json([
+                    'success'=>false,
+                    'message'=>'Other seller product not allowed in same cart.'
+                ],200);
+            }
 
-            $cart   = new Cart();
+            $seller = User::where('id',$req->seller_id)->with('store:id,user_id')->first();
+            $stock = Stock::select('price')->where('user_id',$req->seller_id)->where('product_id',$req->product_id)->first();
+            $cart = new Cart();
             $cart->buyer_id = $buyer->id;
             $cart->seller_id = $seller->id;
             $cart->store_id  = $seller->store->id;
-            $cart->product_id = $stock->product_id;
+            $cart->product_id = $req->product_id;
             $cart->quantity = $req->quantity;
             $cart->price = $stock->price;
-
             $data = $cart->save();
+            
             return response()->json([
                     'statusCode'=>200,
                     'success'=>true,

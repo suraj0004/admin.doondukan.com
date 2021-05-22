@@ -150,6 +150,7 @@ Route::group(['namespace'=>'Api\Ecommerce','prefix' => 'ecommerce'],function(){
     {
         Route::post('logout', 'UserController@logout');
         Route::Post('/cart/add','CartController@add');
+        Route::Post('/order/confirm','OrderController@confirmOrder');
     });
 });
 
