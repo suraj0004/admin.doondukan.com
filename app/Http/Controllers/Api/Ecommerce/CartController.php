@@ -55,25 +55,132 @@ class CartController extends Controller
 
     }
 
-    // public function delete( Reqest $req)
-    // {
-    //     $req->cart_id;
-    // }
 
-    // public function updateQuntity(Reqest $req)
-    // {
-    //     $req->cart_id,
-    //     $req->quantity;
-    // }
+    /**
+     * function for deleting cart product
+     */
+    public function deleteCartProduct($cartId)
+    {
+         $userId         = Auth::user()->id;
+         try {
+             //code...
+             $deleteProduct  = Cart::whereId($cartId)->whereBuyerId($userId)->delete();
+             return response()->json([
+                'statusCode'=>200,
+                'success'=>true,
+                'message'=>'Product Deleted Successfully'
+            ], 200);
+         } catch (\Throwable $th) {
+             //throw $th;
+             return response()->json([
+                'statusCode'=>401,
+                'success'=>false,
+                'message'=>'Something went wrong.',
+                'error'=>$e->getMessage(),
+            ], 401);
+         }
 
-    // public function listing($seller_id)
-    // {
-    //     //
-    //     // Auth::user('cart'); //  Cart::where('buyer_id,Auth::user('id) cart details);
-    // }
+    }
 
-    // public function addMultiple()
-    // {
+    public function updateQuantity(Request $request)
+    {
+          $userId      =  Auht::user()->id;
+          $buyerId     =  $request->buyer_id;
+          $productId   =  $request->product_id;
+          $quantity    =  $request->quantity;
 
-    // }
+          try {
+              //code...
+              $cartData    =  Cart::whereBuyerId($buyerId)->whereProductId($productId)->first();
+              $cartData->quantity   = $quantity;
+              $cartData->save();
+              return response()->json([
+                'statusCode'=>200,
+                'success'=>true,
+                'message'=>'Quantity Updated Successfully'
+            ], 200);
+          } catch (\Throwable $th) {
+              //throw $th;
+              return response()->json([
+                'statusCode'=>401,
+                'success'=>false,
+                'message'=>'Something went wrong.',
+                'error'=>$e->getMessage(),
+            ], 401);
+          }
+
+    }
+
+    /**
+     * syncing cart products from local storage to db table 
+     */
+    public function syncCart(Request $request)
+    {
+
+        try {
+            //code...
+            foreach ($request as $key => $value) {
+                # code...
+                $buyer  = Auth::User(); //logged in user->customer(buyer)
+                $seller = User::where('id',$value->seller_id)->with('store')->first(); //seller with his store_id
+                $stock  = Stock::where('product_id',$value->product_id)->first(); //product present in stock
+     
+                $productExists = Cart::where('product_id',$stock->product_id)->where('buyer_id',$buyer->id)->exists();
+                if($productExists){
+                    return response()->json([
+                        'success'=>true,
+                        'message'=>'product already present in your cart.'
+                    ]);
+                }
+     
+                $cart   = new Cart();
+                $cart->buyer_id = $buyer->id;
+                $cart->seller_id = $seller->id;
+                $cart->store_id  = $seller->store->id;
+                $cart->product_id = $stock->product_id;
+                $cart->quantity = $value->quantity;
+                $cart->price = $stock->price;
+     
+                $data = $cart->save();
+            }
+            return response()->json([
+                'statusCode'=>200,
+                'success'=>true,
+                'message'=>'Added Sucessfully'
+            ], 200);
+        } catch (\Throwable $th) {
+            //throw $th;
+            return response()->json([
+                'statusCode'=>401,
+                'success'=>false,
+                'message'=>'Something went wrong.',
+                'error'=>$e->getMessage(),
+            ], 401);
+        }
+
+    }
+
+    /**
+     * function for getting cart products listing 
+     */
+    public function fetchCartProducts()
+    {
+       $userId   = Auth::user()->id;
+       try {
+           //code...
+           $data      = \App\Models\Cart::whereBuyerId($userId)->get();
+           
+       } catch (\Throwable $th) {
+           //throw $th;
+           return response()->json([
+            'statusCode'=>401,
+            'success'=>false,
+            'message'=>'Something went wrong.',
+            'error'=>$e->getMessage(),
+        ], 401);
+       }
+     
+
+    }
+
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Ecommerce;
 
 use Illuminate\Http\Request;
 use App\Models\User;
@@ -27,6 +27,8 @@ class ProfileController extends Controller
         //
         aprint($request->all());
         
+        $save->fill($data)->save();
+        
     }
 
     /**
@@ -49,6 +51,8 @@ class ProfileController extends Controller
     public function show($id)
     {
         //
+        $userId  = Auth::user()->id;
+        $data    = \App\User::get();
     }
 
     /**
