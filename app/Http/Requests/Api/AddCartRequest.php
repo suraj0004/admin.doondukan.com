@@ -5,7 +5,6 @@ namespace App\Http\Requests\Api;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use App\Rules\IsProductAvailable;
 
 class AddCartRequest extends FormRequest
 {
@@ -27,14 +26,7 @@ class AddCartRequest extends FormRequest
     public function rules()
     {
         return [
-            'seller_id' => 'required|exists:Users,id|numeric',
-            'product_id' => 'required|exists:Stocks,product_id|numeric',
-            'quantity' => [
-                            'required',
-                            'numeric',
-                            'min:1',
-                            new IsProductAvailable($this->product_id,$this->seller_id),
-                         ],
+            'product_id' => 'required|numeric',
         ];
     }
 

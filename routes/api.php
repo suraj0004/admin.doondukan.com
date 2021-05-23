@@ -139,24 +139,34 @@ Route::group(['middleware' => ['auth:api','shoopkeeper'],'prefix'=>'retail'], fu
 	});
 });
 
-//Shop api
+/** Ecommerce api */
 Route::group(['namespace'=>'Api\Ecommerce','prefix' => 'ecommerce'],function(){
+
     Route::post('login', 'UserController@login');
     Route::post('register', 'UserController@register');
-	Route::get('/{id}-{slug}','ShopController@index');
-	Route::get('/{id}-{slug}/{categorySlug}','ShopController@getCategoryProducts');
-	Route::get('/shop/info/{id}-{slug}','ShopController@sellerInfo');
-    Route::group(['middleware' => ['auth:api','user']], function()
-    {
-        Route::post('logout', 'UserController@logout');
-        Route::Post('/cart/add','CartController@add');
-        Route::group(['prefix' => 'order' ], function()
-    	{
-        	Route::Post('confirm','OrderController@confirmOrder');
 
+    /** Shop specific routes */
+    Route::group(['prefix' => '{seller_id}-{shop_slug}' ], function(){
+
+        Route::get('/shop/info','ShopController@sellerInfo');
+
+        Route::group(['prefix' => 'cart','middleware' => ['auth:api','user'] ], function(){
+            Route::post('sync','CartController@syncCart');
+            Route::post('add','CartController@add');
+            Route::get('get','CartController@fetchCartProducts');
+        });
+        Route::get('/','ShopController@index');
+        Route::get('/{categorySlug}','ShopController@getCategoryProducts');
+    });
+
+    /** User specific routes */
+    Route::group(['middleware' => ['auth:api','user']], function(){
+
+        Route::post('logout', 'UserController@logout');
+        Route::group(['prefix' => 'order' ], function(){
+        	Route::post('confirm','OrderController@confirmOrder');
         	Route::get('list','OrderController@orderList');
         	Route::get('detail/{order_no}','OrderController@orderDetails');
-        	
         });
     });
 });
