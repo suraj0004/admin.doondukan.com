@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Ecommerce;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\AddCartRequest;
 use App\Http\Requests\Api\Ecommerce\CartSyncRequest;
+use App\Http\Resources\Ecommerce\CartCollection;
 use App\Models\Cart;
 use App\Models\Stock;
 use App\Models\Store;
@@ -17,53 +18,61 @@ use Illuminate\Support\Facades\Auth;
 class CartController extends Controller
 {
 
-    public function add(AddCartRequest $req)
+    public function add(AddCartRequest $request, int $seller_id, string $slug)
     {
+        $buyer_id = Auth::id();
 
-        try {
+        $store = Store::where('user_id', $seller_id)->first();
 
-            $buyer = Auth::User();
-
-            $productExists = Cart::where('product_id', $req->product_id)->where('buyer_id', $buyer->id)->exists();
-            if ($productExists) {
-                return response()->json([
-                    'success' => true,
-                    'message' => 'product already present in your cart.',
-                ]);
-            }
-
-            $checkIsOtherSellerProduct = Cart::where('buyer_id', $buyer->id)->first();
-            if (!empty($checkIsOtherSellerProduct) && $checkIsOtherSellerProduct->seller_id != $req->seller_id) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'Other seller product not allowed in same cart.',
-                ], 200);
-            }
-
-            $seller = User::where('id', $req->seller_id)->with('store:id,user_id')->first();
-            $stock = Stock::select('price')->where('user_id', $req->seller_id)->where('product_id', $req->product_id)->first();
-            $cart = new Cart();
-            $cart->buyer_id = $buyer->id;
-            $cart->seller_id = $seller->id;
-            $cart->store_id = $seller->store->id;
-            $cart->product_id = $req->product_id;
-            $cart->quantity = $req->quantity;
-            $cart->price = $stock->price;
-            $data = $cart->save();
-
+        if (!$store) {
             return response()->json([
-                'statusCode' => 200,
-                'success' => true,
-                'message' => 'Added Sucessfully',
-            ], 200);
-        } catch (\Exception $e) {
-            return response()->json([
-                'statusCode' => 401,
                 'success' => false,
-                'message' => 'Something went wrong.',
-                'error' => $e->getMessage(),
-            ], 401);
+                'message' => 'shop not available.',
+            ], 200);
         }
+
+        $stock = Stock::select("price")
+            ->where('user_id', $seller_id)
+            ->where('product_id', $request->product_id)
+            ->where('quantity', '>', 0)
+            ->where('price', '>', 0)
+            ->first();
+
+        if (!$stock) {
+            return response()->json([
+                'success' => false,
+                'message' => 'product not available.',
+            ], 200);
+        }
+
+        $productExists = Cart::where('product_id', $request->product_id)
+            ->where('buyer_id', $buyer_id)
+            ->where('seller_id', $seller_id)
+            ->exists();
+
+        if ($productExists) {
+            return response()->json([
+                'success' => false,
+                'message' => 'product already present in your cart.',
+            ], 200);
+        }
+
+        $cart = new Cart();
+        $cart->buyer_id = $buyer_id;
+        $cart->seller_id = $seller_id;
+        $cart->store_id = $store->id;
+        $cart->product_id = $request->product_id;
+        $cart->quantity = 1;
+        $cart->price = $stock->price;
+        $data = $cart->save();
+        $cart->load(["product"]);
+
+        return response()->json([
+            'statusCode' => 200,
+            'success' => true,
+            'message' => 'Added Sucessfully',
+            'data' => $cart
+        ], 200);
 
     }
 
@@ -178,22 +187,18 @@ class CartController extends Controller
     /**
      * function for getting cart products listing
      */
-    public function fetchCartProducts()
+    public function fetchCartProducts(int $seller_id, string $slug)
     {
-        $userId = Auth::user()->id;
-        try {
-            //code...
-            $data = \App\Models\Cart::whereBuyerId($userId)->get();
+        $user_id = Auth::user()->id;
+        $cart = Cart::select("id", "product_id", "quantity")
+            ->where("buyer_id", $user_id)
+            ->where('seller_id', $seller_id)
+            ->with(["product"])
+            ->get();
 
-        } catch (\Throwable $th) {
-            //throw $th;
-            return response()->json([
-                'statusCode' => 401,
-                'success' => false,
-                'message' => 'Something went wrong.',
-                'error' => $e->getMessage(),
-            ], 401);
-        }
+        return (new CartCollection($cart))->additional([
+            "message" => "Cart Data",
+        ]);
 
     }
 
