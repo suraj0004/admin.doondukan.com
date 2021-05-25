@@ -199,7 +199,11 @@ class CartController extends Controller
     public function fetchCartProducts(int $seller_id, string $slug)
     {
         $user_id = Auth::user()->id;
-        $cart = Cart::select("id", "product_id", "quantity")
+        $cart = Cart::select("carts.id", "carts.product_id", "carts.quantity","stocks.price as product_price")
+            ->join('stocks', function ($join) use ($seller_id) {
+                $join->on('stocks.product_id', '=', 'carts.product_id')
+                    ->on('stocks.user_id', '=', DB::raw($seller_id));
+            })
             ->where("buyer_id", $user_id)
             ->where('seller_id', $seller_id)
             ->with(["product"])

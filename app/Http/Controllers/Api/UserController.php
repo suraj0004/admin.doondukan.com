@@ -100,33 +100,25 @@ class UserController extends Controller
             return response()->json(['statusCode'=>200,'success'=>false,'message'=>$message], 200);
         }
 
-        if($request->hasFile('logo') )
-        {
-            //Save full size image
-            $image = $request->file('logo');
-            $name = time().'.'.$image->getClientOriginalExtension();
-            $destinationPath = public_path('/shopimages/'.$user->id."/");
-            $image->move($destinationPath, $name);
-
-            //Thumbnail
-            $image_resize = Image::make(public_path().'/shopimages/'.$user->id."/".$name);
-            $image_resize->fit(300, 300);
-            $image_resize->save(public_path('shopimages/' .$user->id.'/thumb_'.$name));
-        }
         $store = Store::where('user_id',$user->id)->first();
         if(!$store)
         {
             $store = new Store();
         }
+
         $store->user_id = $user->id;
         $store->name = $request->name;
         $store->slug =  Str::slug($request->name);
         $store->mobile = $request->mobile;
         $store->email = $request->email;
-        $store->logo = $name ?? null;
         $store->address = $request->address;
         $store->about = $request->about;
         $store->registration_date = $request->registration_date;
+
+        if($request->hasFile('logo') )
+        {
+            $store->logo = saveFile(config("constants.disks.STORE"), $store->slug, $request->file('logo'), true);
+        }
 
         if ( $store->save() )
         {
