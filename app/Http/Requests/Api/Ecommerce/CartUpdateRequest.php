@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Requests\Api;
+namespace App\Http\Requests\Api\Ecommerce;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
-class AddCartRequest extends FormRequest
+class CartUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,14 +26,16 @@ class AddCartRequest extends FormRequest
     public function rules()
     {
         return [
-            'product_id' => 'required|numeric',
+            "id" => "required|numeric",
+            "product_id" => "required|numeric",
+            "quantity" => "required|numeric|min:1",
         ];
     }
 
     protected function failedValidation(Validator $validator) {
         throw new HttpResponseException(response()->json([
             "success" => false,
-            "message" => $validator->errors()->all()
+            "message" => $validator->errors()->first()
         ], 200));
     }
 }
