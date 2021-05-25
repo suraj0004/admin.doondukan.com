@@ -69,6 +69,9 @@ Route::group(['middleware' => ['auth:api','shoopkeeper'],'prefix'=>'retail'], fu
 	//Generate Bill API(GET)
 	Route::post('generateBill', 'Api\BillController@generateBill');
 
+	//API for getting all orders
+
+	Route::get('get/orders', 'Api\ShopOrderController@index');
 	//Get user bill list API(GET)
 	Route::get('billList', 'Api\BillController@getBill');
 
