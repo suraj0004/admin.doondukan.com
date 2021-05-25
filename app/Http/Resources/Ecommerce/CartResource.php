@@ -22,7 +22,7 @@ class CartResource extends JsonResource
                 "id" => $this->product->id,
                 "slug" => $this->product->slug,
                 "name" => $this->product->name,
-                "price" => $this->product->price,
+                "price" => $this->product_price,
                 "weight" => $this->product->weight . ' ' . $this->product->weight_type,
                 "image" => getFileUrl(config("constants.disks.PRODUCT"), $this->product->image),
                 "thumbnail" => getFileUrl(config("constants.disks.PRODUCT"), "thumb_".$this->product->image)
