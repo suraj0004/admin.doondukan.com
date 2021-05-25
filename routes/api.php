@@ -164,7 +164,7 @@ Route::group(['namespace'=>'Api\Ecommerce','prefix' => 'ecommerce'],function(){
 
         Route::post('logout', 'UserController@logout');
         Route::group(['prefix' => 'order' ], function(){
-        	Route::post('confirm','OrderController@confirmOrder');
+        	Route::post('confirm/{seller_id}','OrderController@confirmOrder');
         	Route::get('list','OrderController@orderList');
         	Route::get('detail/{order_no}','OrderController@orderDetails');
         });

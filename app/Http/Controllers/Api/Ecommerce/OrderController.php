@@ -12,7 +12,7 @@ use Validator;
 
 class OrderController extends Controller
 {
-    public function confirmOrder(Request $request)
+    public function confirmOrder($seller_id,Request $request)
     {
         $validator = Validator::make($request->all(), [
             'fromDate' => 'required|date_format:Y-m-d H:i:s',
@@ -26,7 +26,7 @@ class OrderController extends Controller
 
         $buyer = Auth::User();
 
-        $cartData = Cart::where('buyer_id',$buyer->id)->get();
+        $cartData = Cart::where('buyer_id',$buyer->id)->where('seller_id',$seller_id)->get();
         if($cartData->isEmpty()) {
             return response()->json(['statusCode' => 200, 'success' => false, 'message' => "Oops! Cart Is Empty."], 200);
         }
@@ -50,16 +50,16 @@ class OrderController extends Controller
             $orderItemData->quantity = $value->quantity;
             $orderItemData->save();
         }
-        $this->destroyCart($buyer);
+        $this->destroyCart($buyer,$seller_id);
 
         //Todo Sent message to seller
         
         return response()->json(['statusCode' => 200, 'success' => true, 'message' => "Order Placed Successfully."], 200);
     }
 
-    private function destroyCart($buyer)
+    private function destroyCart($buyer,$seller_id)
     {
-        Cart::where('buyer_id',$buyer->id)->delete();
+        Cart::where('buyer_id',$buyer->id)->where('seller_id',$seller_id)->delete();
     }
     
     private function getOrderNumber()
