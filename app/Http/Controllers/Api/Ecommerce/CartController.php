@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Ecommerce;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\AddCartRequest;
 use App\Http\Requests\Api\Ecommerce\CartSyncRequest;
+use App\Http\Requests\Api\Ecommerce\CartUpdateRequest;
 use App\Http\Resources\Ecommerce\CartCollection;
 use App\Models\Cart;
 use App\Models\Stock;
@@ -21,7 +22,6 @@ class CartController extends Controller
     public function add(AddCartRequest $request, int $seller_id, string $slug)
     {
         $buyer_id = Auth::id();
-
         $store = Store::where('user_id', $seller_id)->first();
 
         if (!$store) {
@@ -71,7 +71,51 @@ class CartController extends Controller
             'statusCode' => 200,
             'success' => true,
             'message' => 'Added Sucessfully',
-            'data' => $cart
+            'data' => $cart,
+        ], 200);
+
+    }
+
+    public function updateQuantity(CartUpdateRequest $request, int $seller_id, string $slug)
+    {
+        $buyer_id = Auth::user()->id;
+        $stock = Stock::select("price")
+            ->where('user_id', $seller_id)
+            ->where('product_id', $request->product_id)
+            ->where('quantity', '>=', $request->quantity)
+            ->where('price', '>', 0)
+            ->first();
+
+        if (!$stock) {
+            return response()->json([
+                'success' => false,
+                'message' => 'product not available.',
+            ], 200);
+        }
+
+        $cart = Cart::where('id', $request->id)
+            ->where("buyer_id", $buyer_id)
+            ->where("seller_id", $seller_id)
+            ->where("product_id", $request->product_id)
+            ->with(["product"])
+            ->first();
+
+        if (!$cart) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Opps something went wrong.',
+            ], 200);
+        }
+
+        $cart->quantity = $request->quantity;
+        $cart->price = $stock->price;
+        $cart->save();
+
+        return response()->json([
+            'statusCode' => 200,
+            'success' => true,
+            'message' => 'Quantity Updated Successfully',
+            'data' => $cart,
         ], 200);
 
     }
@@ -79,55 +123,19 @@ class CartController extends Controller
     /**
      * function for deleting cart product
      */
-    public function deleteCartProduct($cartId)
+    public function deleteCartProduct(int $seller_id, string $slug, int $cart_id)
     {
-        $userId = Auth::user()->id;
-        try {
-            //code...
-            $deleteProduct = Cart::whereId($cartId)->whereBuyerId($userId)->delete();
-            return response()->json([
-                'statusCode' => 200,
-                'success' => true,
-                'message' => 'Product Deleted Successfully',
-            ], 200);
-        } catch (\Throwable $th) {
-            //throw $th;
-            return response()->json([
-                'statusCode' => 401,
-                'success' => false,
-                'message' => 'Something went wrong.',
-                'error' => $e->getMessage(),
-            ], 401);
-        }
+        $user_id = Auth::user()->id;
+        Cart::whereId($cart_id)
+        ->whereBuyerId($user_id)
+        ->whereSellerId($seller_id)
+        ->delete();
 
-    }
-
-    public function updateQuantity(Request $request)
-    {
-        $userId = Auht::user()->id;
-        $buyerId = $request->buyer_id;
-        $productId = $request->product_id;
-        $quantity = $request->quantity;
-
-        try {
-            //code...
-            $cartData = Cart::whereBuyerId($buyerId)->whereProductId($productId)->first();
-            $cartData->quantity = $quantity;
-            $cartData->save();
-            return response()->json([
-                'statusCode' => 200,
-                'success' => true,
-                'message' => 'Quantity Updated Successfully',
-            ], 200);
-        } catch (\Throwable $th) {
-            //throw $th;
-            return response()->json([
-                'statusCode' => 401,
-                'success' => false,
-                'message' => 'Something went wrong.',
-                'error' => $e->getMessage(),
-            ], 401);
-        }
+        return response()->json([
+            'statusCode' => 200,
+            'success' => true,
+            'message' => 'Product Deleted Successfully',
+        ], 200);
 
     }
 
@@ -140,7 +148,6 @@ class CartController extends Controller
         $store_id = Store::select("id")->where("user_id", $seller_id)->first()->id;
 
         $requestData = collect($request->cart);
-        $productIds = $requestData->pluck('product_id');
         $productQuantity = $requestData->mapWithKeys(function ($item) {
             return [$item['product_id'] => $item['quantity']];
         });
@@ -151,7 +158,9 @@ class CartController extends Controller
                 foreach ($requestData as $data) {
                     $query->orWhere(function ($q) use ($data) {
                         $q->where('product_id', $data["product_id"])
-                            ->where('quantity', ">=", $data["quantity"]);
+                            ->where('quantity', ">=", $data["quantity"])
+                            ->where('price', '>', 0)
+                            ->where('quantity', '>', 0);
                     });
                 }
             })

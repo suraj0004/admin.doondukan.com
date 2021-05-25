@@ -154,6 +154,8 @@ Route::group(['namespace'=>'Api\Ecommerce','prefix' => 'ecommerce'],function(){
             Route::post('sync','CartController@syncCart');
             Route::post('add','CartController@add');
             Route::get('get','CartController@fetchCartProducts');
+            Route::patch('update','CartController@updateQuantity');
+            Route::delete('delete/{cart_id}','CartController@deleteCartProduct');
         });
         Route::get('/','ShopController@index');
         Route::get('/{categorySlug}','ShopController@getCategoryProducts');
