@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Orders;
 use App\Models\Cart;
+use DB;
 use App\Models\OrderItem;
 use Validator;
 
@@ -26,7 +27,13 @@ class OrderController extends Controller
 
         $buyer = Auth::User();
 
-        $cartData = Cart::where('buyer_id',$buyer->id)->where('seller_id',$seller_id)->get();
+        $cartData = Cart::select('carts.*','stocks.price')
+                    ->join('stocks', function ($join) use ($seller_id) {
+                        $join->on('stocks.product_id', '=', 'carts.product_id')
+                        ->on('stocks.user_id', '=', DB::raw($seller_id));
+                    })->where('buyer_id',$buyer->id)
+                    ->where('seller_id',$seller_id)->get();
+
         if($cartData->isEmpty()) {
             return response()->json(['statusCode' => 200, 'success' => false, 'message' => "Oops! Cart Is Empty."], 200);
         }

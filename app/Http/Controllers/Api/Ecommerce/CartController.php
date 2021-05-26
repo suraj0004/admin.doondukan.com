@@ -63,7 +63,6 @@ class CartController extends Controller
         $cart->store_id = $store->id;
         $cart->product_id = $request->product_id;
         $cart->quantity = 1;
-        $cart->price = $stock->price;
         $data = $cart->save();
         $cart->load(["product"]);
 

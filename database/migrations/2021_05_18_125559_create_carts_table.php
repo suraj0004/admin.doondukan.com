@@ -22,7 +22,6 @@ class CreateCartsTable extends Migration
             $table->foreignId('store_id')->constrained();                //db->store id
             $table->foreignId('product_id')->constrained();         //body
             $table->integer('quantity');                            //body
-            $table->double('price', 15, 8)->default(0)->comment('Per piece price');            //db->product
             $table->timestamps();
         });
     }
