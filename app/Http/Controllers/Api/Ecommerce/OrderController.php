@@ -82,7 +82,11 @@ class OrderController extends Controller
     public function orderList()
     {
         $user = Auth::User();
-        $data = Orders::select('order_no','order_amount','status','created_at')->where('buyer_id',$user->id)->get();
+        $data = Orders::select('order_no','order_amount','status','created_at','seller_id')
+                    ->withCount("orderitem")
+                    ->with("store")
+                    ->where('buyer_id',$user->id)
+                    ->get();
 
         if($data->isEmpty()) {
             return response()->json(['statusCode' => 200, 'success' => false, 'message' => "No order found."], 200);
