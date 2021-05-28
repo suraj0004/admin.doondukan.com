@@ -13,7 +13,7 @@ use Validator;
 
 class OrderController extends Controller
 {
-    public function confirmOrder($seller_id,Request $request)
+    public function checkout(Request $request, $seller_id, $shop_slug)
     {
         $validator = Validator::make($request->all(), [
             'fromDate' => 'required|date_format:Y-m-d H:i:s',
@@ -60,7 +60,7 @@ class OrderController extends Controller
         $this->destroyCart($buyer,$seller_id);
 
         //Todo Sent message to seller
-        
+
         return response()->json(['statusCode' => 200, 'success' => true, 'message' => "Order Placed Successfully."], 200);
     }
 
@@ -68,7 +68,7 @@ class OrderController extends Controller
     {
         Cart::where('buyer_id',$buyer->id)->where('seller_id',$seller_id)->delete();
     }
-    
+
     private function getOrderNumber()
     {
         $orderNumber = rand(12125460894,9923564785);
@@ -77,19 +77,23 @@ class OrderController extends Controller
             $this->getOrderNumber();
         }
         return $orderNumber;
-    } 
+    }
 
     public function orderList()
     {
         $user = Auth::User();
-        $data = Orders::select('order_no','order_amount','status','created_at')->where('buyer_id',$user->id)->get();
+        $data = Orders::select('order_no','order_amount','status','created_at','seller_id')
+                    ->withCount("orderitem")
+                    ->with("store")
+                    ->where('buyer_id',$user->id)
+                    ->get();
 
         if($data->isEmpty()) {
             return response()->json(['statusCode' => 200, 'success' => false, 'message' => "No order found."], 200);
         }
 
         return response()->json(['statusCode' => 200, 'success' => true, 'message' => "Order list.",'data'=>$data], 200);
-    } 
+    }
 
     public function orderDetails($order_no)
     {
@@ -100,5 +104,5 @@ class OrderController extends Controller
         }
 
         return response()->json(['statusCode' => 200, 'success' => true, 'message' => "Order details.","data"=>$data], 200);
-    } 
+    }
 }
