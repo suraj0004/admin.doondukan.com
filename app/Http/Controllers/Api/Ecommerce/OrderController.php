@@ -10,6 +10,8 @@ use App\Models\Cart;
 use DB;
 use App\Models\OrderItem;
 use Validator;
+use App\Http\Resources\Ecommerce\OrderCollection;
+
 
 class OrderController extends Controller
 {
@@ -92,7 +94,10 @@ class OrderController extends Controller
             return response()->json(['statusCode' => 200, 'success' => false, 'message' => "No order found."], 200);
         }
 
-        return response()->json(['statusCode' => 200, 'success' => true, 'message' => "Order list.",'data'=>$data], 200);
+        return (new OrderCollection($data))->additional([
+            "message" => "Order list Data",
+        ]);
+
     }
 
     public function orderDetails($order_no)
