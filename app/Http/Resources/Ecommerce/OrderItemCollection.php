@@ -2,26 +2,22 @@
 
 namespace App\Http\Resources\Ecommerce;
 
-use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Http\Resources\Json\ResourceCollection;
 
-class OrderResource extends JsonResource
+class OrderItemCollection extends ResourceCollection
 {
     /**
-     * Transform the resource into an array.
+     * Transform the resource collection into an array.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     public function toArray($request)
     {
-        return [
-            "order_no" => $this->order_no,
-            "order_amount" => $this->order_amount,
-            "orderitem_count" => $this->orderitem_count,
-            "status" => $this->status,
-            "created_at" => $this->created_at,
-            "store" => new StoreResource($this->store),
-        ];
+        $this->collection->transform(function ($item) {
+            return (new OrderItemResource($item));
+        });
+        return parent::toArray($request);
     }
 
     /**

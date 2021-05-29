@@ -11,6 +11,8 @@ use DB;
 use App\Models\OrderItem;
 use Validator;
 use App\Http\Resources\Ecommerce\OrderCollection;
+use App\Http\Resources\Ecommerce\OrderResource;
+use App\Http\Resources\Ecommerce\OrderItemCollection;
 
 
 class OrderController extends Controller
@@ -103,11 +105,21 @@ class OrderController extends Controller
     public function orderDetails($order_no)
     {
         $user = Auth::User();
-        $data = Orders::select('id','seller_id','order_no','order_amount','status','created_at')->with(['seller:id,name','orderitem:id,order_id,product_id,quantity,price'])->where('buyer_id',$user->id)->first();
+        $data = Orders::select('id','seller_id','order_no','order_amount','status','created_at')
+                ->with(['store','orderitem:id,order_id,product_id,quantity,price'])
+                ->where('buyer_id',$user->id)
+                ->where('order_no',$order_no)
+                ->first();
         if(!$data) {
             return response()->json(['statusCode' => 200, 'success' => false, 'message' => "Order not found."], 200);
         }
+        return (new OrderResource($data))->additional([
+            "message" => "Order Detail Data",
+            "data" => [
+                "items" =>new OrderItemCollection($data->orderitem),
+                "buyer" => $user
+            ]
+        ]);
 
-        return response()->json(['statusCode' => 200, 'success' => true, 'message' => "Order details.","data"=>$data], 200);
     }
 }

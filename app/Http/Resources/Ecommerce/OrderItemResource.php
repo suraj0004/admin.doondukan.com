@@ -4,7 +4,7 @@ namespace App\Http\Resources\Ecommerce;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class OrderResource extends JsonResource
+class OrderItemResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,12 +15,14 @@ class OrderResource extends JsonResource
     public function toArray($request)
     {
         return [
-            "order_no" => $this->order_no,
-            "order_amount" => $this->order_amount,
-            "orderitem_count" => $this->orderitem_count,
-            "status" => $this->status,
-            "created_at" => $this->created_at,
-            "store" => new StoreResource($this->store),
+            "price" => $this->price,
+            "quantity" => $this->quantity,
+            "product" => [
+                "name" => $this->product->name,
+                "weight" => $this->product->weight . ' ' . $this->product->weight_type,
+                "image" => getFileUrl(config("constants.disks.PRODUCT"), $this->product->image),
+                "thumbnail" => getFileUrl(config("constants.disks.PRODUCT"), "thumb_".$this->product->image)
+            ],
         ];
     }
 
