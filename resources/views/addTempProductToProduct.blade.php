@@ -100,7 +100,7 @@
                             </div>
                         </div>
                         <div class="text-center pt-3">
-                                <button type="submit" class="btn btn-info">Assign Product</button>
+                            <button type="submit" class="btn btn-info">Assign Product</button>
                         </div>
                         </form>
                     </div>

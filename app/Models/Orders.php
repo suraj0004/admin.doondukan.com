@@ -19,4 +19,9 @@ class Orders extends Model
     {
     	return $this->hasOne(User::class, 'id', 'seller_id');
     }
+
+    public function store()
+    {
+    	return $this->hasOne(Store::class, 'user_id', 'seller_id');
+    }
 }

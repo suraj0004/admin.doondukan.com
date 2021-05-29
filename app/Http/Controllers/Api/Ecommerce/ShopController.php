@@ -10,6 +10,7 @@ use App\Models\Stock;
 use DB;
 use App\Http\Resources\Ecommerce\CategoryCollection;
 use App\Http\Resources\Ecommerce\CategoryProductCollection;
+use App\Http\Resources\Ecommerce\StoreResource;
 
 class ShopController extends Controller
 {
@@ -63,11 +64,13 @@ class ShopController extends Controller
 
     public function sellerInfo($id)
     {
-        $sellerData = Store::select('id','user_id','name','mobile','address','logo')->where('id',$id)->with('user:id,name')->first();
+        $sellerData = Store::select('id','user_id','name','mobile','address','logo','open_at','close_at')->where('id',$id)->with('user:id,name')->first();
         if(!$sellerData) {
             return response()->json(['statusCode' => 200, 'success' => false, 'message' => "No data found."], 200);
         }
 
-        return response()->json(['statusCode' => 200, 'success' => false, 'message' => "seller infp.","data"=>$sellerData], 200);
+        return (new StoreResource($sellerData))->additional([
+            "message" => "Seller information get successfully.",
+        ]);
     }
 }
