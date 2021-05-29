@@ -18,8 +18,9 @@ class ShopOrderController extends Controller
     {
         //
         $shopkeeperId  = Auth::user()->id;
-        $orderData     = \App\Models\Orders::whereSellerId($shopkeeperId)->get();
-        return $orderData;
+        $orderData     = \App\Models\Orders::with(['orderitem','seller', 'buyer'])->whereSellerId($shopkeeperId)->get();
+
+        return response()->json(['statusCode'=>200,'success'=>true,'message'=>'All orders fetched successfully.','data'=>$orderData], 200);
 
         // $array = ['test'=>2, 'test2'=> 4];
         // $jsonArray  = json_encode($array);
