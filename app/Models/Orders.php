@@ -24,4 +24,10 @@ class Orders extends Model
     {
     	return $this->hasOne(Store::class, 'user_id', 'seller_id');
     }
+    public function buyer()
+    {
+        return $this->hasOne(User::class, 'id', 'buyer_id');
+    }
+
+    
 }
