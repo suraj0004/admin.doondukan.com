@@ -28,6 +28,39 @@ class ShopOrderController extends Controller
     }
 
     /**
+     * updating status
+     */
+    public function updateStatus(Request $request)
+    {
+      
+        $orderId  =  $request->id;
+        // aprint($request->all());
+        $orderData   =  \App\Models\Orders::whereId($orderId)->update(['status'=>config('constants.ORDERSTATUS.CONFIRM')]);
+
+        $orderProducts = \App\Models\Orders::with(['orderitem'])->whereId($orderId)->first();
+
+        
+        // aprint($orderProducts->orderitem);
+        // exit;
+
+
+        foreach ($orderProducts->orderitem as $key => $value) {
+            # code...
+
+            $updateQuant = \App\Models\Stock::whereProductId($value->product_id)->whereUserId($orderProducts->seller_id)
+                           ->decrement('quantity', $value->quantity);
+        }
+
+
+        return ($request->id);
+
+    }
+
+
+
+
+
+    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response

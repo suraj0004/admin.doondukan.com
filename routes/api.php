@@ -72,6 +72,9 @@ Route::group(['middleware' => ['auth:api','shoopkeeper'],'prefix'=>'retail'], fu
 	//API for getting all orders
 
 	Route::get('get/orders', 'Api\ShopOrderController@index');
+
+	// updating order confirmations status 
+	Route::post('shop/order', 'Api\ShopOrderController@updateStatus');
 	//Get user bill list API(GET)
 	Route::get('billList', 'Api\BillController@getBill');
 
