@@ -143,6 +143,10 @@ Route::group(['middleware' => ['auth:api','shoopkeeper'],'prefix'=>'retail'], fu
 		Route::get('profit-growth','ProfitGrowthController');
 		Route::get('purchase-growth','PurchaseGrowthController');
 	});
+
+	//Download Shop QR Code
+	Route::get('/get-qr','Api\UserController@getShopQR');
+	
 });
 
 /** Ecommerce api */

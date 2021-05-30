@@ -13,14 +13,5 @@ return [
         'COMPLETED' => 3
     ],
 
-
-
-
-
-
-
-
-
-
-
+    "ECOM_APP_URL"=>env('ECOM_APP_URL'),
 ];
