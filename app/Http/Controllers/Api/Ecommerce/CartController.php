@@ -151,7 +151,7 @@ class CartController extends Controller
             return [$item['product_id'] => $item['quantity']];
         });
 
-        $products = Stock::select("price", "product_id")
+        $products = Stock::select("product_id")
             ->where('user_id', $seller_id)
             ->where(function ($query) use ($requestData) {
                 foreach ($requestData as $data) {
@@ -170,7 +170,7 @@ class CartController extends Controller
             foreach ($products as $product) {
                 Cart::updateOrCreate(
                     ["buyer_id" => $buyer_id, "seller_id" => $seller_id, "store_id" => $store_id, "product_id" => $product->product_id],
-                    ["quantity" => $productQuantity[$product->product_id], "price" => $product->price]
+                    ["quantity" => $productQuantity[$product->product_id]]
                 );
             }
             DB::commit();

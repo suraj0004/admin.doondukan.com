@@ -14,7 +14,7 @@ class AddStatusToOrdersTable extends Migration
     public function up()
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->tinyInteger('status')->after('to_time')->default(0)->comment('0:Order Placed,1:Order Confirm,2:Order Completed');
+            $table->tinyInteger('status')->after('to_time')->default(0)->comment('0:Order Placed, 1:Order Confirm, 2:Order Completed, 3: Order Cancelled');
         });
     }
 
