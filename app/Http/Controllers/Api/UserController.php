@@ -49,10 +49,12 @@ class UserController extends Controller
 	{
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'email' => 'required|email|unique:users',
+            'email' => 'email|unique:users',
             'phone'=>'required|numeric|unique:users',
             'password' => 'required',
             'c_password' => 'required|same:password',
+            'lat' => 'required',
+            'lng' => 'required',
         ]);
 
 		if ($validator->fails())
@@ -65,6 +67,8 @@ class UserController extends Controller
         $user->name = $request->name;
         $user->phone = $request->phone;
         $user->email = $request->email;
+        $user->lat = $request->lat;
+        $user->lng = $request->lng;
         $user->role = 'SHOPKEEPER';
         $user->password = bcrypt($request->password);
         $user->save();
