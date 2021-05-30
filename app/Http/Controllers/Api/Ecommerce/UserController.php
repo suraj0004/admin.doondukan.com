@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Validator;
+use App\Http\Requests\Api\Ecommerce\UpdateProfileRequest;
 
 class UserController extends Controller
 {
@@ -85,5 +86,18 @@ class UserController extends Controller
         {
             return response()->json(['statusCode'=>200,'success'=>true,'message'=>'User Successfully Logout'], 200);
         }
+    }
+
+    public function updateProfile(UpdateProfileRequest $request)
+    {
+        $user = Auth::user();
+        $user->update($request->getData());
+        return response()->json([
+            'statusCode'=>200,
+            'success'=>true,
+            'message'=>'Profile updated successfully.',
+            'data'=>$user
+        ], 200);
+
     }
 }
