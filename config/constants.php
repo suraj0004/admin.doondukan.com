@@ -6,4 +6,21 @@ return [
         "STORE" => 'stores',
     ],
     "DEFAULT_IMAGE_PATH" => "image/default_image.png",
+
+    'ORDERSTATUS' => [
+        'PLACED' => 1,
+        'CONFIRM' => 2,
+        'COMPLETED' => 3
+    ],
+
+
+
+
+
+
+
+
+
+
+
 ];

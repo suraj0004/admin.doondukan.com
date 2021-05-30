@@ -69,6 +69,12 @@ Route::group(['middleware' => ['auth:api','shoopkeeper'],'prefix'=>'retail'], fu
 	//Generate Bill API(GET)
 	Route::post('generateBill', 'Api\BillController@generateBill');
 
+	//API for getting all orders
+
+	Route::get('get/orders', 'Api\ShopOrderController@index');
+
+	// updating order confirmations status 
+	Route::post('shop/order', 'Api\ShopOrderController@updateStatus');
 	//Get user bill list API(GET)
 	Route::get('billList', 'Api\BillController@getBill');
 
@@ -165,8 +171,10 @@ Route::group(['namespace'=>'Api\Ecommerce','prefix' => 'ecommerce'],function(){
     Route::group(['middleware' => ['auth:api','user']], function(){
 
         Route::post('logout', 'UserController@logout');
+        Route::post('profile/update', 'UserController@updateProfile');
+
         Route::group(['prefix' => 'order' ], function(){
-        	Route::post('confirm/{seller_id}','OrderController@confirmOrder');
+        	Route::post('checkout/{seller_id}-{shop_slug}','OrderController@checkout');
         	Route::get('list','OrderController@orderList');
         	Route::get('detail/{order_no}','OrderController@orderDetails');
         });
