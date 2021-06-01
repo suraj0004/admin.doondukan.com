@@ -61,6 +61,12 @@ class StockController extends Controller
 	{
 		$user = Auth::User();
 		$getStocklistproduct = Stock::with('product')->where('product_source','main')->where('user_id',$user->id)->orderBy('created_at','desc')->get();
+		foreach ($getStocklistproduct as $key => $value) {
+			# code...
+			$value->product->image =  getFileUrl(config("constants.disks.PRODUCT"), $value->product->image) ;
+		}
+
+
 		$getStocklistproducttemp = Stock::with('tempProduct')->where('product_source','temp')->where('user_id',$user->id)->orderBy('created_at','desc')->get();
 		if( count($getStocklistproduct) > 0 || count($getStocklistproducttemp) > 0 )
 		{

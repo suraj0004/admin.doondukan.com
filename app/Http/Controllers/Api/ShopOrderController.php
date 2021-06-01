@@ -34,8 +34,9 @@ class ShopOrderController extends Controller
     {
       
         $orderId  =  $request->id;
+        $status   = $request->status;
         // aprint($request->all());
-        $orderData   =  \App\Models\Orders::whereId($orderId)->update(['status'=>config('constants.ORDERSTATUS.CONFIRM')]);
+        $orderData   =  \App\Models\Orders::whereId($orderId)->update(['status'=>$status]);
 
         $orderProducts = \App\Models\Orders::with(['orderitem'])->whereId($orderId)->first();
 

@@ -114,6 +114,8 @@ class UserController extends Controller
         $store->address = $request->address;
         $store->about = $request->about;
         $store->registration_date = $request->registration_date;
+        $store->open_at = $request->open_at;
+        $store->close_at = $request->close_at;
 
         if($request->hasFile('logo') )
         {
@@ -190,6 +192,8 @@ class UserController extends Controller
     {
         $user = Auth::User();
         $data = User::with('store')->withCount(['stocks','availableStocks'])->where('id',$user->id)->first();
+        $data->store['shop_url'] = "https://app.doondukan.com/".$data->store->user_id."-".$data->store->slug;
+
         if( $data )
         {
             return response()->json(['statusCode'=>200,'success'=>true,'message'=>'User Profile','data'=>$data],200);

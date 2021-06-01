@@ -94,6 +94,7 @@ class AdminController extends Controller
         $product->category_id = $request->category;
         $product->weight = $request->weight;
         $product->weight_type = $request->weight_type;
+
         if($request->hasFile('image')){
             $product->image = saveFile(config("constants.disks.PRODUCT"), $product->slug, $request->file('image'), true);
         }
@@ -216,11 +217,15 @@ class AdminController extends Controller
         $product->category_id = $request->category;
         $product->weight = $request->weight;
         $product->weight_type = $request->weight_type;
+        
+        
         if($request->hasFile('image')){
-            $image = $product->image;
-            $product->image = saveFile(config("constants.disks.PRODUCT"), $product->slug, $request->file('image'), true,$image);
+            $image = $request->image;
+            $product->image = saveFile(config("constants.disks.PRODUCT"), $product->slug, $request->file('image'), false,$image);
         }
-        if( $product->save() )
+
+        
+        if( $product->save() ) 
         {
             return back()->with(['status'=>'success','message'=>'Product Updated Succefully.']);
         }
