@@ -13,7 +13,7 @@ use App\Models\Store;
 use App\Models\Purchase;
 use Validator;
 use Image;
-
+use QrCode;
 class UserController extends Controller
 {
     //API Login
@@ -49,10 +49,12 @@ class UserController extends Controller
 	{
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'email' => 'required|email|unique:users',
+            'email' => 'email|unique:users',
             'phone'=>'required|numeric|unique:users',
             'password' => 'required',
             'c_password' => 'required|same:password',
+            'lat' => 'required',
+            'lng' => 'required',
         ]);
 
 		if ($validator->fails())
@@ -65,6 +67,8 @@ class UserController extends Controller
         $user->name = $request->name;
         $user->phone = $request->phone;
         $user->email = $request->email;
+        $user->lat = $request->lat;
+        $user->lng = $request->lng;
         $user->role = 'SHOPKEEPER';
         $user->password = bcrypt($request->password);
         $user->save();
@@ -226,5 +230,21 @@ class UserController extends Controller
         {
             return response()->json(['statusCode'=>200,'success'=>false,'message'=>'password did not match'],200);
         }
+    }
+
+    public function getShopQR() 
+    {
+        
+        $user = Auth::user();
+        $user->load('store');
+        if(empty($user->store)){
+          abort(404);
+        }
+        $url = config("constants.ECOM_APP_URL").$user->id.'-'.$user->store->slug;
+        $qr = QrCode::size(500)->format('png')->generate($url);
+
+        header('Content-Type: image/png');
+        header('Content-Disposition: attachment; filename="myshopQR.png"'); 
+        echo $qr; exit();
     }
 }

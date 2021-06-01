@@ -12,7 +12,7 @@ class Orders extends Model
 
     public function orderitem()
     {
-    	return $this->hasMany(OrderItem::class, 'order_id', 'id')->with('product:id,name,weight,weight_type');
+    	return $this->hasMany(OrderItem::class, 'order_id', 'id')->with('product:id,name,weight,weight_type,image');
     }
 
     public function seller()
@@ -29,5 +29,5 @@ class Orders extends Model
         return $this->hasOne(User::class, 'id', 'buyer_id');
     }
 
-    
+
 }

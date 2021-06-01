@@ -65,7 +65,7 @@ class OrderController extends Controller
 
         //Todo Sent message to seller
 
-        return response()->json(['statusCode' => 200, 'success' => true, 'message' => "Order Placed Successfully."], 200);
+        return response()->json(['statusCode' => 200, 'success' => true, 'message' => "Order Placed Successfully.","data" => $orderData], 200);
     }
 
     private function destroyCart($buyer,$seller_id)
@@ -120,6 +120,30 @@ class OrderController extends Controller
                 "buyer" => $user
             ]
         ]);
+
+    }
+
+    public function cancleOrder(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'order_no' => 'required|numeric|exists:orders,order_no',
+         ]);
+
+        if ($validator->fails()) {
+            $message = $validator->errors()->first();
+            return response()->json(['statusCode'=>200,'success'=>false,'message'=>$message], 200);
+        }
+
+        Orders::where('order_no',$request->order_no)
+                ->update([
+                    "status" => 3
+                ]);
+
+        return response()->json([
+            'statusCode'=>200,
+            'success'=>true,
+            'message'=> "Order cancelled successfully."
+        ], 200);
 
     }
 }

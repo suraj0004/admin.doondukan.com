@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+Route::get('storeEcomData', 'HomeController@storeEcomData');
 
 Auth::routes(['register' => false, 'reset' => false, 'verify' => false]);
 

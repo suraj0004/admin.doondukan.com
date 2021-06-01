@@ -16,10 +16,11 @@ class CreateProductsTable extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->foreignId('brand_id');
+            $table->foreignId('brand_id')->nullable();
             $table->foreignId('category_id');
-            $table->string('weight');
-            $table->enum('weight_type', ['kg', 'gm','l','ml']);
+            $table->string('weight')->nullable();
+            $table->string('price')->nullable();
+            $table->string('weight_type')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

@@ -92,6 +92,7 @@ class AdminController extends Controller
         $product->slug = Str::slug($request->name);
         $product->brand_id = $request->brand;
         $product->category_id = $request->category;
+        $product->price = $request->price;
         $product->weight = $request->weight;
         $product->weight_type = $request->weight_type;
 
@@ -215,6 +216,7 @@ class AdminController extends Controller
         $product->slug = Str::slug($request->name);
         $product->brand_id = $request->brand;
         $product->category_id = $request->category;
+        $product->price = $request->price;
         $product->weight = $request->weight;
         $product->weight_type = $request->weight_type;
         
