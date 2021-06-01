@@ -107,7 +107,6 @@ class CartController extends Controller
         }
 
         $cart->quantity = $request->quantity;
-        $cart->price = $stock->price;
         $cart->save();
 
         return response()->json([
