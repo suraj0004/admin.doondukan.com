@@ -146,7 +146,8 @@ Route::group(['middleware' => ['auth:api','shoopkeeper'],'prefix'=>'retail'], fu
 
 	//Download Shop QR Code
 	Route::get('/get-qr','Api\UserController@getShopQR');
-	
+	Route::get('/get-product-catalogue','Api\ProductController@getProductCatalogue');
+	Route::post('/add-product-from-catalogue','Api\PurchaseController@addProductToCatalogue');
 });
 
 /** Ecommerce api */
@@ -154,7 +155,7 @@ Route::group(['namespace'=>'Api\Ecommerce','prefix' => 'ecommerce'],function(){
 
     Route::post('login', 'UserController@login');
     Route::post('register', 'UserController@register');
-
+    Route::get('/get-near-by-shop', 'ShopController@getNearByShop');
     /** Shop specific routes */
     Route::group(['prefix' => '{seller_id}-{shop_slug}' ], function(){
 

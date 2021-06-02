@@ -11,6 +11,7 @@ use DB;
 use App\Http\Resources\Ecommerce\CategoryCollection;
 use App\Http\Resources\Ecommerce\CategoryProductCollection;
 use App\Http\Resources\Ecommerce\StoreResource;
+use App\Http\Resources\ShopCollection;
 
 class ShopController extends Controller
 {
@@ -71,6 +72,18 @@ class ShopController extends Controller
 
         return (new StoreResource($sellerData))->additional([
             "message" => "Seller information get successfully.",
+        ]);
+    }
+
+    public function getNearByShop()
+    {
+        $data = Store::select('id','user_id','name','slug','address','logo')->get();
+        if($data->isEmpty()){
+            return response()->json(['statusCode' => 200, 'success' => false, 'message' => "No data found."], 200);
+        }
+
+        return (new ShopCollection($data))->additional([
+            "message" => "Shops listing",
         ]);
     }
 }
