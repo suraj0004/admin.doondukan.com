@@ -3,9 +3,9 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\ResourceCollection;
-use App\Models\Product;
+use App\Models\Store;
 
-class ProductCollection extends ResourceCollection
+class ShopCollection extends ResourceCollection
 {
     /**
      * Transform the resource collection into an array.
@@ -15,18 +15,12 @@ class ProductCollection extends ResourceCollection
      */
     public function toArray($request)
     {
-        $this->collection->transform(function (Product $productlist) {
-            return (new ProductResource($productlist));
+        $this->collection->transform(function (Store $data) {
+            return (new ShopResource($data));
         });
         return parent::toArray($request);
     }
 
-    /**
-     * Get additional data that should be returned with the resource array.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array
-    */
     public function with($request)
     {
         return [

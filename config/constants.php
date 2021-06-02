@@ -15,4 +15,5 @@ return [
     ],
 
     "ECOM_APP_URL"=>env('ECOM_APP_URL'),
+    "DEFAULT_QTY" => 10,
 ];
