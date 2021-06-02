@@ -15,9 +15,9 @@ use App\Http\Resources\ShopCollection;
 
 class ShopController extends Controller
 {
-    public function index($id, $slug)
+    public function index($seller_id, $slug)
     {
-        $getUserId = Store::select('user_id')->where('id', $id)->first();
+        $getUserId = Store::select('user_id')->where('user_id', $seller_id)->first();
         if (!$getUserId) {
             return response()->json(['statusCode' => 200, 'success' => false, 'message' => "Shop not found."], 200);
         }
@@ -41,7 +41,7 @@ class ShopController extends Controller
 
     public function getCategoryProducts(Request $request)
     {
-        $getUserId = Store::select('user_id')->where('id', $request->seller_id)->first();
+        $getUserId = Store::select('user_id')->where('user_id', $request->seller_id)->first();
         if (!$getUserId) {
             return response()->json(['statusCode' => 200, 'success' => false, 'message' => "Shop not found."], 200);
         }
