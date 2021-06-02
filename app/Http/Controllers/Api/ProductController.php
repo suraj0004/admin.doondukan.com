@@ -22,7 +22,7 @@ class ProductController extends Controller
     		$tempProductlist = [];
     	}
     	$data['main'] = $productlist;
-    	$data['temp'] = $tempProductlist;
+		$data['temp'] = $tempProductlist;
 		return response()->json(['statusCode'=>200,'success'=>true,'message'=>'Products List.','data'=>$data], 200);
     }
 

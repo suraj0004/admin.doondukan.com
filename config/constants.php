@@ -8,9 +8,10 @@ return [
     "DEFAULT_IMAGE_PATH" => "image/default_image.png",
 
     'ORDERSTATUS' => [
-        'PLACED' => 1,
-        'CONFIRM' => 2,
-        'COMPLETED' => 3
+        'PLACED' => 0,
+        'CONFIRM' => 1,
+        'COMPLETED' => 2,
+        'CANCEL' => 3
     ],
 
     "ECOM_APP_URL"=>env('ECOM_APP_URL'),
