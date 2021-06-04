@@ -30,7 +30,7 @@
                                 <label for="brand">Select Brand</label>
                             </div>
                             <div class="col-md-4">
-                                <select class="form-control" id="brand" name="brand" required>
+                                <select class="form-control" id="brand" name="brand">
                                     <option value="">Select Brand</option>
                                     @foreach($brands as $brand)
                                     <option value="{{ $brand->id }}"  @if($data->brand->id==$brand->id ) selected @endif>{{ $brand->brand_name}}</option>
@@ -49,6 +49,14 @@
                                     <option value="{{ $category->id }}" @if($data->category->id==$category->id ) selected @endif >{{ $category->category_name }}</option>
                                     @endforeach
                                 </select>
+                            </div>
+                        </div>
+                        <div class="row form-group">
+                            <div class="col-md-4">
+                                <label for="Price">Price</label>
+                            </div>
+                            <div class="col-md-4">
+                                <input type="text" name="price" id="Price" class="form-control" value="{{ $data->price }}" required>
                             </div>
                         </div>
                         <div class="row form-group">

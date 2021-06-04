@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Resources\Ecommerce;
+namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class StoreResource extends JsonResource
+class ProductResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -15,23 +15,22 @@ class StoreResource extends JsonResource
     public function toArray($request)
     {
         return [
-            "shop_name" => $this->name,
-            "mobile" => $this->mobile,
-            "address" => $this->address,
-            "open_at" => $this->open_at,
-            "close_at" => $this->close_at,
-            "shop_url" => "https://app.doondukan.com/".$this->user_id."-".$this->slug,
-            "logo" => getFileUrl(config("constants.disks.STORE"), $this->logo),
-            "seller_name" => $this->user->name,
-        ];
+                "id" => $this->id,
+                "name" => $this->name,
+                "weight" => $this->weight,
+                "weight_type"=>$this->weight_type,
+                "price"=>$this->price,
+                "image" => getFileUrl(config("constants.disks.PRODUCT"), $this->image),
+                "thumbnail" => getFileUrl(config("constants.disks.PRODUCT"), "thumb_".$this->image)
+            ];
     }
 
-     /**
+    /**
      * Get additional data that should be returned with the resource array.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return array
-     */
+    */
     public function with($request)
     {
         return [

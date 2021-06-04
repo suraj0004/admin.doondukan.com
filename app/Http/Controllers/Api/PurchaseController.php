@@ -6,9 +6,11 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Validator;
+use DB;
 use Carbon\Carbon;
 use App\Models\Purchase;
 use App\Models\Stock;
+use App\Models\Product;
 
 
 class PurchaseController extends Controller
@@ -84,5 +86,56 @@ class PurchaseController extends Controller
     	{
     		return response()->json(['statusCode'=>200,'success'=>false,'message'=>'No Purchased List Found.'], 200);
     	}
+    }
+
+    public function addProductToCatalogue(Request $request)
+    {
+    	$validator = Validator::make($request->all(), [ 
+            'product_ids' => 'required|array',
+		]);
+
+        if ($validator->fails()) { 
+			$message = $validator->errors()->first();
+		    return response()->json(['statusCode'=>200,'success'=>false,'message'=>$message], 200);            
+		}
+		$product_ids = array_unique($request->product_ids);
+		$user = Auth::User();
+		$product = Product::whereIn('id',$product_ids)->get();
+		if($product->isEmpty()){
+			return response()->json(['statusCode'=>200,'success'=>false,'message'=>'No Product Found.'], 200);
+		}
+		DB::beginTransaction();
+        try{
+			foreach ($product as $key => $value) {
+				$purchase = new Purchase();
+				$purchase->user_id = $user->id;
+				$purchase->price = $value->price;
+				$purchase->product_id = $value->id;
+				$purchase->product_source = "main";
+				$purchase->quantity = config("constants.DEFAULT_QTY");
+				$purchase->save();
+				$product_stock = Stock::where('product_id',$value->id)->where('user_id',$user->id)->first();
+				if(!$product_stock){
+					$product_stock = new Stock();
+				}
+				$product_stock->user_id = $user->id;
+				$product_stock->product_id = $value->id;
+				$product_stock->quantity =  config("constants.DEFAULT_QTY") + $product_stock->quantity;
+				$price =  $value->price;
+				if(!empty($product_stock->price)){ 
+					$price =  $product_stock->price;
+				}	
+				$product_stock->price = $price;
+				$product_stock->product_source = "main";
+				$product_stock->last_purchased_at = Carbon::now();
+				$product_stock->save();
+			}
+		} catch(Exception $e){
+            DB::rollback();
+            return response()->json(["success" => false,"message" => "Oops something went wrong.",],200);
+        }
+
+        DB::commit();
+		return response()->json(['statusCode'=>200,'success'=>true,'message'=>'Product Succesfully Added.'], 200);
     }
 }

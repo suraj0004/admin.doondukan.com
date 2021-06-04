@@ -16,10 +16,12 @@ class CreateProductsTable extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->foreignId('brand_id');
-            $table->foreignId('category_id');
-            $table->string('weight');
-            $table->enum('weight_type', ['kg', 'gm','l','ml']);
+            $table->bigInteger('brand_id')->nullable();
+            $table->bigInteger('category_id')->nullable();
+            $table->string('weight')->nullable();
+            $table->string('price')->nullable();
+            $table->string('weight_type')->nullable();
+            $table->tinyInteger('status')->default(0)->comment("0 -> image from my dukan");
             $table->softDeletes();
             $table->timestamps();
         });

@@ -69,6 +69,12 @@ Route::group(['middleware' => ['auth:api','shoopkeeper'],'prefix'=>'retail'], fu
 	//Generate Bill API(GET)
 	Route::post('generateBill', 'Api\BillController@generateBill');
 
+	//API for getting all orders
+
+	Route::get('get/orders', 'Api\ShopOrderController@index');
+
+	// updating order confirmations status
+	Route::post('shop/order', 'Api\ShopOrderController@updateStatus');
 	//Get user bill list API(GET)
 	Route::get('billList', 'Api\BillController@getBill');
 
@@ -137,6 +143,11 @@ Route::group(['middleware' => ['auth:api','shoopkeeper'],'prefix'=>'retail'], fu
 		Route::get('profit-growth','ProfitGrowthController');
 		Route::get('purchase-growth','PurchaseGrowthController');
 	});
+
+	//Download Shop QR Code
+	Route::get('/get-qr','Api\UserController@getShopQR');
+	Route::get('/get-product-catalogue','Api\ProductController@getProductCatalogue');
+	Route::post('/add-product-from-catalogue','Api\PurchaseController@addProductToCatalogue');
 });
 
 /** Ecommerce api */
@@ -144,7 +155,7 @@ Route::group(['namespace'=>'Api\Ecommerce','prefix' => 'ecommerce'],function(){
 
     Route::post('login', 'UserController@login');
     Route::post('register', 'UserController@register');
-
+    Route::get('/get-near-by-shop', 'ShopController@getNearByShop');
     /** Shop specific routes */
     Route::group(['prefix' => '{seller_id}-{shop_slug}' ], function(){
 
@@ -165,10 +176,14 @@ Route::group(['namespace'=>'Api\Ecommerce','prefix' => 'ecommerce'],function(){
     Route::group(['middleware' => ['auth:api','user']], function(){
 
         Route::post('logout', 'UserController@logout');
+        Route::post('profile/update', 'UserController@updateProfile');
+
         Route::group(['prefix' => 'order' ], function(){
-        	Route::post('confirm/{seller_id}','OrderController@confirmOrder');
+        	Route::post('checkout/{seller_id}-{shop_slug}','OrderController@checkout');
         	Route::get('list','OrderController@orderList');
         	Route::get('detail/{order_no}','OrderController@orderDetails');
+            Route::post('cancel','OrderController@cancleOrder');
+
         });
     });
 });
