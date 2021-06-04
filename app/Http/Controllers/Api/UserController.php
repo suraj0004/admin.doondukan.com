@@ -196,7 +196,11 @@ class UserController extends Controller
     {
         $user = Auth::User();
         $data = User::with('store')->withCount(['stocks','availableStocks'])->where('id',$user->id)->first();
-        $data->store['shop_url'] = "https://app.doondukan.com/".$data->store->user_id."-".$data->store->slug;
+        if($data->store){
+            $data->shop_url = "https://app.doondukan.com/".$data->store->user_id."-".$data->store->slug;
+        }else{
+            $data->shop_url = "https://app.doondukan.com/".$user->id."-doondukan";
+        }
 
         if( $data )
         {
@@ -232,9 +236,9 @@ class UserController extends Controller
         }
     }
 
-    public function getShopQR() 
+    public function getShopQR()
     {
-        
+
         $user = Auth::user();
         $user->load('store');
         if(empty($user->store)){
@@ -244,7 +248,7 @@ class UserController extends Controller
         $qr = QrCode::size(500)->format('png')->generate($url);
 
         header('Content-Type: image/png');
-        header('Content-Disposition: attachment; filename="myshopQR.png"'); 
+        header('Content-Disposition: attachment; filename="myshopQR.png"');
         echo $qr; exit();
     }
 }
