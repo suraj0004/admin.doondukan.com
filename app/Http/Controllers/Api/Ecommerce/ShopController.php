@@ -77,7 +77,7 @@ class ShopController extends Controller
 
     public function getNearByShop()
     {
-        $data = Store::select('id','user_id','name','slug','address','logo')->get();
+        $data = Store::select('id','user_id','name','slug','address','logo','mobile','about','open_at','close_at')->with(['user'])->get();
         if($data->isEmpty()){
             return response()->json(['statusCode' => 200, 'success' => false, 'message' => "No data found."], 200);
         }
