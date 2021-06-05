@@ -20,7 +20,15 @@ class ShopResource extends JsonResource
             "name" => $this->name,
             "slug" => $this->slug,
             "address" => $this->address,
+            "mobile" => $this->mobile,
+            "about" => $this->about,
+            "open_at" => $this->open_at,
+            "close_at" => $this->close_at,
             "logo" => getFileUrl(config("constants.disks.STORE"), $this->logo),
+            "user" => [
+                "name" => $this->user->name,
+                "phone" => $this->user->phone,
+            ]
         ];
     }
 
