@@ -9,6 +9,8 @@ use Auth;
 use App\Models\Sale;
 use App\Models\Purchase;
 use App\Models\Bill;
+use QrCode;
+
 class DashboardController extends Controller
 {
     public function index()
@@ -50,6 +52,17 @@ class DashboardController extends Controller
          ->where('user_id',$user->id)
          ->first();
 
+
+        $store = $user->store;
+        $link = "";
+        $message = "";
+        $qr_code = "";
+        if($store){
+            $link = __("message.share_shop.link",["seller_id" => $store->user_id, "shop_slug" => $store->slug]);
+            $message = __("message.share_shop.message",["shop" => $store->name, "link" => $link, "mobile" => $store->mobile]);
+            $qr_code = "data:image/png;base64,".base64_encode(QrCode::size(500)->format('png')->generate($link));
+        }
+
         return response()->json([
             "success" => true,
             "message" => "Data fetched successfully",
@@ -63,6 +76,11 @@ class DashboardController extends Controller
                 "sale" => ($today)?$today->sale:0,
                 "profit" => ($today)?$today->profit:0,
                 "cost" => ($today)?$today->cost:0,
+            ],
+            "share" => [
+                "link" => $link,
+                "message" => $message,
+                "qr_code" => $qr_code,
             ]
         ],200);
     }
