@@ -13,7 +13,8 @@ use Validator;
 use App\Http\Resources\Ecommerce\OrderCollection;
 use App\Http\Resources\Ecommerce\OrderResource;
 use App\Http\Resources\Ecommerce\OrderItemCollection;
-
+use App\Events\OrderPlaced;
+use App\Models\User;
 
 class OrderController extends Controller
 {
@@ -61,9 +62,18 @@ class OrderController extends Controller
             $orderItemData->quantity = $value->quantity;
             $orderItemData->save();
         }
+        
+        $sellerEmailId = User::select('email','name')->where('id',$seller_id)->first();
+        if(!empty($sellerEmailId->email)) {
+            $orderData->sellerEmail = $sellerEmailId->email;
+            $orderData->seller_name = $sellerEmailId->name;
+            $orderData->customer_mobile = $buyer->phone;
+            $orderData->user_name = $buyer->name;
+            $orderData = $orderData->toArray();
+            OrderPlaced::dispatch($orderData);
+        }
+        
         $this->destroyCart($buyer,$seller_id);
-
-        //Todo Sent message to seller
 
         return response()->json(['statusCode' => 200, 'success' => true, 'message' => "Order Placed Successfully.","data" => $orderData], 200);
     }
