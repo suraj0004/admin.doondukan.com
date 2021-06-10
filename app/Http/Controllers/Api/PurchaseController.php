@@ -18,17 +18,18 @@ class PurchaseController extends Controller
 	//Function to add purchases of user
     public function addPurchase(Request $request)
     {
-    	$validator = Validator::make($request->all(), [ 
+    	$validator = Validator::make($request->all(), [
             'price' => 'required|numeric',
+            'selling_price' => 'required|numeric',
             'product_id' => 'required|integer',
             'product_source' => 'required',
-            'quantity'=>'required' 
+            'quantity'=>'required'
 		]);
 
         if ($validator->fails())
-		{ 
+		{
 			$message = $validator->errors()->first();
-		    return response()->json(['statusCode'=>200,'success'=>false,'message'=>$message], 200);            
+		    return response()->json(['statusCode'=>200,'success'=>false,'message'=>$message], 200);
 		}
 		$user = Auth::User();
 		$purchase = new Purchase();
@@ -38,10 +39,10 @@ class PurchaseController extends Controller
 		$purchase->product_source = $request->product_source;
 		$purchase->quantity = $request->quantity;
 
-		if( $purchase->save() ) 
+		if( $purchase->save() )
 		{
 			//Add Product in Stock
-			if( $request->product_source =="main") 
+			if( $request->product_source =="main")
 			{
 				$product_stock = Stock::where('product_id',$request->product_id)->where('product_source','main')->where('user_id',$user->id)->first();
 			}
@@ -49,21 +50,22 @@ class PurchaseController extends Controller
 			{
 				$product_stock = Stock::where('product_id',$request->product_id)->where('product_source','temp')->where('user_id',$user->id)->first();
 			}
-			if( !$product_stock ) 
+			if( !$product_stock )
 			{
 				$product_stock = new Stock();
 			}
-			
+
 			$product_stock->user_id = $user->id;
 			$product_stock->product_id = $request->product_id;
 			$product_stock->quantity = $product_stock->quantity + $request->quantity;
 			$product_stock->product_source = $request->product_source;
+            $product_stock->price = $request->selling_price;
 			$product_stock->last_purchased_at = Carbon::now();
 			$product_stock->save();
 
 			return response()->json(['statusCode'=>200,'success'=>true,'message'=>'Purchased Added Succesfully.'], 200);
 		}
-		else 
+		else
 		{
 			return response()->json(['statusCode'=>200,'success'=>false,'message'=>'Oops! Something Went Wrong!'], 200);
 		}
@@ -76,13 +78,13 @@ class PurchaseController extends Controller
     	$getpurchaselistproduct = Purchase::with('product')->where('product_source','main')->where('user_id',$user->id)->orderBy('created_at','desc')->get();
     	$getpurchaselistproducttemp = Purchase::with('tempProduct')->where('product_source','temp')->where('user_id',$user->id)->orderBy('created_at','desc')->get();
 
-    	if( count($getpurchaselistproducttemp) > 0 || count($getpurchaselistproduct) > 0 ) 
+    	if( count($getpurchaselistproducttemp) > 0 || count($getpurchaselistproduct) > 0 )
     	{
     		$data['main'] = $getpurchaselistproduct;
     		$data['temp'] = $getpurchaselistproducttemp;
     		return response()->json(['statusCode'=>200,'success'=>true,'message'=>'Purchased List.','data'=>$data], 200);
     	}
-    	else 
+    	else
     	{
     		return response()->json(['statusCode'=>200,'success'=>false,'message'=>'No Purchased List Found.'], 200);
     	}
@@ -90,13 +92,13 @@ class PurchaseController extends Controller
 
     public function addProductToCatalogue(Request $request)
     {
-    	$validator = Validator::make($request->all(), [ 
+    	$validator = Validator::make($request->all(), [
             'product_ids' => 'required|array',
 		]);
 
-        if ($validator->fails()) { 
+        if ($validator->fails()) {
 			$message = $validator->errors()->first();
-		    return response()->json(['statusCode'=>200,'success'=>false,'message'=>$message], 200);            
+		    return response()->json(['statusCode'=>200,'success'=>false,'message'=>$message], 200);
 		}
 		$product_ids = array_unique($request->product_ids);
 		$user = Auth::User();
@@ -122,9 +124,9 @@ class PurchaseController extends Controller
 				$product_stock->product_id = $value->id;
 				$product_stock->quantity =  config("constants.DEFAULT_QTY") + $product_stock->quantity;
 				$price =  $value->price;
-				if(!empty($product_stock->price)){ 
+				if(!empty($product_stock->price)){
 					$price =  $product_stock->price;
-				}	
+				}
 				$product_stock->price = $price;
 				$product_stock->product_source = "main";
 				$product_stock->last_purchased_at = Carbon::now();
