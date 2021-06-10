@@ -30,7 +30,7 @@ class UserController extends Controller
 			$message = $validator->errors()->first();
 		    return response()->json(['statusCode'=>200,'success'=>false,'message'=>$message], 200);
 		}
-		if(Auth::attempt(['phone' => $request->phone, 'password' => $request->password]))
+		if(Auth::attempt(['phone' => $request->phone, 'password' => $request->password,'role'=>'SHOPKEEPER']))
         {
             $user = Auth::User();
             $tokenData =  $user->createToken('MyShopApp');
@@ -93,8 +93,8 @@ class UserController extends Controller
         $user = Auth::User();
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'email' => 'nullable|email|unique:stores,email,'.$user->id,
-            'mobile'=> 'nullable|numeric',
+            'email' => 'nullable|email|unique:stores,email,'.$user->id.',user_id',
+            'mobile'=> 'nullable|numeric|unique:stores,mobile,'.$user->id.',user_id',
             'logo'=> 'image|max:2048'
         ]);
 
@@ -143,7 +143,7 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required',
             'email' => 'required|email|unique:users,email,'.$user->id,
-            'phone'=> 'required|numeric',
+            'phone'=> 'required|numeric|unique:users,phone,'.$user->id,
             'password' => 'nullable',
             'c_password' => 'nullable|same:password',
             'image'=> 'image|max:2048'
