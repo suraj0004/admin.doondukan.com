@@ -43,11 +43,6 @@ class ShopOrderController extends Controller
         $orderId  =  $request->id;
         $status   = $request->status;
 
-        if($status != 2){
-            Orders::whereId($orderId)->update(['status'=>$status]); // where user id missing
-            return response()->json(['statusCode'=>200,'success'=>true,'message'=>'Bill Generated Successfully.'], 200);
-        }
-
 
        $orderProducts = OrderItem::select('stocks.id as stock_id','order_items.quantity')
         ->where('order_items.order_id',$orderId)
@@ -63,13 +58,18 @@ class ShopOrderController extends Controller
     	foreach ($orderProducts as $key => $value)
     	{
     		$checkStock = Stock::where('id',$value['stock_id'])->where('quantity','>=',$value['quantity'])->where('user_id',$user->id)->first();
-	    	if (!$checkStock)
+	    	if (!$checkStock && $status != 3)
 			{
 				$message = "Quantity or Stock is unavailable.";
 			    return response()->json(['statusCode'=>200,'success'=>false,'message'=>$message], 200);
 			}
 			$stock_details[] = $checkStock;
     	}
+
+        if($status != 2){
+            Orders::whereId($orderId)->update(['status'=>$status]); // where user id missing
+            return response()->json(['statusCode'=>200,'success'=>true,'message'=>'Order Updates successfully'], 200);
+        }
 
     	$setCustomerbill = new Bill();
     	$setCustomerbill->user_id = $user->id;
