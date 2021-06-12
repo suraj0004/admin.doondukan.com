@@ -72,12 +72,8 @@
                                 <label for="weight_type">Weight Type</label>
                             </div>
                             <div class="col-md-4">
-                                <select class="form-control" id="weight_type" name="weight_type" required>
-                                    <option value="Kg" @if($data->weight_type=="Kg" ) selected @endif >Kg</option>
-                                    <option value="gm" @if($data->weight_type=="gm" ) selected @endif >Gm</option>
-                                    <option value="l"  @if($data->weight_type=="l" ) selected @endif >L</option>
-                                    <option value="ml" @if($data->weight_type=="ml" ) selected @endif>Ml</option>
-                                </select>
+                                <input class="form-control" id="weight_type" name="weight_type" required value="{{$data->weight_type}}"/>
+
                             </div>
                         </div>
                         <div class="row">
