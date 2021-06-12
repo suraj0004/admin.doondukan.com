@@ -20,17 +20,25 @@ class ShopOrderController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         //
         $shopkeeperId  = Auth::user()->id;
-        $orderData     = \App\Models\Orders::with(['orderitem','seller', 'buyer'])->whereSellerId($shopkeeperId)->get();
+        $orderData     = Orders::with(['orderitem','seller', 'buyer'])->whereSellerId($shopkeeperId);
+        $status = [0,1,2,3];
+        if(isset( $request->status ) && in_array($request->status,$status))
+        {
+            $orderData = $orderData->where('status',$request->status);
+        }
+
+        if( !empty($request->search) )
+        {
+            $orderData = $orderData->where('order_no','like','%'.$request->search.'%');
+        }
+
+        $orderData = $orderData->latest('from_time')->paginate(5);
 
         return response()->json(['statusCode'=>200,'success'=>true,'message'=>'All orders fetched successfully.','data'=>$orderData], 200);
-
-        // $array = ['test'=>2, 'test2'=> 4];
-        // $jsonArray  = json_encode($array);
-        // return $jsonArray;
     }
 
     /**
