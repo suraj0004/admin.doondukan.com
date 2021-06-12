@@ -46,7 +46,7 @@ class ShopController extends Controller
             return response()->json(['statusCode' => 200, 'success' => false, 'message' => "Shop not found."], 200);
         }
 
-        $data = Category::select('categories.id as category_id', 'categories.category_name', 'categories.slug','products.name','products.slug as product_slug','products.id as product_id','products.weight','products.weight_type','stocks.price','products.image')
+        $data = Category::select('categories.id as category_id', 'categories.category_name', 'categories.slug','products.name','products.slug as product_slug','products.id as product_id','products.weight','products.weight_type','stocks.price','products.image','stocks.quantity')
                 ->join('products', 'products.category_id', '=', 'categories.id')
                 ->join('stocks', 'stocks.product_id', '=', 'products.id')
                 ->where('stocks.user_id',$getUserId->user_id)
