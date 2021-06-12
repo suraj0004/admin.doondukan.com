@@ -72,12 +72,7 @@
                                 <label for="weight_type">Weight Type</label>
                             </div>
                             <div class="col-md-4">
-                                <select class="form-control" id="weight_type" name="weight_type" required>
-                                    <option value="Kg">Kg</option>
-                                    <option value="gm">Gm</option>
-                                    <option value="l">L</option>
-                                    <option value="ml">Ml</option>
-                                </select>
+                                <input class="form-control" id="weight_type" name="weight_type" required/>
                             </div>
                         </div>
                         <div class="row">
