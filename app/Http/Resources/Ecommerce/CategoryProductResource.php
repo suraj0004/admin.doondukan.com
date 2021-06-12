@@ -20,6 +20,7 @@ class CategoryProductResource extends JsonResource
             "name" => $this->name,
             "price" => $this->price,
             "weight" => $this->weight . ' ' . $this->weight_type,
+            "out_of_stock" => ($this->quantity == 0),
             "image" => getFileUrl(config("constants.disks.PRODUCT"), $this->image),
             "thumbnail" => getFileUrl(config("constants.disks.PRODUCT"), "thumb_".$this->image)
         ];

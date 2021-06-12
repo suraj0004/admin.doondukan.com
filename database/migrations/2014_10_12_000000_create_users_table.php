@@ -17,7 +17,7 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->enum('role', ['SHOPKEEPER', 'USER']);
             $table->string('name')->nullable();
-            $table->string('phone');
+            $table->string('phone')->unique();
             $table->string('email')->unique()->nullable();
             $table->string('image')->nullable();
             $table->timestamp('email_verified_at')->nullable();

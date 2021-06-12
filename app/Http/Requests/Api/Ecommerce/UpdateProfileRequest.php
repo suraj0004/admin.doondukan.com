@@ -28,8 +28,8 @@ class UpdateProfileRequest extends FormRequest
     {
         return [
             "name" => "required|string|max:50",
-            "phone" => "required|numeric|digits:10",
-            "email" => "nullable",
+            "phone" => "required|numeric|digits:10|unique:users,phone,".$this->user()->id,
+            "email" => "nullable|unique:users,email,".$this->user()->id,
             "password" => "nullable|confirmed",
         ];
     }

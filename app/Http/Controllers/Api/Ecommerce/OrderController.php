@@ -15,14 +15,17 @@ use App\Http\Resources\Ecommerce\OrderResource;
 use App\Http\Resources\Ecommerce\OrderItemCollection;
 use App\Events\OrderPlaced;
 use App\Models\User;
+use App\Rules\IsShopOpen;
 
 class OrderController extends Controller
 {
     public function checkout(Request $request, $seller_id, $shop_slug)
     {
         $validator = Validator::make($request->all(), [
-            'fromDate' => 'required|date_format:Y-m-d H:i:s',
-            'toDate' => 'required|date_format:Y-m-d H:i:s|after:fromDate'
+            'fromTime' => ['required','date_format:Y-m-d H:i:s', new IsShopOpen($seller_id)],
+            'toTime' => ['required','date_format:Y-m-d H:i:s','after:fromTime', new IsShopOpen($seller_id)]
+         ],[
+             'toTime.after' => "The to time must be a time after from time."
          ]);
 
         if ($validator->fails()) {
@@ -48,8 +51,8 @@ class OrderController extends Controller
         $orderData->seller_id = $cartData->first()->seller_id;
         $orderData->order_no = $this->getOrderNumber();
         $orderData->order_amount = $cartData->reduce(function ($carry,$item) { return $carry + ($item->price * $item->quantity); });
-        $orderData->from_time = $request->fromDate;
-        $orderData->to_time = $request->toDate;
+        $orderData->from_time = $request->fromTime;
+        $orderData->to_time = $request->toTime;
 
         if(!$orderData->save()) {
             return response()->json(['statusCode' => 200, 'success' => false, 'message' => "Oops! Something went wrong. Please try again later."], 200);
@@ -62,7 +65,7 @@ class OrderController extends Controller
             $orderItemData->quantity = $value->quantity;
             $orderItemData->save();
         }
-        
+
         $sellerEmailId = User::select('email','name')->where('id',$seller_id)->first();
         if(!empty($sellerEmailId->email)) {
             $orderData->sellerEmail = $sellerEmailId->email;
@@ -72,7 +75,7 @@ class OrderController extends Controller
             $orderData = $orderData->toArray();
             OrderPlaced::dispatch($orderData);
         }
-        
+
         $this->destroyCart($buyer,$seller_id);
 
         return response()->json(['statusCode' => 200, 'success' => true, 'message' => "Order Placed Successfully.","data" => $orderData], 200);
