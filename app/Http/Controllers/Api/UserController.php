@@ -183,7 +183,7 @@ class UserController extends Controller
 
         if ( $user->save() )
         {
-            return response()->json(['statusCode'=>200,'success'=>true,'message'=>'User Profile updated'],200);
+            return response()->json(['statusCode'=>200,'success'=>true,'message'=>'User Profile updated','data'=> $user],200);
         }
         else
         {
