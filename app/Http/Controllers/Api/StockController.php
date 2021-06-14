@@ -60,18 +60,15 @@ class StockController extends Controller
 	public function getstocklist()
 	{
 		$user = Auth::User();
-		$getStocklistproduct = Stock::with('product')->where('product_source','main')->where('user_id',$user->id)->orderBy('created_at','desc')->get();
+		$getStocklistproduct = Stock::with('product')->where('product_source','main')->where('user_id',$user->id)->orderBy('created_at','desc')->paginate(10);
 		foreach ($getStocklistproduct as $key => $value) {
 			# code...
 			$value->product->image =  getFileUrl(config("constants.disks.PRODUCT"), $value->product->image) ;
 		}
 
-
-		$getStocklistproducttemp = Stock::with('tempProduct')->where('product_source','temp')->where('user_id',$user->id)->orderBy('created_at','desc')->get();
-		if( count($getStocklistproduct) > 0 || count($getStocklistproducttemp) > 0 )
+		if( count($getStocklistproduct) )
 		{
-			$data['main'] = $getStocklistproduct;
-			$data['temp'] = $getStocklistproducttemp;
+			$data = $getStocklistproduct;
 			return response()->json(['statusCode'=>200,'success'=>true,'message'=>'Stock List.','data'=>$data], 200);
 		}
 		else
