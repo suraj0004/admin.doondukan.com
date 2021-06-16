@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\Stock;
 use Validator;
+use App\Http\Resources\Shop\StockCollection;
 
 class StockController extends Controller
 {
@@ -57,24 +58,45 @@ class StockController extends Controller
 	}
 
 	//This function will return the list of user stock and price.
-	public function getstocklist()
+	public function getstocklist(Request $request)
 	{
 		$user = Auth::User();
-		$getStocklistproduct = Stock::with('product')->where('product_source','main')->where('user_id',$user->id)->orderBy('created_at','desc')->paginate(10);
-		foreach ($getStocklistproduct as $key => $value) {
-			# code...
-			$value->product->image =  getFileUrl(config("constants.disks.PRODUCT"), $value->product->image) ;
-		}
+		$data = Stock::select('id','last_purchased_at','price','quantity','product_id')
+        ->with('product:id,name,weight,weight_type,image')
+        ->where('product_source','main')
+        ->where('user_id',$user->id);
 
-		if( count($getStocklistproduct) )
-		{
-			$data = $getStocklistproduct;
-			return response()->json(['statusCode'=>200,'success'=>true,'message'=>'Stock List.','data'=>$data], 200);
-		}
-		else
-		{
-			return response()->json(['statusCode'=>200,'success'=>false,'message'=>'Stock Not Found'], 200);
-		}
+        if(isset($request->stockFilter)){
+            if($request->stockFilter == 'in-stock'){
+                $data = $data->where('quantity','>',0);
+            }else if($request->stockFilter == 'out-of-stock'){
+                $data = $data->where('quantity','=',0);
+            }
+        }
+
+        if(isset($request->sortType)){
+            if($request->sortType == 'qty-low-to-high'){
+                $data = $data->orderBy('quantity','asc');
+            }else if($request->sortType == 'qty-high-to-tow'){
+                $data = $data->orderBy('quantity','desc');
+            }else if($request->sortType == 'price-low-to-high'){
+                $data = $data->orderBy('price','asc');
+            }else if($request->sortType == 'price-high-to-tow'){
+                $data = $data->orderBy('price','desc');
+            }else{
+                $data = $data->latest('updated_at');
+            }
+        }
+
+        if(isset($request->search) && !empty($request->search) ){
+            $data = $data->whereHas('product', function($query) use($request){
+                $query->where('name','LIKE','%'.$request->search.'%');
+            });
+        }
+
+        $data = $data->paginate(10);
+        return new StockCollection($data);
+
 	}
 
 	//This function will return the list of user available stock with product.
