@@ -13,9 +13,9 @@ use Validator;
 use App\Http\Resources\Ecommerce\OrderCollection;
 use App\Http\Resources\Ecommerce\OrderResource;
 use App\Http\Resources\Ecommerce\OrderItemCollection;
-use App\Events\OrderPlaced;
 use App\Models\User;
 use App\Rules\IsShopOpen;
+use App\Jobs\SendOrderPlacedNotification;
 
 class OrderController extends Controller
 {
@@ -73,11 +73,11 @@ class OrderController extends Controller
             $orderData->customer_mobile = $buyer->phone;
             $orderData->user_name = $buyer->name;
             $orderData = $orderData->toArray();
-            OrderPlaced::dispatch($orderData);
         }
 
         $this->destroyCart($buyer,$seller_id);
 
+        SendOrderPlacedNotification::dispatchAfterResponse();
         return response()->json(['statusCode' => 200, 'success' => true, 'message' => "Order Placed Successfully.","data" => $orderData], 200);
     }
 
