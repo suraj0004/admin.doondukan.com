@@ -60,7 +60,9 @@ class DashboardController extends Controller
         if($store){
             $link = __("message.share_shop.link",["seller_id" => $store->user_id, "shop_slug" => $store->slug]);
             $message = __("message.share_shop.message",["shop" => $store->name, "link" => $link, "mobile" => $store->mobile]);
-            $qr_code = "data:image/png;base64,".base64_encode(QrCode::size(500)->format('png')->generate($link));
+            if(config("app.env") != "local"){ // due to issue of imagick extension in local
+                $qr_code = "data:image/png;base64,".base64_encode(QrCode::size(500)->format('png')->generate($link));
+            }
         }
 
         return response()->json([
