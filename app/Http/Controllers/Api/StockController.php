@@ -81,7 +81,7 @@ class StockController extends Controller
                 $data = $data->orderBy('quantity','desc');
             }else if($request->sortType == 'price-low-to-high'){
                 $data = $data->orderBy('price','asc');
-            }else if($request->sortType == 'price-high-to-tow'){
+            }else if($request->sortType == 'price-high-to-low'){
                 $data = $data->orderBy('price','desc');
             }else{
                 $data = $data->latest('updated_at');
