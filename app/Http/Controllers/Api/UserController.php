@@ -14,6 +14,8 @@ use App\Models\Purchase;
 use Validator;
 use Image;
 use QrCode;
+use App\Services\SmsService;
+
 class UserController extends Controller
 {
     //API Login
@@ -55,6 +57,7 @@ class UserController extends Controller
             'c_password' => 'required|same:password',
             'lat' => 'required',
             'lng' => 'required',
+            'otp'=>'required|numeric'
         ]);
 
 		if ($validator->fails())
@@ -62,6 +65,11 @@ class UserController extends Controller
 			$message = $validator->errors()->first();
 		    return response()->json(['statusCode'=>200,'success'=>false,'message'=>$message], 200);
 		}
+
+        $checkOtp = SmsService::verifyOTP($request->phone,$request->otp);
+        if(!$checkOtp) {
+            return response()->json(['statusCode'=>200,'success'=>false,'message'=>'Invalid OTP', 'otp_error' => true], 200);
+        }
 
         $user = new User();
         $user->name = $request->name;
