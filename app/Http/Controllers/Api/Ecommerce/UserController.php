@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Validator;
 use App\Http\Requests\Api\Ecommerce\UpdateProfileRequest;
+use App\Services\SmsService;
 
 class UserController extends Controller
 {
@@ -53,6 +54,7 @@ class UserController extends Controller
             'phone'=>'required|numeric|unique:users,phone',
             'password' => 'required',
             'c_password' => 'required|same:password',
+            'otp'=>'required|numeric'
         ]);
 
         if ($validator->fails())
@@ -60,7 +62,10 @@ class UserController extends Controller
             $message = $validator->errors()->first();
             return response()->json(['statusCode'=>200,'success'=>false,'message'=>$message], 200);
         }
-
+        $checkOtp = SmsService::verifyOTP($request->phone,$request->otp);
+        if(!$checkOtp) {
+            return response()->json(['statusCode'=>200,'success'=>false,'message'=>'Invalid OTP'], 200);
+        }
         $user = new User();
         $user->phone = $request->phone;
         $user->role = 'USER';
