@@ -25,7 +25,7 @@ class ForgotPasswordController extends Controller
             return response()->json(['statusCode'=>200,'success'=>false,'message'=>'Invalid OTP'], 200);
         }
         
-        $user = User::where('mobile',$request->mobile)->first();
+        $user = User::where('phone',$request->mobile)->first();
         if(!$user) {
             return response()->json(['statusCode'=>200,'success'=>false,'message'=>'Mobile number not found.'], 200);
         }

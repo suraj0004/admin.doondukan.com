@@ -17,8 +17,6 @@ class CreateStoresTable extends Migration
             $table->id();
             $table->foreignId('user_id');
             $table->string('name');
-            $table->string('email')->nullable();
-            $table->string('mobile',20)->nullable();
             $table->text('address');
             $table->text('about')->nullable();
             $table->string('logo')->nullable();
