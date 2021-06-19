@@ -47,7 +47,7 @@ class BillController extends Controller
     			if( $stockvalue->save() )
     			{
                     //Get the last purchase price.
-                    $purchase_price = Purchase::select('id','price')->where('product_id',$stockvalue->product_id)->orderBy('id','desc')->limit(1)->first();
+                    $purchase_price = Purchase::select('id','price')->where('product_id',$stockvalue->product_id)->orderBy('id','desc')->first();
 
     				$setSale = new Sale();
 	    			$setSale->user_id = $user->id;

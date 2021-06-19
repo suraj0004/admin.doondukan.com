@@ -15,6 +15,7 @@ use Validator;
 use Image;
 use QrCode;
 use App\Services\SmsService;
+use App\Http\Resources\Shop\ProfileResource;
 
 class UserController extends Controller
 {
@@ -101,8 +102,6 @@ class UserController extends Controller
         $user = Auth::User();
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'email' => 'nullable|email|unique:stores,email,'.$user->id.',user_id',
-            'mobile'=> 'nullable|numeric|unique:stores,mobile,'.$user->id.',user_id',
             'logo'=> 'image|max:2048'
         ]);
 
@@ -121,8 +120,6 @@ class UserController extends Controller
         $store->user_id = $user->id;
         $store->name = $request->name;
         $store->slug =  Str::slug($request->name);
-        $store->mobile = $request->mobile;
-        $store->email = $request->email;
         $store->address = $request->address;
         $store->about = $request->about;
         $store->registration_date = $request->registration_date;
@@ -163,25 +160,15 @@ class UserController extends Controller
             return response()->json(['statusCode'=>401,'success'=>false,'message'=>$message], 401);
         }
 
-        if($request->hasFile('image') )
-        {
-            //Save full size image
-            $image = $request->file('image');
-            $name = time().'.'.$image->getClientOriginalExtension();
-            $destinationPath = public_path('/profileimages/'.$user->id."/");
-            $image->move($destinationPath, $name);
-
-            //Thumbnail
-            $image_resize = Image::make(public_path().'/profileimages/'.$user->id."/".$name);
-            $image_resize->fit(300, 300);
-            $image_resize->save(public_path('profileimages/'.$user->id.'/thumb_'.$name));
+        if($request->hasFile('image') ) {
+            $imageName = saveFile(config("constants.disks.PROFILE"), 'profile', $request->file('image'), true);
         }
         $user = User::where('id',$user->id)->first();
         // $user = Auth::guard('api')->user();
         $user->name = $request->name;
         $user->phone = $request->phone;
         $user->email = $request->email;
-        $user->image = $name ?? null;
+        $user->image = $imageName ?? null;
         if( !empty($request->password) )
         {
             $user->password = bcrypt($request->password);
@@ -203,21 +190,14 @@ class UserController extends Controller
     public function getUserProfile()
     {
         $user = Auth::User();
-        $data = User::with('store')->withCount(['stocks','availableStocks'])->where('id',$user->id)->first();
-        if($data->store){
-            $data->shop_url = "https://app.doondukan.com/".$data->store->user_id."-".$data->store->slug;
-        }else{
-            $data->shop_url = "https://app.doondukan.com/".$user->id."-doondukan";
-        }
-
-        if( $data )
-        {
-            return response()->json(['statusCode'=>200,'success'=>true,'message'=>'User Profile','data'=>$data],200);
-        }
-        else
-        {
+        $data = User::with('store')->where('id',$user->id)->first();
+        
+        if(!$data) {
             return response()->json(['statusCode'=>200,'success'=>false,'message'=>'User not found.'],200);
         }
+        return (new ProfileResource($data))->additional([
+            "message" => "User Profile",
+        ]);
     }
 
     //This function is used to confirm user password for changing settings.
