@@ -42,10 +42,9 @@ class CustomProductController extends Controller
      */
     public function store(AddCustomProductFormRequest $request)
     {
-        $input = $request->all();
         $user = Auth::user();
         $service = new CustomProductService();
-        $product = $service->addUserCustomProduct($user->id,$request->product,(int)$request->weight,$request->weight_type);
+        $product = $service->addUserCustomProduct($user->id,$request->name,(int)$request->weight,$request->weight_type, (int)$request->price, (int)$request->category_id, $request->image);
         if($product){
             return response()->json([
                 "success" => true,

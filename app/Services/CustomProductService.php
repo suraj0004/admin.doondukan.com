@@ -1,18 +1,23 @@
 <?php
 namespace App\Services;
 
-use App\Models\TempProduct;
+use App\Models\Product;
+use Illuminate\Support\Str;
 
 class CustomProductService{
 
      // Return Collection of data or return NULL
-    public function addUserCustomProduct(int $user_id, string $product_name, int $product_weight, string $weight_type)
+    public function addUserCustomProduct(int $user_id, string $name, int $weight, string $weight_type, int $price, int $category_id, string $image_base64)
     {
-       $product = new TempProduct();
-       $product->name = $product_name;
-       $product->weight = $product_weight;
-       $product->weight_type = $weight_type;
+       $product = new Product();
        $product->user_id = $user_id;
+       $product->name = $name;
+       $product->slug = Str::slug($name);
+       $product->image = saveImageFromBase64(config("constants.disks.PRODUCT"), $product->slug, $image_base64);
+       $product->category_id = $category_id;
+       $product->weight = $weight;
+       $product->weight_type = $weight_type;
+       $product->price = $price;
        $product->save();
        return $product;
 

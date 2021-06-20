@@ -39,3 +39,19 @@ function getFileUrl($disk, $file, $default_file_path = null)
     }
     return ($fileUrl);
 }
+
+function saveImageFromBase64($disk, $image_prefix = "", $image_base64)
+{
+    $image_extensions = config("constants.BASE64_IMAGE_EXTENSION");
+    foreach ($image_extensions as $extension) {
+        $image = str_replace($extension, '', $image_base64);
+    }
+
+    $image = str_replace(' ', '+', $image);
+    $image =  base64_decode($image);
+
+    $imageName = $image_prefix . '_' . time() . '_' . mt_rand(1, 9999) . '.jpg';
+    Storage::disk($disk)->put($imageName, $image);
+
+    return $imageName;
+}

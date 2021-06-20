@@ -5,6 +5,8 @@ namespace App\Http\Requests\Api;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Http\Exceptions\HttpResponseException;
+use App\Rules\ValidBase64Image;
+
 class AddCustomProductFormRequest extends FormRequest
 {
     /**
@@ -25,16 +27,23 @@ class AddCustomProductFormRequest extends FormRequest
     public function rules()
     {
         return [
-            "product" => "required|string",
-            "weight_type" => "required|in:kg,gm,L,ml",
+            "name" => "required|string",
             "weight" => "required|numeric",
+            "weight_type" => "required|string",
+            "price" => "required|numeric",
+            "category_id" => "required|numeric|exists:categories,id",
+            "image" => [
+                "required",
+                "string",
+                new ValidBase64Image
+            ]
         ];
     }
 
-    protected function failedValidation(Validator $validator) { 
+    protected function failedValidation(Validator $validator) {
         throw new HttpResponseException(response()->json([
             "success" => false,
             "message" => $validator->errors()->first()
-        ], 200)); 
+        ], 200));
     }
 }
