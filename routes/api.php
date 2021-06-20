@@ -117,7 +117,7 @@ Route::group(['middleware' => ['auth:api','shoopkeeper'],'prefix'=>'retail'], fu
 
 	//Get user temp products list(GET).
 	Route::get('get-user-custom-product-list','Api\CustomProductController@index');
-
+	Route::get('get-categories','Api\ProductController@getCategories');
 	/**Purchase Return API's */
 	Route::group(['namespace' => "Api"],function(){
 		Route::get('/get-stock-for-purchase-return','PurchaseReturnController@getStock');

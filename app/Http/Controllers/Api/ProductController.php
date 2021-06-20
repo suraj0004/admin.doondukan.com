@@ -34,4 +34,14 @@ class ProductController extends Controller
             "message" => "Product Data",
         ]);
     }
+
+    public function getCategories()
+    {
+        $categories = Category::select("id","category_name")->get();
+        if($categories->isEmpty()) {
+            return response()->json(['statusCode'=>200,'success'=>false,'message'=>'No data found.'], 200);
+        }
+
+        return response()->json(['statusCode'=>200,'success'=>true,'message'=>'Categories List.','data'=>$categories], 200);
+    }
 }
