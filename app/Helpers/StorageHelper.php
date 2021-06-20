@@ -44,11 +44,11 @@ function saveImageFromBase64($disk, $image_prefix = "", $image_base64, $delete_f
 {
     $image_extensions = config("constants.BASE64_IMAGE_EXTENSION");
     foreach ($image_extensions as $extension) {
-        $image = str_replace($extension, '', $image_base64);
+        $image_base64 = str_replace($extension, '', $image_base64);
     }
 
-    $image = str_replace(' ', '+', $image);
-    $image =  base64_decode($image);
+    $image_base64 = str_replace(' ', '+', $image_base64);
+    $image =  base64_decode($image_base64);
 
     $imageName = $image_prefix . '_' . time() . '_' . mt_rand(1, 9999) . '.jpg';
     Storage::disk($disk)->put($imageName, $image);
