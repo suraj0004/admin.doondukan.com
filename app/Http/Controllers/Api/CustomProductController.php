@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use Auth;
-
 use App\Http\Requests\Api\AddCustomProductFormRequest;
+use App\Http\Resources\Shop\ProductCollection;
 use App\Services\CustomProductService;
+use Auth;
+use Illuminate\Http\Request;
 
 class CustomProductController extends Controller
 {
@@ -20,18 +20,8 @@ class CustomProductController extends Controller
     {
         $user = Auth::user();
         $service = new CustomProductService();
-        $customProductList = $service->fetchUserCustomProductList($user->id);
-        if($customProductList)
-            return response()->json([
-                "success" => true,
-                "data" => $customProductList
-            ],200);
-
-        return response()->json([
-            "success" => false,
-            "message" => "You have not added any custom product"
-            ],200);
-
+        $data = $service->fetchUserCustomProductList($user->id);
+        return new ProductCollection($data);
     }
 
     /**
@@ -44,18 +34,18 @@ class CustomProductController extends Controller
     {
         $user = Auth::user();
         $service = new CustomProductService();
-        $product = $service->addUserCustomProduct($user->id,$request->name,(int)$request->weight,$request->weight_type, (int)$request->price, (int)$request->category_id, $request->image);
-        if($product){
+        $product = $service->addUserCustomProduct($user->id, $request->name, (int) $request->weight, $request->weight_type, (int) $request->price, (int) $request->category_id, $request->image);
+        if ($product) {
             return response()->json([
                 "success" => true,
-                "message" =>"Your custom product have been added successfully ",
-                "data" => $product
-            ],200);
+                "message" => "Your custom product have been added successfully ",
+                "data" => $product,
+            ], 200);
         }
         return response()->json([
             "success" => false,
-            "message" => "Sorry! Please try again or contact to Adminstrator"
-        ],200);
+            "message" => "Sorry! Please try again or contact to Adminstrator",
+        ], 200);
     }
 
     /**
@@ -79,18 +69,18 @@ class CustomProductController extends Controller
     public function update(AddCustomProductFormRequest $request, $product_id)
     {
         $service = new CustomProductService();
-        $product = $service->updateUserCustomProduct($product_id,$request->product,(int)$request->weight,$request->weight_type);
-        if($product){
+        $product = $service->updateUserCustomProduct($product_id, $request->product, (int) $request->weight, $request->weight_type);
+        if ($product) {
             return response()->json([
                 "success" => true,
-                "message" =>"Your custom product have been updated successfully ",
-                "data" => $product
-            ],200);
+                "message" => "Your custom product have been updated successfully ",
+                "data" => $product,
+            ], 200);
         }
         return response()->json([
             "success" => false,
-            "message" => "Sorry! Please try again or contact to Adminstrator"
-        ],200);
+            "message" => "Sorry! Please try again or contact to Adminstrator",
+        ], 200);
     }
 
     /**
