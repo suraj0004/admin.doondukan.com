@@ -24,12 +24,18 @@ class CustomProductService
 
     }
 
-    public function updateUserCustomProduct(int $product_id, string $product_name, int $product_weight, string $weight_type)
+    public function updateUserCustomProduct(int $product_id, string $name, int $weight, string $weight_type, int $price, int $category_id, $image_base64)
     {
-        $product = TempProduct::find($product_id);
-        $product->name = $product_name;
-        $product->weight = $product_weight;
+        $product = Product::find($product_id);
+        $product->name = $name;
+        $product->slug = Str::slug($name);
+        if($image_base64){
+            $product->image = saveImageFromBase64(config("constants.disks.PRODUCT"), $product->slug, $image_base64, $product->image);
+        }
+        $product->category_id = $category_id;
+        $product->weight = $weight;
         $product->weight_type = $weight_type;
+        $product->price = $price;
         $product->save();
         return $product;
 

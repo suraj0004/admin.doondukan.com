@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\AddCustomProductFormRequest;
+use App\Http\Requests\Api\EditCustomProductRequest;
 use App\Http\Resources\Shop\ProductCollection;
 use App\Services\CustomProductService;
 use Auth;
@@ -66,10 +67,10 @@ class CustomProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(AddCustomProductFormRequest $request, $product_id)
+    public function update(EditCustomProductRequest $request, $product_id)
     {
         $service = new CustomProductService();
-        $product = $service->updateUserCustomProduct($product_id, $request->product, (int) $request->weight, $request->weight_type);
+        $product = $service->updateUserCustomProduct($product_id, $request->name, (int) $request->weight, $request->weight_type, (int) $request->price, (int) $request->category_id, $request->image);
         if ($product) {
             return response()->json([
                 "success" => true,
