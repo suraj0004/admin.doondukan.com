@@ -26,7 +26,13 @@ return [
         "ENTITY_ID" => env('ENTITY_ID'),
         "RPT" => env('RPT'),
         "TEMPLATE" => [
-            "TEST" => "1707161786814434614"   
+            "TEST" => "1707161786814434614"
         ]
     ],
+
+    "BASE64_IMAGE_EXTENSION" => [
+        "data:image/png;base64,",
+        "data:image/jpg;base64,",
+        "data:image/jpeg;base64,"
+    ]
 ];
