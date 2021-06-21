@@ -66,10 +66,11 @@ class OrderController extends Controller
             $orderItemData->save();
         }
 
-        $sellerEmailId = User::select('email','name')->where('id',$seller_id)->first();
+        $sellerEmailId = User::select('email','name','phone')->where('id',$seller_id)->first();
         if(!empty($sellerEmailId->email)) {
             $orderData->sellerEmail = $sellerEmailId->email;
             $orderData->seller_name = $sellerEmailId->name;
+            $orderData->seller_phone = $sellerEmailId->phone;
             $orderData->customer_mobile = $buyer->phone;
             $orderData->user_name = $buyer->name;
             $orderData = $orderData->toArray();

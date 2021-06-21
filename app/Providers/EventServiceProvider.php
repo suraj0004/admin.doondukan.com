@@ -8,6 +8,7 @@ use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvi
 use Illuminate\Support\Facades\Event;
 use App\Events\OrderPlaced;
 use App\Listeners\SendOrderPlacedNotification;
+use App\Listeners\SendOrderPlacedSMS;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -22,6 +23,7 @@ class EventServiceProvider extends ServiceProvider
         ],
         OrderPlaced::class => [
             SendOrderPlacedNotification::class,
+            SendOrderPlacedSMS::class,
         ]
     ];
 
