@@ -12,6 +12,7 @@ use App\Models\Stock;
 use App\Models\Purchase;
 use App\Models\Sale;
 use DB;
+use App\Events\OrderConfirmed;
 
 class ShopOrderController extends Controller
 {
@@ -76,6 +77,11 @@ class ShopOrderController extends Controller
 
         if($status != 2){
             Orders::whereId($orderId)->update(['status'=>$status]); // where user id missing
+
+            if($status == 1){
+                $order = Orders::find($orderId);
+                OrderConfirmed::dispatch($order);
+            }
             return response()->json(['statusCode'=>200,'success'=>true,'message'=>'Order Updates successfully'], 200);
         }
 
@@ -112,7 +118,6 @@ class ShopOrderController extends Controller
     		}
 
             Orders::whereId($orderId)->update(['status'=>$status]); // where user id missing
-
     		return response()->json(['statusCode'=>200,'success'=>true,'message'=>'Bill Generated Successfully.','data'=>$setCustomerbill->id], 200);
     	}
     	else

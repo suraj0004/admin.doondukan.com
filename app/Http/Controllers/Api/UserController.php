@@ -157,7 +157,7 @@ class UserController extends Controller
         if ($validator->fails())
         {
             $message = $validator->errors()->first();
-            return response()->json(['statusCode'=>401,'success'=>false,'message'=>$message], 401);
+            return response()->json(['statusCode'=>200,'success'=>false,'message'=>$message], 200);
         }
 
         if($request->hasFile('image') ) {
@@ -191,7 +191,7 @@ class UserController extends Controller
     {
         $user = Auth::User();
         $data = User::with('store')->where('id',$user->id)->first();
-        
+
         if(!$data) {
             return response()->json(['statusCode'=>200,'success'=>false,'message'=>'User not found.'],200);
         }

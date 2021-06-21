@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Http;
 use App\Models\Otp;
 
 class SmsService {
-    public static function sendSms(string $mobile, string $sms){
+    public static function sendSms(string $mobile, string $sms, string $template_id){
 
         $response = Http::get(config('constants.SMS.SMS_API_ENDPOINT'), [
 
@@ -14,7 +14,7 @@ class SmsService {
             'mobile' => $mobile,
             'text' => $sms,
             'entityid' => config('constants.SMS.ENTITY_ID'),
-            'templateid' => config('constants.SMS.TEMPLATE.TEST'),
+            'templateid' => $template_id,
             'rpt' => config('constants.SMS.SMS_API_ENDPOINT'),
 
         ]);
