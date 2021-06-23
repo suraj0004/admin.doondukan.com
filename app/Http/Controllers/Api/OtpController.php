@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\SmsService;
+use App\Services\SmsTemplateService;
 use App\Models\Otp;
 use Validator;
 use App\Models\User;
@@ -34,8 +35,9 @@ class OtpController extends Controller
         $otpData->mobile = $request->mobile;
         $otpData->otp = $otp;
         $otpData->save();
-        $message = "Your DoonDunkan OTP is ".$otp;
-        SmsService::sendSms($request->mobile,$message);
+        $sms = SmsTemplateService::signUpVerification($otp);
+        $template_id = config("constants.SMS.TEMPLATE.SIGN_UP_VERIFICATION.ID");
+        SmsService::sendSms($request->mobile,$sms,$template_id);
         return response()->json(['statusCode'=>200,'success'=>true,'message'=>'Otp successfully sent.'], 200);
     }
 }
