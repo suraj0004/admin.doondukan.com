@@ -48,6 +48,6 @@ class OtpController extends Controller
         }
 
         SmsService::sendSms($request->mobile,$sms,$template_id);
-        return response()->json(['statusCode'=>200,'success'=>true,'message'=>'Otp successfully sent.'], 200);
+        return response()->json(['statusCode'=>200,'success'=>true,'message'=>'OTP Sent'], 200);
     }
 }
