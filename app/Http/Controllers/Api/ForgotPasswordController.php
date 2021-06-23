@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\SmsService;
 use App\Models\User;
+use Validator;
+
 class ForgotPasswordController extends Controller
 {
     public function resetPassword(Request $request) 
@@ -32,6 +35,6 @@ class ForgotPasswordController extends Controller
 
         $user->password = bcrypt($request->password);
         $user->save();
-        return response()->json(['statusCode'=>200,'success'=>true,'message'=>'Password updated successfully.'], 200);
+        return response()->json(['statusCode'=>200,'success'=>true,'message'=>'Password updated successfully.Redirecting....'], 200);
     }
 }
