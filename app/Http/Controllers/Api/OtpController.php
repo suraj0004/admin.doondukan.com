@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Services\SmsService;
+use App\Services\SmsTemplateService;
 use App\Models\Otp;
 use Validator;
 use App\Models\User;
@@ -30,12 +31,23 @@ class OtpController extends Controller
         }else if($request->type == "sign_up_otp" && $checkMobileExits){
             return response()->json(['statusCode'=>200,'success'=>false,'message'=>'Mobile already exists.'], 200);
         }
+
         $otpData = Otp::where('mobile',$request->mobile)->firstOrNew();
         $otpData->mobile = $request->mobile;
         $otpData->otp = $otp;
         $otpData->save();
-        $message = "Your DoonDunkan OTP is ".$otp;
-        SmsService::sendSms($request->mobile,$message);
+
+        if($request->type == "forget_password" ) {
+            $sms = SmsTemplateService::forgotPassword($otp);
+            $template_id = config("constants.SMS.TEMPLATE.FORGOT_PASSWORD.ID");
+        }else if($request->type == "sign_up_otp"){
+            $sms = SmsTemplateService::signUpVerification($otp);
+            $template_id = config("constants.SMS.TEMPLATE.SIGN_UP_VERIFICATION.ID");
+        }else{
+            return response()->json(['statusCode'=>200,'success'=>false,'message'=>'Opps! Something went wrong.'], 200);
+        }
+
+        SmsService::sendSms($request->mobile,$sms,$template_id);
         return response()->json(['statusCode'=>200,'success'=>true,'message'=>'Otp successfully sent.'], 200);
     }
 }
