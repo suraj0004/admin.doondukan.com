@@ -5,7 +5,9 @@ use App\Models\Otp;
 
 class SmsService {
     public static function sendSms(string $mobile, string $sms, string $template_id){
-
+        if (App::environment('local')) {
+            return true;
+        }
         $response = Http::get(config('constants.SMS.SMS_API_ENDPOINT'), [
 
             'user' => config('constants.SMS.SMS_USER'),
