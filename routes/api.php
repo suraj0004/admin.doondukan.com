@@ -18,6 +18,7 @@ Route::post('register', 'Api\UserController@register');
 Route::post('send-otp', 'Api\OtpController@sendOTP');
 Route::post('ecommerce/send-otp', 'Api\OtpController@sendOTP');
 Route::post('forgot-password', 'Api\ForgotPasswordController@resetPassword');
+Route::post('ecommerce/forgot-password', 'Api\ForgotPasswordController@resetPassword');
 Route::group(['middleware' => ['auth:api','shoopkeeper'],'prefix'=>'retail'], function()
 {
 	//User Log out API(POST)

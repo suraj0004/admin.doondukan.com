@@ -2,6 +2,7 @@
 namespace App\Services;
 use Illuminate\Support\Facades\Http;
 use App\Models\Otp;
+use App;
 
 class SmsService {
     public static function sendSms(string $mobile, string $sms, string $template_id){
