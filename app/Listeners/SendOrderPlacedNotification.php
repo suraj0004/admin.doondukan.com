@@ -28,6 +28,9 @@ class SendOrderPlacedNotification implements ShouldQueue
      */
     public function handle(OrderPlaced $event)
     {
-        Mail::to($event->orderData['sellerEmail'])->send(new OrderPlacedMail($event->orderData));
+        $event->orderData->load(['seller','buyer']);
+        if(!empty($event->orderData->seller->email)) {
+            Mail::to($event->orderData->seller->email)->send(new OrderPlacedMail($event->orderData));
+        }
     }
 }

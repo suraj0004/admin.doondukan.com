@@ -65,18 +65,9 @@ class OrderController extends Controller
             $orderItemData->quantity = $value->quantity;
             $orderItemData->save();
         }
-
-        $sellerEmailId = User::select('email','name','phone')->where('id',$seller_id)->first();
-        if(!empty($sellerEmailId->email)) {
-            $orderData->sellerEmail = $sellerEmailId->email;
-            $orderData->seller_name = $sellerEmailId->name;
-            $orderData->seller_phone = $sellerEmailId->phone;
-            $orderData->customer_mobile = $buyer->phone;
-            $orderData->user_name = $buyer->name;
-            $orderData = $orderData->toArray();
-            OrderPlaced::dispatch($orderData);
-        }
-
+        
+        OrderPlaced::dispatch($orderData);
+        
         $this->destroyCart($buyer,$seller_id);
 
         return response()->json(['statusCode' => 200, 'success' => true, 'message' => "Order Placed Successfully.","data" => $orderData], 200);
