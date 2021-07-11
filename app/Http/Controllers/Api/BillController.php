@@ -38,6 +38,7 @@ class BillController extends Controller
     	$setCustomerbill->customer_email = $request->buyer['email'] ?? null;
     	$setCustomerbill->discount = $request->buyer['discount'] ?? null;
     	$setCustomerbill->discount_type = $request->buyer['discount_type'] ?? null;
+        $setCustomerbill->order_type = "offline";
     	$bill_ID = $setCustomerbill->save();
     	if( $bill_ID )
     	{

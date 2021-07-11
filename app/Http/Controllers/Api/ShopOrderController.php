@@ -117,7 +117,7 @@ class ShopOrderController extends Controller
     			}
     		}
 
-            Orders::whereId($orderId)->update(['status'=>$status]); // where user id missing
+            Orders::whereId($orderId)->update(['status'=>$status,'bill_id'=>$setCustomerbill->id]); // where user id missing
     		return response()->json(['statusCode'=>200,'success'=>true,'message'=>'Bill Generated Successfully.','data'=>$setCustomerbill->id], 200);
     	}
     	else
