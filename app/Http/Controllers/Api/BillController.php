@@ -12,6 +12,8 @@ use App\Models\Store;
 use App\Models\Purchase;
 use App\Models\SaleReturn;
 use Validator;
+use App\Http\Resources\Shop\BillCollection;
+use App\Http\Resources\Shop\ProductResource;
 
 class BillController extends Controller
 {
@@ -80,11 +82,17 @@ class BillController extends Controller
     public function getBill(Request $request)
     {
         $user = Auth::User();
-        $billData = Bill::withCount('sales')->withSum('sales:price*quantity as sales_price')->where('user_id',$user->id);
+        $billData = Bill::select("bills.*","products.image")
+        ->withCount('sales')
+        ->withSum('sales:price*quantity as sales_price')
+        ->join('sales','sales.bill_id','=','bills.id')
+        ->join('products','sales.product_id','=','products.id')
+        ->groupBy('bills.id')
+        ->where('bills.user_id',$user->id);
 
-        if(!empty( $request->status ) )
+        if(!empty( $request->type ) )
         {
-            $billData = $billData->where('status',$request->status);
+            $billData = $billData->where('order_type',$request->type);
         }
 
         if( !empty($request->search) )
@@ -93,7 +101,9 @@ class BillController extends Controller
         }
 
         $billData = $billData->paginate(8);
-
+        return (new BillCollection($billData))->additional([
+            "message" => "Bills get successfully."
+        ]);
         if(count($billData) > 0 )
         {
             return response()->json(['statusCode'=>200,'success'=>true,'message'=>'Bill list.','data'=>$billData], 200);
@@ -120,6 +130,12 @@ class BillController extends Controller
         {
             $store = Store::where('user_id',$user->id)->first();
             $data->store = $store;
+            $data->main_sale_product = $data->mainSaleProduct->map(function ($sale) {
+                $product = new ProductResource($sale->product);
+                unset($sale->product);
+                $sale->product = $product;
+                return $sale;
+            });
             return response()->json(['statusCode'=>200,'success'=>true,'message'=>'invoice data.','data'=>$data], 200);
         }
         else
