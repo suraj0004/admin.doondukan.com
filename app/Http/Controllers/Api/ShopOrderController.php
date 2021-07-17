@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Events\OrderConfirmed;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Shop\OrderListCollection;
+use App\Http\Resources\Shop\ProductResource;
 use App\Models\Bill;
 use App\Models\OrderItem;
 use App\Models\Orders;
@@ -47,6 +48,24 @@ class ShopOrderController extends Controller
             "message" => "Orders get successfully.",
         ]);
         return response()->json(['statusCode' => 200, 'success' => true, 'message' => 'All orders fetched successfully.', 'data' => $orderData], 200);
+    }
+
+    public function getOrderDetail($id)
+    {
+        $user = Auth::User();
+        $data = Orders::with(["orderitem.product", "buyer"])->where('id', $id)->where('seller_id', $user->id)->first();
+
+        if ($data) {
+            $data->orderitem = $data->orderitem->map(function ($orderItem) {
+                $product = new ProductResource($orderItem->product);
+                unset($orderItem->product);
+                $orderItem->product = $product;
+                return $orderItem;
+            });
+            return response()->json(['statusCode' => 200, 'success' => true, 'message' => 'invoice data.', 'data' => $data], 200);
+        } else {
+            return response()->json(['statusCode' => 200, 'success' => false, 'message' => 'invoice not found.'], 200);
+        }
     }
 
     /**
