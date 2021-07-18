@@ -19,6 +19,8 @@ Route::post('send-otp', 'Api\OtpController@sendOTP');
 Route::post('ecommerce/send-otp', 'Api\OtpController@sendOTP');
 Route::post('forgot-password', 'Api\ForgotPasswordController@resetPassword');
 Route::post('ecommerce/forgot-password', 'Api\ForgotPasswordController@resetPassword');
+Route::get('delivery-medium', 'Api\UserController@getDeliveryMedium');
+
 Route::group(['middleware' => ['auth:api','shoopkeeper'],'prefix'=>'retail'], function()
 {
 	//User Log out API(POST)
@@ -177,11 +179,18 @@ Route::group(['namespace'=>'Api\Ecommerce','prefix' => 'ecommerce'],function(){
     });
 
     /** User specific routes */
-    Route::group(['middleware' => ['auth:api','user']], function(){
+    Route::group(['middleware' => ['auth:api','user']], function() {
 
         Route::post('logout', 'UserController@logout');
         Route::post('profile/update', 'UserController@updateProfile');
-
+        Route::group(['prefix' => 'address'], function(){
+	        Route::post('add', 'UserController@addUserAddress');
+	        Route::post('update', 'UserController@updateUserAddress');
+	        Route::post('delete/{id}', 'UserController@deleteAddress');
+	        Route::post('list', 'UserController@getUserAddresses');
+        });
+        
+        
         Route::group(['prefix' => 'order' ], function(){
         	Route::post('checkout/{seller_id}-{shop_slug}','OrderController@checkout');
         	Route::get('list','OrderController@orderList');

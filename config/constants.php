@@ -50,4 +50,10 @@ return [
         "data:image/jpg;base64,",
         "data:image/jpeg;base64,",
     ],
+    "DELIVERY_CHARGES"=>20,
+    "DELIVERY_MEDIUM" => [
+        "user-self-collected",
+        "shop-delivery",
+        "delivery-partner"
+    ]
 ];

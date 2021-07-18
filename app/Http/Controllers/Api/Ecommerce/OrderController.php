@@ -16,12 +16,15 @@ use App\Http\Resources\Ecommerce\OrderItemCollection;
 use App\Events\OrderPlaced;
 use App\Models\User;
 use App\Rules\IsShopOpen;
+use App\Models\UserAddress;
+use App\Models\ShippingAddress;
 
 class OrderController extends Controller
 {
     public function checkout(Request $request, $seller_id, $shop_slug)
     {
         $validator = Validator::make($request->all(), [
+            'delivery_type'=> ['required'],
             'fromTime' => ['required','date_format:Y-m-d H:i:s', new IsShopOpen($seller_id)],
             'toTime' => ['required','date_format:Y-m-d H:i:s','after:fromTime', new IsShopOpen($seller_id)]
          ],[
@@ -34,7 +37,6 @@ class OrderController extends Controller
         }
 
         $buyer = Auth::User();
-
         $cartData = Cart::select('carts.*','stocks.price')
                     ->join('stocks', function ($join) use ($seller_id) {
                         $join->on('stocks.product_id', '=', 'carts.product_id')
@@ -46,6 +48,26 @@ class OrderController extends Controller
             return response()->json(['statusCode' => 200, 'success' => false, 'message' => "Oops! Cart Is Empty."], 200);
         }
 
+        $deliveryCharges = 0;
+        if($request->delivery_type == "home-delivery") {
+            if(!empty($request->address_id)) {
+                return response()->json(['statusCode' => 200, 'success' => false, 'message' => "Address is required."], 200);
+            }
+
+            $shipping_address_id = $this->addShippingAddress($buyer->id,$request->address_id);
+            
+            if(!$shipping_address_id) {
+                return response()->json(['statusCode'=>200,'success'=>false,'message'=>'Address not found.'], 200);
+            }
+        }
+        if($request->delivery_type == "home-delivery") {
+            $getDeliveryCharges = Store::select('delivery_type','delivery_charges')->where('user_id', $seller_id)->first();
+            $deliveryCharges = $getDeliveryCharges->delivery_charges;
+            if($getDeliveryCharges->delivery_type == "delivery-partner") {
+                $deliveryCharges = config("constants.DELIVERY_CHARGES");
+            }
+        }
+
         $orderData = new Orders();
         $orderData->buyer_id = $buyer->id;
         $orderData->seller_id = $cartData->first()->seller_id;
@@ -53,7 +75,9 @@ class OrderController extends Controller
         $orderData->order_amount = $cartData->reduce(function ($carry,$item) { return $carry + ($item->price * $item->quantity); });
         $orderData->from_time = $request->fromTime;
         $orderData->to_time = $request->toTime;
-
+        $orderData->delivery_type = $request->delivery_type;
+        $orderData->delivery_charges = $deliveryCharges;
+        $orderData->shipping_address_id = $shipping_address_id;
         if(!$orderData->save()) {
             return response()->json(['statusCode' => 200, 'success' => false, 'message' => "Oops! Something went wrong. Please try again later."], 200);
         }
@@ -149,6 +173,25 @@ class OrderController extends Controller
             'success'=>true,
             'message'=> "Order cancelled successfully."
         ], 200);
+    }
 
+    private function addShippingAddress($user_id,$id)
+    {
+        $userAddress = UserAddress::where('user_id',$user_id)->where('id',$id)->first();
+        if(!$userAddress) {
+            return false;
+        }
+        $shippingAddress = new ShippingAddress();
+        $shippingAddress->user_id = $user_id;
+        $shippingAddress->mobile = $userAddress->mobile;
+        $shippingAddress->name = $userAddress->name;
+        $shippingAddress->city = $userAddress->city;
+        $shippingAddress->state = $userAddress->state;
+        $shippingAddress->pincode = $userAddress->pincode;
+        $shippingAddress->address = $userAddress->address;
+        if($shippingAddress->save()) {
+            return $shippingAddress->id;
+        }
+        return false;
     }
 }

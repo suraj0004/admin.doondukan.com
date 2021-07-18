@@ -23,6 +23,10 @@ class StoreResource extends JsonResource
             "shop_url" => "https://app.doondukan.com/".$this->user_id."-".$this->slug,
             "logo" => getFileUrl(config("constants.disks.STORE"), $this->logo),
             "seller_name" => $this->user->name,
+            'delivery_medium'=>$this->delivery_medium,
+            'order_within_km'=>$this->order_within_km,
+            'minimum_order_amount'=>$this->minimum_order_amount,
+            'delivery_charges'=>$this->delivery_charges
         ];
     }
 
