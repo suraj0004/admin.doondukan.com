@@ -188,10 +188,10 @@ Route::group(['namespace'=>'Api\Ecommerce','prefix' => 'ecommerce'],function(){
 	        Route::post('add', 'UserController@addUserAddress');
 	        Route::post('update', 'UserController@updateUserAddress');
 	        Route::post('delete/{id}', 'UserController@deleteAddress');
-	        Route::post('list', 'UserController@getUserAddresses');
+	        Route::get('list', 'UserController@getUserAddresses');
         });
-        
-        
+
+
         Route::group(['prefix' => 'order' ], function(){
         	Route::post('checkout/{seller_id}-{shop_slug}','OrderController@checkout');
         	Route::get('list','OrderController@orderList');
