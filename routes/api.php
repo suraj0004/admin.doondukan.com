@@ -188,7 +188,7 @@ Route::group(['namespace'=>'Api\Ecommerce','prefix' => 'ecommerce'],function(){
         	Route::get('list','OrderController@orderList');
         	Route::get('detail/{order_no}','OrderController@orderDetails');
             Route::post('cancel','OrderController@cancleOrder');
-
+            Route::post('invoice','OrderController@downloadInvoice');
         });
     });
 });
