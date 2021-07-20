@@ -24,7 +24,8 @@ class OrderController extends Controller
     public function checkout(Request $request, $seller_id, $shop_slug)
     {
         $validator = Validator::make($request->all(), [
-            'delivery_type'=> ['required'],
+            'delivery_type'=> ['required','in:user-self-collected,home-delivery'],
+            'address_id'=>['required_if:delivery_type,==,home-delivery']
             'fromTime' => ['required','date_format:Y-m-d H:i:s', new IsShopOpen($seller_id)],
             'toTime' => ['required','date_format:Y-m-d H:i:s','after:fromTime', new IsShopOpen($seller_id)]
          ],[
@@ -50,20 +51,16 @@ class OrderController extends Controller
 
         $deliveryCharges = 0;
         if($request->delivery_type == "home-delivery") {
-            if(!empty($request->address_id)) {
-                return response()->json(['statusCode' => 200, 'success' => false, 'message' => "Address is required."], 200);
-            }
-            
             $userAddress = UserAddress::where('user_id',$buyer->id)->where('id',$request->address_id)->first();
        
-            if(!$userAddress) {
-                
+            if(!$userAddress) {         
                 return response()->json(['statusCode'=>200,'success'=>false,'message'=>'Address not found.'], 200);
             }
-        }
-        if($request->delivery_type == "home-delivery") {
+
             $getDeliveryCharges = Store::select('delivery_type','delivery_charges')->where('user_id', $seller_id)->first();
+            
             $deliveryCharges = $getDeliveryCharges->delivery_charges;
+            
             if($getDeliveryCharges->delivery_type == "delivery-partner") {
                 $deliveryCharges = config("constants.DELIVERY_CHARGES");
             }
@@ -78,7 +75,6 @@ class OrderController extends Controller
         $orderData->to_time = $request->toTime;
         $orderData->delivery_type = $request->delivery_type;
         $orderData->delivery_charges = $deliveryCharges;
-        $orderData->shipping_address_id = $shipping_address_id;
         if(!$orderData->save()) {
             return response()->json(['statusCode' => 200, 'success' => false, 'message' => "Oops! Something went wrong. Please try again later."], 200);
         }
@@ -91,8 +87,9 @@ class OrderController extends Controller
             $orderItemData->save();
         }
 
-        
-        $this->addShippingAddress($buyer->id,$orderData->id,$userAddress);
+        if($request->delivery_type == "home-delivery") {
+            $this->addShippingAddress($buyer->id,$orderData->id,$userAddress);
+        }
         
         OrderPlaced::dispatch($orderData);
 
