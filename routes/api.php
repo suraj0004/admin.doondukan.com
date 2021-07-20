@@ -78,6 +78,7 @@ Route::group(['middleware' => ['auth:api','shoopkeeper'],'prefix'=>'retail'], fu
 	//API for getting all orders
 
 	Route::get('get/orders', 'Api\ShopOrderController@index');
+    Route::get('get/orders/detail/{id}', 'Api\ShopOrderController@getOrderDetail');
 
 	// updating order confirmations status
 	Route::post('shop/order', 'Api\ShopOrderController@updateStatus');
@@ -187,16 +188,16 @@ Route::group(['namespace'=>'Api\Ecommerce','prefix' => 'ecommerce'],function(){
 	        Route::post('add', 'UserController@addUserAddress');
 	        Route::post('update', 'UserController@updateUserAddress');
 	        Route::post('delete/{id}', 'UserController@deleteAddress');
-	        Route::post('list', 'UserController@getUserAddresses');
+	        Route::get('list', 'UserController@getUserAddresses');
         });
-        
-        
+
+
         Route::group(['prefix' => 'order' ], function(){
         	Route::post('checkout/{seller_id}-{shop_slug}','OrderController@checkout');
         	Route::get('list','OrderController@orderList');
         	Route::get('detail/{order_no}','OrderController@orderDetails');
             Route::post('cancel','OrderController@cancleOrder');
-
+            Route::post('invoice','OrderController@downloadInvoice');
         });
     });
 });

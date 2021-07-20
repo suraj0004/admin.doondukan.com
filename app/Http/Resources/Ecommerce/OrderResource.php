@@ -21,6 +21,9 @@ class OrderResource extends JsonResource
             "status" => $this->status,
             "created_at" => $this->created_at,
             "store" => new StoreResource($this->store),
+            "items" =>new OrderItemCollection($this->orderitem),
+            "buyer" => $this->buyer,
+            "seller" => $this->seller,
         ];
     }
 

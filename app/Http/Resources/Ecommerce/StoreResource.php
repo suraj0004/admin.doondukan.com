@@ -16,7 +16,7 @@ class StoreResource extends JsonResource
     {
         return [
             "shop_name" => $this->name,
-            "mobile" => $this->mobile,
+            "mobile" => $this->user->phone,
             "address" => $this->address,
             "open_at" => $this->open_at,
             "close_at" => $this->close_at,

@@ -30,7 +30,7 @@ class SendOrderConfirmedSMS
     {
         $template_id = config("constants.SMS.TEMPLATE.ORDER_CONFIRMED.ID");
         $sms = SmsTemplateService::orderConfirmed(
-            $event->order->buyer->name,
+            $event->order->buyer->name?$event->order->buyer->name:"User",
             $event->order->seller->name,
             $event->order->order_no
         );
