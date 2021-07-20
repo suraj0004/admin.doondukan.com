@@ -16,6 +16,7 @@ class CreateShippingAddressesTable extends Migration
         Schema::create('shipping_addresses', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id');
+            $table->foreignId('order_id');
             $table->string('name');
             $table->string('mobile');
             $table->string('city');

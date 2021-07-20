@@ -54,9 +54,9 @@ class OrderController extends Controller
                 return response()->json(['statusCode' => 200, 'success' => false, 'message' => "Address is required."], 200);
             }
 
-            $shipping_address_id = $this->addShippingAddress($buyer->id,$request->address_id);
-            
-            if(!$shipping_address_id) {
+            $userAddress = UserAddress::where('user_id',$buyer->id)->where('id',$request->address_id)->first();
+       
+            if(!$userAddress) {
                 return response()->json(['statusCode'=>200,'success'=>false,'message'=>'Address not found.'], 200);
             }
         }
@@ -89,6 +89,8 @@ class OrderController extends Controller
             $orderItemData->quantity = $value->quantity;
             $orderItemData->save();
         }
+        
+        $this->addShippingAddress($buyer->id,$orderData->id,$userAddress);
         
         OrderPlaced::dispatch($orderData);
         
@@ -175,23 +177,20 @@ class OrderController extends Controller
         ], 200);
     }
 
-    private function addShippingAddress($user_id,$id)
+    private function addShippingAddress($user_id,$order_id,$userAddress)
     {
-        $userAddress = UserAddress::where('user_id',$user_id)->where('id',$id)->first();
-        if(!$userAddress) {
-            return false;
-        }
+        
         $shippingAddress = new ShippingAddress();
         $shippingAddress->user_id = $user_id;
+        $shippingAddress->order_id = $order_id;
         $shippingAddress->mobile = $userAddress->mobile;
         $shippingAddress->name = $userAddress->name;
         $shippingAddress->city = $userAddress->city;
         $shippingAddress->state = $userAddress->state;
         $shippingAddress->pincode = $userAddress->pincode;
         $shippingAddress->address = $userAddress->address;
-        if($shippingAddress->save()) {
-            return $shippingAddress->id;
-        }
-        return false;
+        $shippingAddress->save();
+        
+        return true;
     }
 }
