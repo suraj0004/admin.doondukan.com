@@ -26,7 +26,7 @@ class StoreResource extends JsonResource
             'delivery_medium'=>$this->delivery_medium,
             'order_within_km'=>$this->order_within_km,
             'minimum_order_amount'=>$this->minimum_order_amount,
-            'delivery_charges'=>$this->delivery_charges
+            'delivery_charges'=>($this->delivery_medium == 'delivery-partner')?config("constants.DELIVERY_CHARGES"):$this->delivery_charges
         ];
     }
 

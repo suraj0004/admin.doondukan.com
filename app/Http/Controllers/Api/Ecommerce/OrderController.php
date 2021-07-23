@@ -18,6 +18,7 @@ use App\Rules\IsShopOpen;
 use App\Models\UserAddress;
 use App\Models\ShippingAddress;
 use PDF;
+use App\Models\Store;
 
 class OrderController extends Controller
 {
@@ -25,9 +26,9 @@ class OrderController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'delivery_type'=> ['required','in:user-self-collected,home-delivery'],
-            'address_id'=>['required_if:delivery_type,==,home-delivery']
-            'fromTime' => ['required','date_format:Y-m-d H:i:s', new IsShopOpen($seller_id)],
-            'toTime' => ['required','date_format:Y-m-d H:i:s','after:fromTime', new IsShopOpen($seller_id)]
+            'address_id'=>['required_if:delivery_type,==,home-delivery'],
+            'fromTime' => ['required_if:delivery_type,==,user-self-collected','date_format:Y-m-d H:i:s', new IsShopOpen($seller_id)],
+            'toTime' => ['required_if:delivery_type,==,user-self-collected','date_format:Y-m-d H:i:s','after:fromTime', new IsShopOpen($seller_id)]
          ],[
              'toTime.after' => "The to time must be a time after from time."
          ]);
@@ -50,18 +51,20 @@ class OrderController extends Controller
         }
 
         $deliveryCharges = 0;
+        $delivery_type = $request->delivery_type;
         if($request->delivery_type == "home-delivery") {
             $userAddress = UserAddress::where('user_id',$buyer->id)->where('id',$request->address_id)->first();
-       
-            if(!$userAddress) {         
+
+            if(!$userAddress) {
                 return response()->json(['statusCode'=>200,'success'=>false,'message'=>'Address not found.'], 200);
             }
 
-            $getDeliveryCharges = Store::select('delivery_type','delivery_charges')->where('user_id', $seller_id)->first();
-            
+            $getDeliveryCharges = Store::select('delivery_medium','delivery_charges')->where('user_id', $seller_id)->first();
+
             $deliveryCharges = $getDeliveryCharges->delivery_charges;
-            
-            if($getDeliveryCharges->delivery_type == "delivery-partner") {
+
+            if($getDeliveryCharges->delivery_medium == "delivery-partner") {
+                $delivery_type = $getDeliveryCharges->delivery_medium;
                 $deliveryCharges = config("constants.DELIVERY_CHARGES");
             }
         }
@@ -73,7 +76,7 @@ class OrderController extends Controller
         $orderData->order_amount = $cartData->reduce(function ($carry,$item) { return $carry + ($item->price * $item->quantity); });
         $orderData->from_time = $request->fromTime;
         $orderData->to_time = $request->toTime;
-        $orderData->delivery_type = $request->delivery_type;
+        $orderData->delivery_type = $delivery_type;
         $orderData->delivery_charges = $deliveryCharges;
         if(!$orderData->save()) {
             return response()->json(['statusCode' => 200, 'success' => false, 'message' => "Oops! Something went wrong. Please try again later."], 200);
@@ -90,7 +93,7 @@ class OrderController extends Controller
         if($request->delivery_type == "home-delivery") {
             $this->addShippingAddress($buyer->id,$orderData->id,$userAddress);
         }
-        
+
         OrderPlaced::dispatch($orderData);
 
         $this->destroyCart($buyer,$seller_id);
@@ -171,7 +174,7 @@ class OrderController extends Controller
 
     private function addShippingAddress($user_id,$order_id,$userAddress)
     {
-        
+
         $shippingAddress = new ShippingAddress();
         $shippingAddress->user_id = $user_id;
         $shippingAddress->order_id = $order_id;
@@ -182,7 +185,7 @@ class OrderController extends Controller
         $shippingAddress->pincode = $userAddress->pincode;
         $shippingAddress->address = $userAddress->address;
         $shippingAddress->save();
-        
+
         return true;
     }
 

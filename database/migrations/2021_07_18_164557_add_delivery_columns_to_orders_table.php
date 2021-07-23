@@ -14,7 +14,7 @@ class AddDeliveryColumnsToOrdersTable extends Migration
     public function up()
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->unsignedInteger('delivery_type')->after('to_time')->nullable();
+            $table->string('delivery_type')->after('to_time')->nullable();
             $table->unsignedInteger('delivery_charges')->after('delivery_type')->nullable();
         });
     }
