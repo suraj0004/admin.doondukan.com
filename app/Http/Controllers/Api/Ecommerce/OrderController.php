@@ -62,9 +62,8 @@ class OrderController extends Controller
             $getDeliveryCharges = Store::select('delivery_medium','delivery_charges')->where('user_id', $seller_id)->first();
 
             $deliveryCharges = $getDeliveryCharges->delivery_charges;
-
+            $delivery_type = $getDeliveryCharges->delivery_medium;
             if($getDeliveryCharges->delivery_medium == "delivery-partner") {
-                $delivery_type = $getDeliveryCharges->delivery_medium;
                 $deliveryCharges = config("constants.DELIVERY_CHARGES");
             }
         }

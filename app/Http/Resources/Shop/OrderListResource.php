@@ -24,6 +24,7 @@ class OrderListResource extends JsonResource
             "orderitem_count" => $this->orderitem_count,
             "image" => getFileUrl(config("constants.disks.PRODUCT"), $this->image),
             "status" => $this->status,
+            "delivery_type" => $this->delivery_type,
         ];
     }
 }

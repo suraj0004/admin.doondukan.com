@@ -53,7 +53,7 @@ class ShopOrderController extends Controller
     public function getOrderDetail($id)
     {
         $user = Auth::User();
-        $data = Orders::with(["orderitem.product", "buyer"])->where('id', $id)->where('seller_id', $user->id)->first();
+        $data = Orders::with(["orderitem.product", "buyer","shippingAddress"])->where('id', $id)->where('seller_id', $user->id)->first();
 
         if ($data) {
             $data->orderitem = $data->orderitem->map(function ($orderItem) {
