@@ -22,6 +22,7 @@ class StoreResource extends JsonResource
             "email"=>$this->email,
             "mobile" => $this->mobile,
             "address" => $this->address,
+            "about" => $this->about,
             "open_at" => $this->open_at,
             "close_at" => $this->close_at,
             "registration_date"=>$this->registration_date,

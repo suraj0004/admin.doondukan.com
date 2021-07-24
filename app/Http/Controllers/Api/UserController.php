@@ -105,13 +105,13 @@ class UserController extends Controller
             'logo'=> 'image|max:2048',
             'order_delivery_medium'=>'required'
         ];
-        
+
         if($request->order_delivery_medium == 'shop-delivery') {
             $rules['order_within_km'] = 'required';
             $rules['minimum_order_amount'] = 'required';
             $rules['delivery_charges'] = 'required';
         }
-        
+
         $validator = Validator::make($request->all(), $rules);
 
         if ($validator->fails())
@@ -134,7 +134,7 @@ class UserController extends Controller
         $store->registration_date = $request->registration_date;
         $store->open_at = $request->open_at;
         $store->close_at = $request->close_at;
-        $store->delivery_medium = $request->delivery_medium;
+        $store->delivery_medium = $request->order_delivery_medium;
         $store->order_within_km = $request->order_within_km;
         $store->minimum_order_amount = $request->minimum_order_amount;
         $store->delivery_charges = $request->delivery_charges;
