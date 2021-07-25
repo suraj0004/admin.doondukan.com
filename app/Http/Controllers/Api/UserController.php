@@ -257,4 +257,13 @@ class UserController extends Controller
         $deliveryMedium = config("constants.DELIVERY_MEDIUM");
         return response()->json(['statusCode'=>200,'success'=>true,'message'=>'Delivery Medium','data'=>$deliveryMedium],200);
     }
+
+    public function isAuthenticated()
+    {
+        // if user can access this function, it means he/she is authenticated.
+        return response()->json([
+            "success" => true,
+            "message" => "Authenticated"
+        ],200);
+    }
 }
