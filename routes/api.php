@@ -19,6 +19,8 @@ Route::post('send-otp', 'Api\OtpController@sendOTP');
 Route::post('ecommerce/send-otp', 'Api\OtpController@sendOTP');
 Route::post('forgot-password', 'Api\ForgotPasswordController@resetPassword');
 Route::post('ecommerce/forgot-password', 'Api\ForgotPasswordController@resetPassword');
+Route::get('delivery-medium', 'Api\UserController@getDeliveryMedium');
+
 Route::group(['middleware' => ['auth:api','shoopkeeper'],'prefix'=>'retail'], function()
 {
 	//User Log out API(POST)
@@ -76,6 +78,7 @@ Route::group(['middleware' => ['auth:api','shoopkeeper'],'prefix'=>'retail'], fu
 	//API for getting all orders
 
 	Route::get('get/orders', 'Api\ShopOrderController@index');
+    Route::get('get/orders/detail/{id}', 'Api\ShopOrderController@getOrderDetail');
 
 	// updating order confirmations status
 	Route::post('shop/order', 'Api\ShopOrderController@updateStatus');
@@ -177,17 +180,24 @@ Route::group(['namespace'=>'Api\Ecommerce','prefix' => 'ecommerce'],function(){
     });
 
     /** User specific routes */
-    Route::group(['middleware' => ['auth:api','user']], function(){
+    Route::group(['middleware' => ['auth:api','user']], function() {
 
         Route::post('logout', 'UserController@logout');
         Route::post('profile/update', 'UserController@updateProfile');
+        Route::group(['prefix' => 'address'], function(){
+	        Route::post('add', 'UserController@addUserAddress');
+	        Route::post('update', 'UserController@updateUserAddress');
+	        Route::post('delete/{id}', 'UserController@deleteAddress');
+	        Route::get('list', 'UserController@getUserAddresses');
+        });
+
 
         Route::group(['prefix' => 'order' ], function(){
         	Route::post('checkout/{seller_id}-{shop_slug}','OrderController@checkout');
         	Route::get('list','OrderController@orderList');
         	Route::get('detail/{order_no}','OrderController@orderDetails');
             Route::post('cancel','OrderController@cancleOrder');
-
+            Route::post('invoice','OrderController@downloadInvoice');
         });
     });
 });

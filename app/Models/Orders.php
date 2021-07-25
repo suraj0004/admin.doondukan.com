@@ -29,5 +29,15 @@ class Orders extends Model
         return $this->hasOne(User::class, 'id', 'buyer_id');
     }
 
+    /**
+     * Get the shippingAddress associated with the Orders
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
+    public function shippingAddress()
+    {
+        return $this->hasOne(ShippingAddress::class, 'order_id', 'id');
+    }
+
 
 }

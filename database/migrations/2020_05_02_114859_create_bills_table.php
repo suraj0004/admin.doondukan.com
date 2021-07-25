@@ -21,7 +21,7 @@ class CreateBillsTable extends Migration
             $table->string('customer_email')->nullable();
             $table->integer('discount')->nullable();
             $table->enum('discount_type', ['rupees', 'percentage'])->nullable();
-             $table->enum('status', ['paid', 'unpaid'])->default("unpaid");
+            $table->enum('status', ['paid', 'unpaid'])->default("unpaid");
             $table->softDeletes();
             $table->timestamps();
         });

@@ -9,6 +9,7 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use App\Models\Orders;
 
 class OrderPlaced
 {
@@ -20,7 +21,7 @@ class OrderPlaced
      *
      * @return void
      */
-    public function __construct($data)
+    public function __construct(Orders $data)
     {
         $this->orderData = $data;
     }

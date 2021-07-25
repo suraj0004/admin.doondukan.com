@@ -28,8 +28,9 @@ class SendOrderPlacedSMS
      */
     public function handle(OrderPlaced $event)
     {
+        $event->orderData->load(['seller:id,email,phone,name']);
         $template_id = config("constants.SMS.TEMPLATE.ORDER_PLACED.ID");
-        $sms = SmsTemplateService::orderPlaced($event->orderData['seller_name'],$event->orderData['order_no'],'shop.doondukan.com');
-        SmsService::sendSms($event->orderData['seller_phone'],$sms,$template_id);
+        $sms = SmsTemplateService::orderPlaced($event->orderData->seller->name,$event->orderData->order_no,'shop.doondukan.com');
+        SmsService::sendSms($event->orderData->seller->phone,$sms,$template_id);
     }
 }

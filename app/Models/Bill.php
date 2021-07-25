@@ -20,6 +20,10 @@ class Bill extends Model
     {
     	return $this->hasMany(Sale::class, 'bill_id', 'id')->with('product.brand');
     }
+    public function showcaseProducts()
+    {
+        return $this->belongsToMany(Product::class,'sales' , 'bill_id', 'product_id')->limit(1);
+    }
 
     public function mainSaleProduct()
     {
@@ -40,4 +44,6 @@ class Bill extends Model
     {
     	return $this->hasMany(SaleReturn::class, 'bill_id', 'id')->where('product_source','temp')->with('tempProduct.brand');
     }
+
+
 }
