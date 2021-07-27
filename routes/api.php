@@ -27,7 +27,7 @@ Route::group(['middleware' => ['auth:api','shoopkeeper'],'prefix'=>'retail'], fu
 	Route::post('logout', 'Api\UserController@logout');
 
 	//User Check API(GET)
-    Route::post('isAuthenticated', 'Api\UserController@isAuthenticated');
+    Route::get('isAuthenticated', 'Api\UserController@isAuthenticated');
 
 	Route::get('dashboard','Api\DashboardController@index');
 
