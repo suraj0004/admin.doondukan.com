@@ -53,9 +53,7 @@ if (!function_exists('saveImageFromBase64')) {function saveImageFromBase64($disk
     $imageName = $image_prefix . '_' . time() . '_' . mt_rand(1, 9999) . '.jpg';
     Storage::disk($disk)->put($imageName, $image);
     
-    if ($thumbnail) {
-        createThumbnail($disk, $imageName, $delete_file);
-    }
+    createThumbnail($disk, $imageName, $delete_file);
     
     if (!empty($delete_file)) {
         Storage::disk($disk)->delete($delete_file);
