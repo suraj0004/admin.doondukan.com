@@ -29,7 +29,9 @@ class ProductController extends Controller
 
     public function getProductCatalogue(Request $request)
     {
-        $categories = Category::select("id","category_name")->with(['products'])->get();
+        $categories = Category::select("id","category_name")->with(['products' => function($query) use($user){
+            $query->whereNull('user_id');
+        } ])->get();
         return (new CategoryCollection($categories))->additional([
             "message" => "Product Data",
         ]);
