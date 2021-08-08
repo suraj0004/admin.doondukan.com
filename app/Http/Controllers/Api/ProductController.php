@@ -12,18 +12,18 @@ use App\Models\Category;
 
 class ProductController extends Controller
 {
+    private $per_page = 50;
 	//Function to get the list of all the products
-    public function getproductList()
+    public function getproductList(Request $request)
     {
     	$user = Auth::User();
-    	$productlist = Product::all();
-    	$tempProductlist = TempProduct::where('user_id',$user->id)->get();
-    	if( count($tempProductlist) <= 0 )
-    	{
-    		$tempProductlist = [];
-    	}
-    	$data['main'] = $productlist;
-		$data['temp'] = $tempProductlist;
+    	$data = Product::where(function($query) use ($user) {
+            $query->whereNull('user_id')->orWhere('user_id', $user->id);
+        });
+        if(isset($request->search) && !empty($request->search)){
+            $data = $data->where('name','LIKE','%'.$request->search . '%');
+        }
+        $data = $data->paginate($this->per_page);
 		return response()->json(['statusCode'=>200,'success'=>true,'message'=>'Products List.','data'=>$data], 200);
     }
 
