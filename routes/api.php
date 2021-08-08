@@ -44,7 +44,7 @@ Route::group(['middleware' => ['auth:api','shoopkeeper'],'prefix'=>'retail'], fu
     //End Of purchase API's.
 
 	//Product API(GET)
-	Route::get('globalProductList', 'Api\ProductController@getproductList');
+	Route::post('globalProductList', 'Api\ProductController@getproductList');
 	/*
 	|--------------------------------------------------------------------------
 	| Stock APIs
