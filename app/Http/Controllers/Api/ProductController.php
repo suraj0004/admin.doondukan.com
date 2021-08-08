@@ -29,7 +29,7 @@ class ProductController extends Controller
 
     public function getProductCatalogue(Request $request)
     {
-        $categories = Category::select("id","category_name")->with(['products' => function($query) use($user){
+        $categories = Category::select("id","category_name")->with(['products' => function($query){
             $query->whereNull('user_id');
         } ])->get();
         return (new CategoryCollection($categories))->additional([
