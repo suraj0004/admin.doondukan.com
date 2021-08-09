@@ -65,7 +65,7 @@ class ShopController extends Controller
 
     public function sellerInfo($seller_id)
     {
-        $sellerData = Store::select('id','user_id','name','address','logo','open_at','close_at','delivery_medium','order_within_km','minimum_order_amount','delivery_charges')->where('user_id',$seller_id)->with('user:id,name')->first();
+        $sellerData = Store::select('id','user_id','name','address','logo','open_at','close_at','delivery_medium','order_within_km','minimum_order_amount','delivery_charges')->where('user_id',$seller_id)->with('user:id,name,phone')->first();
         if(!$sellerData) {
             return response()->json(['statusCode' => 200, 'success' => false, 'message' => "No data found."], 200);
         }
