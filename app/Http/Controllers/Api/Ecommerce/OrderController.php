@@ -137,8 +137,8 @@ class OrderController extends Controller
     public function orderDetails($order_no)
     {
         $user = Auth::User();
-        $data = Orders::select('id','seller_id','buyer_id','order_no','order_amount','status','created_at')
-                ->with(['store','orderitem:id,order_id,product_id,quantity,price','buyer','seller'])
+        $data = Orders::select('id','seller_id','buyer_id','order_no','order_amount','status','created_at','delivery_type','from_time','to_time','delivery_charges')
+                ->with(['store','orderitem:id,order_id,product_id,quantity,price','buyer','seller','shippingAddress'])
                 ->where('buyer_id',$user->id)
                 ->where('order_no',$order_no)
                 ->first();
