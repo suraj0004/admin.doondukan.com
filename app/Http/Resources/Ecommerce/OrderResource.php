@@ -24,6 +24,12 @@ class OrderResource extends JsonResource
             "items" =>new OrderItemCollection($this->orderitem),
             "buyer" => $this->buyer,
             "seller" => $this->seller,
+            'delivery_type' => $this->delivery_type == 'user-self-collected' ? 'I will go to Shop':'Home Delivery',
+            'is_home_delivery' => $this->delivery_type != 'user-self-collected',
+            'from_time' => $this->from_time,
+            'to_time' => $this->to_time,
+            'delivery_charges' => $this->delivery_charges,
+            'delivery_address' => $this->shippingAddress,
         ];
     }
 
