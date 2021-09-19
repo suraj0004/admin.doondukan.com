@@ -90,11 +90,10 @@ class ShopController extends Controller
         ]);
     }
 
-    public function productSearch(Request $request)
+    public function productSearch(Request $request, int $seller_id)
     {
         $validator = Validator::make($request->all(), [
-            'q'=> ['required'],
-            'seller_id'=>['required','numeric']
+            'search'=> ['nullable','string'],
          ]);
 
         if ($validator->fails()) {
@@ -103,16 +102,17 @@ class ShopController extends Controller
         }
         $data = Product::select('products.id','products.name','products.category_id')
                 ->with('category:id,category_name,slug')
+                ->has('category')
                 ->join('stocks', 'stocks.product_id', '=', 'products.id')
-                ->where('products.name', 'like', '%' . $request->q . '%')
-                ->where('stocks.user_id',$request->seller_id)
-                ->where('stocks.quantity','>',0)
-                ->get();
+                ->where('stocks.user_id',$seller_id)
+                ->where('stocks.quantity','>',0);
 
-        if($data->isEmpty()){
-            return response()->json(['statusCode' => 200, 'success' => false, 'message' => "No data found."], 200);
+        if($request->has('search')){
+            $data = $data->where('products.name', 'like', '%' . $request->q . '%');
         }
-       
+
+        $data = $data->paginate(50);
+
         return (new SearchProductCollection($data))->additional([
             "message" => "Searched Data",
         ]);
