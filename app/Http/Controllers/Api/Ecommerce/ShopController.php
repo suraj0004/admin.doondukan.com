@@ -103,12 +103,16 @@ class ShopController extends Controller
         $data = Product::select('products.id','products.name','products.category_id')
                 ->with('category:id,category_name,slug')
                 ->has('category')
+                ->whereHas('category', function($query){
+                    $query->whereNotNull('slug')
+                    ->where('slug' , '!=' ,'');
+                })
                 ->join('stocks', 'stocks.product_id', '=', 'products.id')
                 ->where('stocks.user_id',$seller_id)
                 ->where('stocks.quantity','>',0);
 
         if($request->has('search')){
-            $data = $data->where('products.name', 'like', '%' . $request->q . '%');
+            $data = $data->where('products.name', 'like', '%' . $request->search . '%');
         }
 
         $data = $data->paginate(50);
