@@ -7,11 +7,14 @@ use Illuminate\Http\Request;
 use App\Models\Category;
 use App\Models\Store;
 use App\Models\Stock;
+use App\Models\Product;
 use DB;
+use Validator;
 use App\Http\Resources\Ecommerce\CategoryCollection;
 use App\Http\Resources\Ecommerce\CategoryProductCollection;
 use App\Http\Resources\Ecommerce\StoreResource;
 use App\Http\Resources\ShopCollection;
+use App\Http\Resources\Ecommerce\SearchProductCollection;
 
 class ShopController extends Controller
 {
@@ -84,6 +87,34 @@ class ShopController extends Controller
 
         return (new ShopCollection($data))->additional([
             "message" => "Shops listing",
+        ]);
+    }
+
+    public function productSearch(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'q'=> ['required'],
+            'seller_id'=>['required','numeric']
+         ]);
+
+        if ($validator->fails()) {
+            $message = $validator->errors()->first();
+            return response()->json(['statusCode'=>200,'success'=>false,'message'=>$message], 200);
+        }
+        $data = Product::select('products.id','products.name','products.category_id')
+                ->with('category:id,category_name,slug')
+                ->join('stocks', 'stocks.product_id', '=', 'products.id')
+                ->where('products.name', 'like', '%' . $request->q . '%')
+                ->where('stocks.user_id',$request->seller_id)
+                ->where('stocks.quantity','>',0)
+                ->get();
+
+        if($data->isEmpty()){
+            return response()->json(['statusCode' => 200, 'success' => false, 'message' => "No data found."], 200);
+        }
+       
+        return (new SearchProductCollection($data))->additional([
+            "message" => "Searched Data",
         ]);
     }
 }
