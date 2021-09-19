@@ -54,9 +54,13 @@ class ShopController extends Controller
                 ->join('stocks', 'stocks.product_id', '=', 'products.id')
                 ->where('stocks.user_id',$getUserId->user_id)
                 ->where('stocks.price','>',0)
-                ->where('categories.slug',$request->categorySlug)
-                ->get();
-
+                ->where('categories.slug',$request->categorySlug);
+        
+        if($request->has('search')){
+            $data = $data->where('products.name', 'like', '%' . $request->search . '%');
+        }
+        
+        $data = $data->get();
         if ($data->isEmpty()) {
             return response()->json(['statusCode' => 200, 'success' => false, 'message' => "No data found."], 200);
         }
