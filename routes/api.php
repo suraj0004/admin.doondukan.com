@@ -162,7 +162,7 @@ Route::group(['namespace'=>'Api\Ecommerce','prefix' => 'ecommerce'],function(){
     Route::group(['prefix' => '{seller_id}-{shop_slug}' ], function(){
 
         Route::get('/shop/info','ShopController@sellerInfo');
-
+        Route::post('/search-products', 'ShopController@productSearch');
         Route::group(['prefix' => 'cart','middleware' => ['auth:api','user'] ], function(){
             Route::post('sync','CartController@syncCart');
             Route::post('add','CartController@add');
@@ -171,7 +171,7 @@ Route::group(['namespace'=>'Api\Ecommerce','prefix' => 'ecommerce'],function(){
             Route::delete('delete/{cart_id}','CartController@deleteCartProduct');
         });
         Route::get('/','ShopController@index');
-        Route::get('/{categorySlug}','ShopController@getCategoryProducts');
+        Route::post('/{categorySlug}','ShopController@getCategoryProducts');
     });
 
     /** User specific routes */
