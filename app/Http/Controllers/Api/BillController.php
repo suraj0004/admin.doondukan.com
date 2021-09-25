@@ -80,11 +80,11 @@ class BillController extends Controller
             ->where('bills.user_id', $user->id);
 
         if (!empty($request->type)) {
-            $billData = $billData->where('order_type', $request->type);
+            $billData = $billData->where('bills.order_type', $request->type);
         }
 
         if (!empty($request->search)) {
-            $billData = $billData->where('id', 'like', '%' . $request->search . '%');
+            $billData = $billData->where('bills.id', 'like', '%' . (int)$request->search . '%');
         }
 
         $billData = $billData->paginate(8);
